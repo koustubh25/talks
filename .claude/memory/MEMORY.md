@@ -1,0 +1,5 @@
+- [Experts Live Talk](project_experts_live_talk.md) — Koustubh's "Eval Gates for CI/CD" talk at Experts Live Melbourne, 30 Jul 2026
+- [GCP Background](user_gcp_background.md) — Koustubh is GCP-native; explain Azure via Vertex AI analogies (demo stays Azure-only)
+- [Learnings Log](project_learnings_log.md) — append every new gotcha to demo/talk/learnings.md; read it when resuming demo work
+- [Azure Eval Videos](reference_azure_eval_videos.md) — curated Azure/Foundry eval YouTube list in demo/talk/azure-eval-videos.md
+- [No Em Dashes](feedback_no_em_dashes.md) — avoid em dashes / choppy AI-style punctuation in his copy; grep "—" before publishing
