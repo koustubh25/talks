@@ -1,0 +1,64 @@
+# "blackbox" — cockpit-at-night theme for the eval-gates talk.
+# amber = instruments/narration, green = CI, red = production reality.
+extends: dark
+
+default:
+  colors:
+    foreground: "e6e1cf"
+    background: "0b0e14"
+
+intro_slide:
+  title:
+    colors:
+      foreground: "ffb454"
+  subtitle:
+    colors:
+      foreground: "7fd962"
+  author:
+    colors:
+      foreground: "5c6773"
+
+slide_title:
+  colors:
+    foreground: "ffb454"
+  separator: true
+  padding_bottom: 1
+
+headings:
+  h1:
+    prefix: "▍"
+    colors:
+      foreground: "ffb454"
+  h2:
+    prefix: "▍"
+    colors:
+      foreground: "7fd962"
+
+code:
+  theme_name: "base16-eighties.dark"
+  padding:
+    horizontal: 2
+    vertical: 0
+
+execution_output:
+  colors:
+    foreground: "e6e1cf"
+    background: "0b0e14"
+
+block_quote:
+  colors:
+    foreground: "ffb454"
+    background: "10141c"
+  prefix: "▐ "
+
+mermaid:
+  background: transparent
+  scale: 2
+
+footer:
+  style: template
+  left: "GREEN CI · BROKEN PRODUCTION"
+  center: "github.com/koustubh25/ai-evals-talk"
+  right: "{current_slide} / {total_slides}"
+  colors:
+    foreground: "5c6773"

@@ -7,3 +7,4 @@ __pycache__/
 # az webapp up local deployment state
 inventory-service/.azure/
 .azure/
+.DS_Store

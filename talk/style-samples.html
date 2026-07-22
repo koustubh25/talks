@@ -1,0 +1,272 @@
+<style>
+  :root{
+    --bg:#f4f5f7; --panel:#ffffff; --ink:#15181e; --muted:#5b616e;
+    --line:#e2e5ea; --accent:#0f6f88; --accent-soft:#e9f3f5;
+    --radius:14px;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono:"SF Mono",Menlo,ui-monospace,monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#0f1216; --panel:#171b21; --ink:#e7e9ee; --muted:#9aa2b1;
+      --line:#262b33; --accent:#57c7de; --accent-soft:#12242a;
+    }
+  }
+  :root[data-theme="light"]{
+    --bg:#f4f5f7; --panel:#ffffff; --ink:#15181e; --muted:#5b616e;
+    --line:#e2e5ea; --accent:#0f6f88; --accent-soft:#e9f3f5;
+  }
+  :root[data-theme="dark"]{
+    --bg:#0f1216; --panel:#171b21; --ink:#e7e9ee; --muted:#9aa2b1;
+    --line:#262b33; --accent:#57c7de; --accent-soft:#12242a;
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0}
+  .wrap{
+    max-width:1040px; margin:0 auto; padding:48px 24px 96px;
+    background:var(--bg); color:var(--ink); font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+  }
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--accent); margin:0 0 14px;
+  }
+  h1{
+    font-size:clamp(28px,4.4vw,44px); line-height:1.08; margin:0 0 16px;
+    letter-spacing:-.02em; text-wrap:balance; font-weight:680;
+  }
+  .lede{ font-size:17px; line-height:1.6; color:var(--muted); max-width:64ch; margin:0 0 8px; }
+  .lede strong{color:var(--ink); font-weight:620}
+  .lede em{color:var(--accent); font-style:normal; font-weight:600}
+
+  .options{display:flex; flex-direction:column; gap:56px; margin-top:52px}
+  .option{display:flex; flex-direction:column}
+
+  .slideframe{
+    border:1px solid var(--line); border-radius:var(--radius) var(--radius) 0 0;
+    overflow:hidden; line-height:0; box-shadow:0 18px 40px -28px rgba(0,0,0,.5);
+  }
+  .slideframe svg{width:100%; height:auto; display:block}
+
+  .spec{
+    border:1px solid var(--line); border-top:none;
+    border-radius:0 0 var(--radius) var(--radius);
+    background:var(--panel); padding:22px 24px 24px;
+    display:grid; grid-template-columns:1.5fr 1fr; gap:20px 32px;
+  }
+  @media (max-width:720px){ .spec{grid-template-columns:1fr} }
+  .spec h2{ font-size:20px; margin:0 0 4px; letter-spacing:-.01em; font-weight:660;
+    display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
+  .tag{ font-family:var(--mono); font-size:10.5px; letter-spacing:.1em;
+    text-transform:uppercase; padding:3px 8px; border-radius:999px;
+    background:var(--accent-soft); color:var(--accent); font-weight:600; line-height:1; white-space:nowrap; }
+  .spec p{font-size:14px; line-height:1.55; color:var(--muted); margin:8px 0 0}
+  .spec .role{color:var(--ink); font-weight:600}
+  .meta{display:flex; flex-direction:column; gap:14px}
+  .metablock{display:flex; flex-direction:column; gap:7px}
+  .metalabel{ font-family:var(--mono); font-size:10.5px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--muted); }
+  .swatches{display:flex; gap:7px; flex-wrap:wrap}
+  .sw{ width:26px; height:26px; border-radius:7px; border:1px solid rgba(128,128,128,.28); position:relative; }
+  .typespec{font-size:13px; line-height:1.5; color:var(--ink)}
+  .typespec span{color:var(--muted)}
+
+  .shared{ margin-top:60px; border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; }
+  .shared h3{ margin:0; padding:18px 22px; font-size:15px; letter-spacing:.02em;
+    background:var(--panel); border-bottom:1px solid var(--line); }
+  table{border-collapse:collapse; width:100%; font-size:13.5px}
+  th,td{text-align:left; padding:12px 22px; border-bottom:1px solid var(--line)}
+  th{font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); font-weight:600}
+  tbody tr:last-child td{border-bottom:none}
+  td.tok{font-family:var(--mono); color:var(--ink)}
+  .chip{display:inline-flex; align-items:center; gap:8px}
+  .dot{width:13px; height:13px; border-radius:4px; border:1px solid rgba(128,128,128,.3)}
+
+  .note{ margin-top:56px; padding:24px 26px; border-radius:var(--radius);
+    background:var(--accent-soft); border:1px solid var(--line); }
+  .note h3{margin:0 0 10px; font-size:16px; letter-spacing:-.01em}
+  .note p{margin:0 0 10px; font-size:14.5px; line-height:1.62; color:var(--ink)}
+  .note p:last-child{margin-bottom:0}
+  .note strong{color:var(--accent)}
+
+  @keyframes blink{50%{opacity:0}}
+  .cursor{animation:blink 1.05s steps(1) infinite}
+  @media (prefers-reduced-motion:reduce){ .cursor{animation:none} }
+</style>
+
+<div class="wrap">
+  <p class="eyebrow">▍ Direction C · tuned for the handoff</p>
+  <h1>Keynote light, wired to the terminal</h1>
+  <p class="lede">You picked <strong>C</strong>. The one risk was the jump to your black terminal — so here's C retuned to share a <em>vocabulary</em> with the demo: the same job-colors, the same mono face for anything the machine says, the same <span style="font-family:var(--mono)">▍</span> heading mark. Then the deck ends on a slide that already <em>is</em> a terminal, so switching to the real one is a dissolve, not a cut.</p>
+
+  <div class="options">
+
+    <!-- ===== Refined C content slide ===== -->
+    <section class="option">
+      <div class="slideframe">
+        <svg viewBox="0 0 1280 720" role="img" aria-label="Refined Keynote-light slide with terminal-matched colors">
+          <rect width="1280" height="720" fill="#f7f6f2"/>
+
+          <!-- eyebrow with shared ▍ mark, in mono -->
+          <text x="84" y="108" font-family="Menlo,monospace" font-size="19" letter-spacing="4" fill="#0f6f88">▍ THE CI GATE</text>
+
+          <!-- title, amber underline under 'judge' -->
+          <text x="82" y="184" font-family="system-ui,sans-serif" font-size="62" font-weight="800" fill="#1a1712" letter-spacing="-1.5">A gate is a <tspan fill="#1a1712">judge</tspan> you trust.</text>
+          <rect x="452" y="196" width="150" height="9" rx="2" fill="#e89b2c"/>
+
+          <g font-family="system-ui,sans-serif">
+            <!-- candidate (green = terminal's candidate/pass hue) -->
+            <rect x="84" y="356" width="292" height="84" rx="14" fill="#eef2ec"/>
+            <rect x="84" y="356" width="7" height="84" rx="3.5" fill="#2aa96e"/>
+            <text x="114" y="392" font-size="22" font-weight="700" fill="#1a1712">candidate</text>
+            <text x="114" y="419" font-family="Menlo,monospace" font-size="15" fill="#5b616e">this PR's agent</text>
+
+            <!-- baseline (cyan = terminal's baseline/info hue) -->
+            <rect x="84" y="470" width="292" height="84" rx="14" fill="#eaf1f4"/>
+            <rect x="84" y="470" width="7" height="84" rx="3.5" fill="#1f9cc0"/>
+            <text x="114" y="506" font-size="22" font-weight="700" fill="#1a1712">baseline</text>
+            <text x="114" y="533" font-family="Menlo,monospace" font-size="15" fill="#5b616e">production's agent</text>
+
+            <g stroke="#cfc9bd" stroke-width="3" fill="none" stroke-linecap="round">
+              <path d="M376 398 H452 L474 440 H520"/>
+              <path d="M376 512 H452 L474 470 H520"/>
+            </g>
+
+            <!-- judge = AMBER (terminal: amber == the machine talking) -->
+            <rect x="524" y="390" width="250" height="132" rx="18" fill="#f2b24a"/>
+            <text x="649" y="444" font-size="27" font-weight="800" fill="#3a2c0e" text-anchor="middle">LLM judge</text>
+            <text x="649" y="479" font-family="Menlo,monospace" font-size="15" fill="#6d520f" text-anchor="middle">binary verdict</text>
+
+            <g stroke="#cfc9bd" stroke-width="3" fill="none" stroke-linecap="round">
+              <path d="M774 430 H860 L882 402 H930"/>
+              <path d="M774 484 H860 L882 512 H930"/>
+            </g>
+
+            <!-- verdict pills in mono, terminal green / red -->
+            <rect x="932" y="376" width="176" height="60" rx="30" fill="#2aa96e"/>
+            <text x="1020" y="414" font-family="Menlo,monospace" font-size="22" font-weight="700" fill="#ffffff" text-anchor="middle">PASS</text>
+            <rect x="932" y="482" width="176" height="60" rx="30" fill="#e5484d"/>
+            <text x="1020" y="520" font-family="Menlo,monospace" font-size="22" font-weight="700" fill="#ffffff" text-anchor="middle">FAIL</text>
+          </g>
+
+          <text x="84" y="672" font-family="Menlo,monospace" font-size="15" fill="#9a9384" letter-spacing="1">green ci · broken production</text>
+          <text x="1196" y="672" font-family="Menlo,monospace" font-size="15" font-weight="700" fill="#c98a1e" text-anchor="end">04 / 08</text>
+        </svg>
+      </div>
+      <div class="spec">
+        <div>
+          <h2>Refined C · teaching slide</h2>
+          <p><span class="role">Same layout, terminal's color logic.</span> The judge box is now <strong style="color:#c98a1e">amber</strong> — because in the terminal amber always means "the machine talking." Candidate is green, baseline cyan, PASS/FAIL the terminal's exact green and red, all set in the same Menlo the terminal uses. The <span style="font-family:var(--mono)">▍</span> eyebrow and mono footer are lifted straight from your <code>blackbox.yaml</code> theme.</p>
+        </div>
+        <div class="meta">
+          <div class="metablock">
+            <span class="metalabel">Palette</span>
+            <div class="swatches">
+              <span class="sw" style="background:#f7f6f2"></span>
+              <span class="sw" style="background:#1a1712"></span>
+              <span class="sw" style="background:#0f6f88"></span>
+              <span class="sw" style="background:#e89b2c"></span>
+              <span class="sw" style="background:#2aa96e"></span>
+              <span class="sw" style="background:#e5484d"></span>
+            </div>
+          </div>
+          <div class="metablock">
+            <span class="metalabel">Type</span>
+            <div class="typespec">Bold sans display <span>· Menlo mono for every machine element</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== The bridge slide ===== -->
+    <section class="option">
+      <div class="slideframe">
+        <svg viewBox="0 0 1280 720" role="img" aria-label="Dark terminal bridge slide that dissolves into the live demo">
+          <rect width="1280" height="720" fill="#0b0e14"/>
+          <rect x="0" y="0" width="1280" height="4" fill="#ffb454" opacity="0.9"/>
+
+          <text x="84" y="150" font-family="system-ui,sans-serif" font-size="58" font-weight="800" fill="#ffb454" letter-spacing="-1">Enough theory.</text>
+          <text x="84" y="222" font-family="system-ui,sans-serif" font-size="58" font-weight="800" fill="#e6e1cf" letter-spacing="-1">Let&#39;s go break production.</text>
+
+          <!-- terminal window -->
+          <rect x="84" y="290" width="1112" height="286" rx="12" fill="#05070b" stroke="#20262f" stroke-width="1.5"/>
+          <rect x="84" y="290" width="1112" height="40" rx="12" fill="#11151d"/>
+          <rect x="84" y="316" width="1112" height="14" fill="#11151d"/>
+          <circle cx="112" cy="310" r="6" fill="#ff5f56"/>
+          <circle cx="134" cy="310" r="6" fill="#febc2e"/>
+          <circle cx="156" cy="310" r="6" fill="#28c840"/>
+          <text x="640" y="315" font-family="Menlo,monospace" font-size="14" fill="#5c6773" text-anchor="middle">demo — zsh</text>
+
+          <g font-family="Menlo,monospace" font-size="21">
+            <text x="116" y="392" fill="#7fd962">~/ai-evals-talk/demo</text>
+            <text x="116" y="392" fill="#39bae6" dx="248">▸</text>
+            <text x="116" y="392" fill="#e6e1cf" dx="278">./present.sh</text>
+            <rect class="cursor" x="530" y="376" width="12" height="22" fill="#ffb454"/>
+          </g>
+          <text x="116" y="440" font-family="Menlo,monospace" font-size="15" fill="#5c6773">› live agent · real Foundry evals · a green gate that ships a lie</text>
+
+          <line x1="84" y1="636" x2="1196" y2="636" stroke="#20262f" stroke-width="1"/>
+          <text x="84" y="674" font-family="Menlo,monospace" font-size="15" fill="#5c6773" letter-spacing="2">GREEN CI · BROKEN PRODUCTION</text>
+          <text x="1196" y="674" font-family="Menlo,monospace" font-size="15" fill="#5c6773" text-anchor="end">08 / 08</text>
+        </svg>
+      </div>
+      <div class="spec">
+        <div>
+          <h2>The bridge slide <span class="tag">the handoff</span></h2>
+          <p><span class="role">The last slide is already the terminal.</span> Black ground, mono prompt, the command pre-typed, an amber cursor blinking. You say the line, hit this slide, pause — then cmd-tab to the real <code>./present.sh</code>, which looks identical. The audience never registers a switch from HTML to terminal; it's one continuous shot. The reverse works for your closing slide too.</p>
+        </div>
+        <div class="meta">
+          <div class="metablock">
+            <span class="metalabel">Palette (= terminal)</span>
+            <div class="swatches">
+              <span class="sw" style="background:#0b0e14"></span>
+              <span class="sw" style="background:#ffb454"></span>
+              <span class="sw" style="background:#7fd962"></span>
+              <span class="sw" style="background:#39bae6"></span>
+              <span class="sw" style="background:#e6e1cf"></span>
+              <span class="sw" style="background:#ff5c57"></span>
+            </div>
+          </div>
+          <div class="metablock">
+            <span class="metalabel">Type</span>
+            <div class="typespec">Sans headline dissolving into <span>pure Menlo terminal</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- shared DNA table -->
+  <div class="shared">
+    <h3>What's identical across both decks — the shared DNA</h3>
+    <table>
+      <thead><tr><th>Element</th><th>Light deck (C)</th><th>Terminal demo</th></tr></thead>
+      <tbody>
+        <tr><td>the machine talking</td>
+          <td class="tok"><span class="chip"><span class="dot" style="background:#f2b24a"></span>amber judge box</span></td>
+          <td class="tok"><span class="chip"><span class="dot" style="background:#ffb454"></span>amber titles &amp; verdicts</span></td></tr>
+        <tr><td>pass / candidate</td>
+          <td class="tok"><span class="chip"><span class="dot" style="background:#2aa96e"></span>green</span></td>
+          <td class="tok"><span class="chip"><span class="dot" style="background:#7fd962"></span>green</span></td></tr>
+        <tr><td>fail</td>
+          <td class="tok"><span class="chip"><span class="dot" style="background:#e5484d"></span>red</span></td>
+          <td class="tok"><span class="chip"><span class="dot" style="background:#ff5c57"></span>red</span></td></tr>
+        <tr><td>baseline / info</td>
+          <td class="tok"><span class="chip"><span class="dot" style="background:#1f9cc0"></span>cyan</span></td>
+          <td class="tok"><span class="chip"><span class="dot" style="background:#39bae6"></span>cyan</span></td></tr>
+        <tr><td>machine typeface</td><td class="tok">Menlo — labels, verdicts, code</td><td class="tok">Menlo — everything</td></tr>
+        <tr><td>heading mark</td><td class="tok">▍ eyebrow</td><td class="tok">▍ h1 / h2 prefix</td></tr>
+        <tr><td>footer</td><td class="tok">green ci · broken production</td><td class="tok">GREEN CI · BROKEN PRODUCTION</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note">
+    <h3>How the handoff plays on stage</h3>
+    <p>Concept deck runs light and readable for ~7 minutes. On the last slide the ground goes black and a terminal appears with <strong>./present.sh</strong> waiting. You deliver the line, the cursor blinks, you switch apps — and because the colors, the mono, and the prompt already match, it reads as the same window coming to life. Same move in reverse if you cut back to a closing slide.</p>
+    <p>If you want, I can also drop a 2-frame dark ramp before the bridge (near-white → warm grey → black) so the room's eyes dark-adapt a beat early — but the bridge slide alone usually does it.</p>
+    <p>Say the word and I'll build all eight in this refined-C system. Open question before I do: <strong>what renders the final pack</strong> — a single self-contained reveal.js file (arrow-key nav, PDF export), or plain scrollable HTML?</p>
+  </div>
+</div>

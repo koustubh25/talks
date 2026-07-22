@@ -1,0 +1,407 @@
+<!doctype html>
+<title>From Unit Tests to Eval Gates</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root {
+    --bg: #0a0e18;
+    --bg-2: #0f1526;
+    --panel: #131b2e;
+    --panel-2: #182140;
+    --line: #2a3453;
+    --ink: #eef1f8;
+    --muted: #8a93ad;
+    --muted-2: #5f6a87;
+    --amber: #f4a83d;
+    --amber-dim: #b47b2b;
+    --good: #57c785;
+    --bad: #e8615a;
+    --mono: ui-monospace, "Cascadia Code", "Cascadia Mono", "SFMono-Regular", "Roboto Mono", Menlo, Consolas, monospace;
+    --sans: system-ui, "Segoe UI", -apple-system, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  /* Deliberate single visual world: a night-time departures board.
+     Departure boards are inherently dark; a "light mode" inversion would
+     break the metaphor, so this artifact stays fixed-dark by design. */
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    background: var(--bg); color: var(--ink);
+    font-family: var(--sans);
+    overflow: hidden;
+  }
+
+  .board {
+    height: 100vh; width: 100vw;
+    display: flex; flex-direction: column;
+    background:
+      radial-gradient(1200px 600px at 15% -10%, #182550 0%, transparent 60%),
+      radial-gradient(900px 500px at 110% 110%, #1a1030 0%, transparent 55%),
+      var(--bg);
+  }
+
+  /* ---- status strip ---- */
+  .strip {
+    flex: 0 0 auto;
+    display: flex; align-items: center; gap: clamp(1rem, 3vw, 3rem);
+    padding: 0.9rem clamp(1rem, 4vw, 3rem);
+    border-bottom: 1px solid var(--line);
+    background: linear-gradient(180deg, var(--panel-2), var(--panel));
+    font-family: var(--mono);
+    font-size: clamp(0.65rem, 1vw, 0.85rem);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .strip b { color: var(--amber); font-weight: 700; letter-spacing: 0.14em; }
+  .strip .field { display: flex; gap: 0.6em; align-items: baseline; }
+  .strip .field span:first-child { color: var(--muted-2); }
+  .strip .status-flip { color: var(--good); transition: opacity 0.15s ease; }
+  .strip .status-flip.flip { animation: flipfade 0.5s ease; }
+  @keyframes flipfade { 0% { opacity: 0; transform: translateY(-4px); } 100% { opacity: 1; transform: translateY(0); } }
+  .strip .spacer { flex: 1; }
+  .strip .gate-count { color: var(--ink); }
+
+  /* ---- slides ---- */
+  .slides { position: relative; flex: 1; overflow: hidden; }
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: clamp(1.5rem, 5vw, 5rem) clamp(2rem, 8vw, 8rem);
+    opacity: 0; transform: translateY(14px);
+    pointer-events: none;
+    transition: opacity 0.35s ease, transform 0.35s ease;
+  }
+  .slide.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  @media (prefers-reduced-motion: reduce) {
+    .slide { transition: opacity 0.01s linear; transform: none; }
+    .strip .status-flip.flip { animation: none; }
+  }
+
+  .eyebrow {
+    font-family: var(--mono); font-size: clamp(0.7rem, 1vw, 0.85rem);
+    letter-spacing: 0.2em; text-transform: uppercase; color: var(--amber-dim);
+    margin: 0 0 0.9rem 0;
+  }
+  h1 {
+    font-family: var(--mono); font-weight: 700;
+    font-size: clamp(2rem, 5.2vw, 4rem);
+    line-height: 1.05; letter-spacing: -0.01em;
+    text-wrap: balance; margin: 0 0 0.6em 0; color: var(--ink);
+  }
+  h1 .amber { color: var(--amber); }
+  h1 .good { color: var(--good); }
+  h1 .bad { color: var(--bad); }
+  .lede {
+    font-size: clamp(1.05rem, 1.6vw, 1.35rem); line-height: 1.55;
+    color: var(--muted); max-width: 46em; margin: 0 0 1.1em 0;
+  }
+  .lede strong { color: var(--ink); font-weight: 600; }
+  .tag {
+    display: inline-block; font-family: var(--mono); font-size: 0.78rem;
+    letter-spacing: 0.08em; color: var(--muted-2); border: 1px solid var(--line);
+    border-radius: 3px; padding: 0.35em 0.7em; margin-top: 0.6em;
+  }
+
+  /* generic content row helpers */
+  .row { display: flex; gap: clamp(1rem, 3vw, 3rem); align-items: stretch; margin-top: clamp(1rem, 2.4vw, 2rem); }
+  .col { flex: 1; min-width: 0; }
+  .card {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+    padding: clamp(1rem, 2vw, 1.6rem);
+  }
+  .card h3 {
+    font-family: var(--mono); font-size: 0.95rem; letter-spacing: 0.04em;
+    margin: 0 0 0.6em 0; color: var(--muted);
+  }
+  .card p { margin: 0; color: var(--ink); font-size: 1rem; line-height: 1.55; }
+  .card.bad-card { border-color: #3a2530; background: #1a1220; }
+  .card.bad-card h3 { color: #d98b86; }
+  .card.good-card { border-color: #1f3a2c; background: #10201a; }
+  .card.good-card h3 { color: #7fd9a4; }
+
+  /* ---- slide 2: compounding failure chart ---- */
+  .chart {
+    display: flex; align-items: flex-end; gap: clamp(0.6rem, 1.6vw, 1.4rem);
+    height: clamp(150px, 24vh, 240px); margin: clamp(1.2rem, 3vh, 2rem) 0 0.6rem 0;
+  }
+  .bar-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; flex: 1; height: 100%; justify-content: flex-end; }
+  .bar {
+    width: 100%; max-width: 84px; border-radius: 4px 4px 0 0;
+    background: linear-gradient(180deg, var(--amber), var(--amber-dim));
+    position: relative;
+  }
+  .bar .pct {
+    position: absolute; top: -1.7em; left: 50%; transform: translateX(-50%);
+    font-family: var(--mono); font-weight: 700; font-size: clamp(0.9rem, 1.6vw, 1.15rem); color: var(--ink);
+    white-space: nowrap;
+  }
+  .bar-label { font-family: var(--mono); font-size: 0.75rem; color: var(--muted-2); letter-spacing: 0.05em; }
+  .bar.low { background: linear-gradient(180deg, var(--bad), #8a3330); }
+
+  /* ---- slide 3: split flap word cycle ---- */
+  .flapword {
+    font-family: var(--mono); font-weight: 700; font-size: clamp(1.4rem, 2.6vw, 2rem);
+    color: var(--bad); display: inline-block; min-width: 8ch;
+    border-bottom: 2px dashed var(--line); padding-bottom: 0.1em;
+  }
+
+  /* ---- slide 4: stamp row ---- */
+  .stamps { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: 1.3rem; }
+  .stamp {
+    font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.05em;
+    border: 1.5px dashed var(--amber-dim); color: var(--amber);
+    border-radius: 999px; padding: 0.5em 1em; transform: rotate(-1.5deg);
+  }
+  .stamp:nth-child(2n) { transform: rotate(1.5deg); }
+
+  /* ---- slide 5: gate pipeline ---- */
+  .pipeline { display: flex; align-items: center; gap: 0; margin-top: clamp(1.4rem, 3vh, 2.2rem); flex-wrap: wrap; }
+  .stage {
+    font-family: var(--mono); text-align: center; padding: 1rem 1.3rem;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 6px; min-width: 7.5em;
+  }
+  .stage .name { font-size: 0.95rem; color: var(--ink); font-weight: 700; letter-spacing: 0.04em; }
+  .stage .sub { font-size: 0.7rem; color: var(--muted-2); margin-top: 0.3em; }
+  .arrow { font-family: var(--mono); color: var(--muted-2); font-size: 1.4rem; padding: 0 0.6rem; }
+  .gate-icon {
+    font-family: var(--mono); text-align: center; padding: 0.9rem 1rem;
+    border: 1.5px solid var(--amber-dim); border-radius: 6px; min-width: 7em;
+    background: repeating-linear-gradient(135deg, rgba(244,168,61,0.08) 0 10px, transparent 10px 20px);
+  }
+  .gate-icon .name { color: var(--amber); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.04em; }
+  .gate-icon .sub { font-size: 0.68rem; color: var(--muted-2); margin-top: 0.3em; }
+
+  /* ---- seat map (slides 7/8) ---- */
+  .seatmap { display: grid; grid-template-columns: repeat(10, 1fr); gap: 0.4rem; max-width: 30em; margin-top: 1.4rem; }
+  .seat { aspect-ratio: 1; border-radius: 3px; background: #1c2b22; border: 1px solid #274031; }
+  .seat.taken { background: #241618; border-color: #3a2226; }
+  .seat.ghost {
+    background: var(--bad); border-color: var(--bad);
+    box-shadow: 0 0 0 3px rgba(232,97,90,0.25);
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce) { .seat.ghost { animation: none; } }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.45; } }
+
+  /* ---- nav ---- */
+  .nav {
+    flex: 0 0 auto; display: flex; align-items: center; justify-content: center;
+    gap: 0.5rem; padding: 0.7rem 0 1rem 0;
+  }
+  .dot {
+    width: 8px; height: 8px; border-radius: 999px; background: var(--line);
+    border: none; padding: 0; cursor: pointer;
+  }
+  .dot.active { background: var(--amber); width: 22px; border-radius: 999px; transition: width 0.2s ease; }
+  .hint {
+    position: fixed; bottom: 0.6rem; right: 1rem; font-family: var(--mono);
+    font-size: 0.65rem; color: var(--muted-2); letter-spacing: 0.05em;
+  }
+
+  .notes {
+    position: fixed; left: 0; right: 0; bottom: 0; max-height: 40vh; overflow-y: auto;
+    background: #05070c; border-top: 1px solid var(--line);
+    padding: 1rem clamp(1rem, 4vw, 3rem); font-family: var(--sans); font-size: 0.95rem;
+    line-height: 1.6; color: #cfd6e6; display: none; z-index: 20;
+  }
+  .notes.show { display: block; }
+  .notes .label {
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em;
+    color: var(--amber); text-transform: uppercase; margin-bottom: 0.4em; display: block;
+  }
+
+  button:focus-visible, .dot:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+</style>
+
+<div class="board" id="board">
+  <div class="strip">
+    <div class="field"><span>Flight</span><b id="s-flight">PWC-2026</b></div>
+    <div class="field"><span>Dest</span><b id="s-dest">MELBOURNE</b></div>
+    <div class="field"><span>Status</span><b class="status-flip" id="s-status">BOARDING</b></div>
+    <div class="spacer"></div>
+    <div class="field gate-count"><span>Gate</span><b id="s-gate">1 / 8</b></div>
+  </div>
+
+  <div class="slides" id="slides">
+
+    <!-- 1 -->
+    <section class="slide" data-status="BOARDING" data-dest="MELBOURNE" data-flight="PWC-2026">
+      <p class="eyebrow">Experts Live Melbourne · 2026</p>
+      <h1>From Unit Tests<br>to <span class="amber">Eval Gates</span></h1>
+      <p class="lede">CI/CD for AI agents — what breaks when your test suite meets a system that doesn't give the same answer twice.</p>
+      <p class="tag">Koustubh Bhaskar Gaikwad · PwC Engineering</p>
+    </section>
+
+    <!-- 2 -->
+    <section class="slide" data-status="BOARDING" data-dest="PRODUCTION" data-flight="PWC-2026">
+      <p class="eyebrow">The problem, in one number</p>
+      <h1>"95% accurate" doesn't mean<br>what you think it means</h1>
+      <div class="chart">
+        <div class="bar-wrap"><div class="bar" style="height:95%"><span class="pct">95%</span></div><span class="bar-label">1 step</span></div>
+        <div class="bar-wrap"><div class="bar" style="height:77%"><span class="pct">77%</span></div><span class="bar-label">5 steps</span></div>
+        <div class="bar-wrap"><div class="bar" style="height:60%"><span class="pct">60%</span></div><span class="bar-label">10 steps</span></div>
+        <div class="bar-wrap"><div class="bar low" style="height:36%"><span class="pct">36%</span></div><span class="bar-label">20 steps</span></div>
+        <div class="bar-wrap"><div class="bar low" style="height:8%"><span class="pct">8%</span></div><span class="bar-label">50 steps</span></div>
+      </div>
+      <p class="lede" style="margin-top:1.4rem">Your agent doesn't need to fail once. It needs to succeed <strong>every single step</strong> — and every extra tool call is another coin flip.</p>
+    </section>
+
+    <!-- 3 -->
+    <section class="slide" data-status="DELAYED" data-dest="PRODUCTION" data-flight="PWC-2026">
+      <p class="eyebrow">Why the old tools stop working</p>
+      <h1>Unit tests check answers.<br>Agents make <span class="bad">judgment calls</span>.</h1>
+      <div class="row">
+        <div class="col card good-card">
+          <h3>assert booking.confirmed == true</h3>
+          <p>Known input. Known output. One correct answer, checkable in milliseconds.</p>
+        </div>
+        <div class="col card bad-card">
+          <h3>assert conversation.wasGood == ???</h3>
+          <p>Unbounded input. No single right answer — a domain expert would still argue about it.</p>
+        </div>
+      </div>
+      <p class="lede" style="margin-top:1.1rem">Try to <code>assert()</code> your way through that and you get: <span class="flapword">¯\_(ツ)_/¯</span></p>
+    </section>
+
+    <!-- 4 -->
+    <section class="slide" data-status="CLEARED" data-dest="PRODUCTION" data-flight="PWC-2026">
+      <p class="eyebrow">The fix</p>
+      <h1>Same job as a failing test.<br>A <span class="amber">smarter judge</span>.</h1>
+      <p class="lede">An <strong>eval gate</strong> is a check — code-based, or an LLM-as-judge — wired into your pipeline. It fails, the merge blocks. That's it. That's the whole idea.</p>
+      <div class="stamps">
+        <span class="stamp">✓ Task Adherence</span>
+        <span class="stamp">✓ Tool Call Accuracy</span>
+        <span class="stamp">✓ Intent Resolution</span>
+        <span class="stamp">✓ Tool Output Utilization</span>
+      </div>
+      <p class="tag">Most teams land on ~4–7 of these total. Not hundreds.</p>
+    </section>
+
+    <!-- 5 -->
+    <section class="slide" data-status="ON TIME" data-dest="PRODUCTION" data-flight="PWC-2026">
+      <p class="eyebrow">This is not a science project</p>
+      <h1>Dev → Test → Prod.<br>Gated, on Azure.</h1>
+      <div class="pipeline">
+        <div class="stage"><div class="name">DEV</div><div class="sub">agent v1.4</div></div>
+        <div class="arrow">→</div>
+        <div class="stage"><div class="name">TEST</div><div class="sub">Foundry project</div></div>
+        <div class="arrow">→</div>
+        <div class="gate-icon"><div class="name">EVAL GATE</div><div class="sub">ai-agent-evals</div></div>
+        <div class="arrow">→</div>
+        <div class="stage"><div class="name">PROD</div><div class="sub">active version</div></div>
+      </div>
+      <p class="lede" style="margin-top:1.4rem"><code>microsoft/ai-agent-evals</code> — a GitHub Action (or Azure DevOps task) that runs this gate for you. An off-the-shelf checkpoint, not a script you maintain forever.</p>
+    </section>
+
+    <!-- 6 -->
+    <section class="slide" data-status="TURBULENCE" data-dest="PRODUCTION" data-flight="PWC-2026">
+      <p class="eyebrow">The honest part</p>
+      <h1>Bugs will still happen.<br>Let's not pretend otherwise.</h1>
+      <p class="lede">Nothing fully prevents an AI bug in production — same as nothing prevents one in any complex system. What a gate buys you: it catches what you already know to test for, and shrinks the blast radius on what you don't.</p>
+      <p class="tag" style="border-color:var(--amber-dim); color:var(--amber)">An eval suite that never fails isn't safe — it just isn't looking hard enough.</p>
+      <p class="lede" style="margin-top:1.2rem">So what happens when something slips through anyway? Let's watch it happen.</p>
+    </section>
+
+    <!-- 7 -->
+    <section class="slide" data-status="NOW BOARDING" data-dest="PRODUCTION" data-flight="AI-407">
+      <p class="eyebrow">Live demo</p>
+      <h1>Now boarding: <span class="amber">production</span></h1>
+      <p class="lede">A travel-booking agent. A green pipeline. A holiday rush that nobody's eval dataset ever saw.</p>
+      <div class="seatmap" id="seatmap-7"></div>
+      <p class="tag">Every seat here reads "available." One of them is lying.</p>
+    </section>
+
+    <!-- 8 -->
+    <section class="slide" data-status="LANDED" data-dest="PRODUCTION" data-flight="AI-407">
+      <p class="eyebrow">Landing</p>
+      <h1>Green CI never meant <span class="bad">safe</span>.<br>It meant <span class="good">tested for what we knew</span>.</h1>
+      <p class="lede">Every production surprise becomes tomorrow's regression test. That's the whole game — not zero bugs, a system that gets safer every time it's wrong.</p>
+      <p class="lede">We've covered <strong>Evaluate</strong> today. Trace, Monitor, and Optimize — Raj Mallikarjuna and Pouya Koushandehfar are covering that right now, in other rooms. Catch the recordings.</p>
+      <p class="tag">Thank you — Koustubh Bhaskar Gaikwad</p>
+    </section>
+
+  </div>
+
+  <div class="nav" id="nav"></div>
+</div>
+
+<div class="notes" id="notes"></div>
+<div class="hint">← → to navigate · N for speaker notes</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const dotsWrap = document.getElementById('nav');
+  const notesPanel = document.getElementById('notes');
+  const elFlight = document.getElementById('s-flight');
+  const elDest = document.getElementById('s-dest');
+  const elStatus = document.getElementById('s-status');
+  const elGate = document.getElementById('s-gate');
+
+  const scripts = [
+    "Welcome — quick housekeeping on what this talk is and isn't. It's not a full evals course; it's the pre-production half of the story, before Raj and Pouya pick up telemetry and observability.",
+    "Open with the stat, let it sit. Don't over-explain the math — the bars do the work. Land on: every extra tool call is another coin flip.",
+    "This is the pivot: name why unit tests specifically stop working for agents. Keep the two cards fast — read the left one straight, the right one with a shrug.",
+    "Define the term once, cleanly: eval gate = same job as a failing test, smarter judge. Name the Foundry evaluators so it's Azure-native, not generic. Land the reassurance line — this is not hundreds of new tests.",
+    "This is the 'real thing, not a toy' slide. Point at the diagram left to right. Name the GitHub Action / Azure DevOps task explicitly — that's the artifact people can go use tomorrow.",
+    "Slow down here. This is the credibility beat — say plainly that gates don't prevent every bug, same as tests don't. Let the tag line land before moving on. End on the transition question and go straight into the demo.",
+    "Demo divider — just enough context to orient the audience before you drive. Point out the seat map gag if there's a laugh in it, then move.",
+    "Post-demo. Reuse the 'green CI' line from slide 6 now that they've seen it fail live — that repetition is the point. Close with the explicit handoff to Raj/Pouya, then thank you."
+  ];
+
+  slides.forEach((s, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'dot';
+    dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+    dot.addEventListener('click', () => go(i));
+    dotsWrap.appendChild(dot);
+  });
+
+  function buildSeatmap(id, ghostIndex) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    for (let i = 0; i < 40; i++) {
+      const seat = document.createElement('div');
+      seat.className = 'seat';
+      if (i === ghostIndex) seat.className += ' ghost';
+      else if (i % 7 === 0) seat.className += ' taken';
+      el.appendChild(seat);
+    }
+  }
+  buildSeatmap('seatmap-7', 23);
+
+  let current = 0;
+  function go(i) {
+    current = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach((s, idx) => s.classList.toggle('active', idx === current));
+    Array.from(dotsWrap.children).forEach((d, idx) => d.classList.toggle('active', idx === current));
+
+    const s = slides[current];
+    elFlight.textContent = s.dataset.flight;
+    elDest.textContent = s.dataset.dest;
+    elGate.textContent = (current + 1) + ' / ' + slides.length;
+    elStatus.textContent = s.dataset.status;
+    elStatus.classList.remove('flip');
+    void elStatus.offsetWidth;
+    elStatus.classList.add('flip');
+
+    if (notesPanel.classList.contains('show')) renderNotes();
+  }
+
+  function renderNotes() {
+    notesPanel.innerHTML = '<span class="label">Speaker notes · slide ' + (current + 1) + '</span>' + scripts[current];
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(current + 1); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); go(current - 1); }
+    else if (e.key.toLowerCase() === 'n') {
+      notesPanel.classList.toggle('show');
+      if (notesPanel.classList.contains('show')) renderNotes();
+    }
+  });
+
+  go(0);
+</script>
