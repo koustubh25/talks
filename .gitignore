@@ -7,6 +7,13 @@ __pycache__/
 # az webapp up local deployment state
 inventory-service/.azure/
 .azure/
+# persistent Playwright browser profile for runbook/prestage.py (holds live login sessions/cookies)
+.playwright-profile/
+.playwright-chrome-profile/
 .DS_Store
 .claude/settings.local.json
 excalidraw.log
+
+# regenerable slide exports - not checked in for now (large binaries)
+talk/slides/narration/
+talk/slides/concept-slides.pdf
