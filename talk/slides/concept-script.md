@@ -1,9 +1,9 @@
-# Speaker script — slides 1–14 (`concept.html`)
+# Speaker script — slides 1–15 (`concept.html`)
 
 **"From Unit Tests to Eval Gates: CI/CD for AI Agents"** · Experts Live Melbourne, 30 Jul 2026 · Koustubh
-**Target: ~16 min for slides 1–13** (raised from the earlier 15-min ceiling on 2026-07-26, deliberately — the extra minute (the eval-count reassurance on slide 7, the binary-vs-continuous aside on slide 7, and the "grounded judges still err" aside on slide 8) is coming directly out of demo time, which is being re-scoped smaller anyway; see `runbook-portal.md`). Timestamps are cumulative pacing targets, not hard stops; better to land under than to eat into demo time.
+**Target: ~16 min for slides 1–14** (raised from the earlier 15-min ceiling on 2026-07-26, deliberately — the extra minute (the eval-count reassurance on slide 8, the binary-vs-continuous aside on slide 8, and the "grounded judges still err" aside on slide 9) is coming directly out of demo time, which is being re-scoped smaller anyway; see `runbook-portal.md`). Timestamps are cumulative pacing targets, not hard stops; better to land under than to eat into demo time.
 
-Matches `concept.html` 1:1 — 14 sections, in the exact order/wording currently on disk (slide 1 is the title card, slides 2–13 are the numbered content covered below, slide 14 is the dark bridge card). Slide 14 ("Let's go break production") needs no narration beyond the transition line at the end of slide 13.
+Matches `concept.html` 1:1 — 15 sections, in the exact order/wording currently on disk: slide 1 is the title card, slide 2 is the speaker/bio slide (visual beat, minimal narration), slides 3–14 are the numbered content covered below, and slide 15 is the Thank You / close card. Slide 14 ("A green gate is not safety") ends with the verbal cue into the live demo — there's no on-screen bridge slide anymore, so the switch to the terminal deck is a manual one (see the mechanics note under slide 14). Slide 15 is delivered after the live demo concludes, reached by jumping to `#15` rather than by pressing forward from 14 (see the mechanics note under slide 15).
 
 ---
 
@@ -17,11 +17,19 @@ Matches `concept.html` 1:1 — 14 sections, in the exact order/wording currently
 >
 > Before I get into it — here's what I actually want you to walk away with today. Not a specific tool, not a command to memorize. There are a hundred tools that'll do this for you, and if you want the deep links into Microsoft Foundry specifically, come find me after and I'll point you at them. What I care about is a mindset shift: that a green pipeline was never the finish line for an agent, the same way it never fully was for any complex system — and once you start looking at your agent's behavior the way you already look at your code, you can't really unsee it. Everything after this is just here to make that shift concrete.
 
-**Delivery note:** the first paragraph is the fixed name/title/topic anchor — keep it to one breath. The second paragraph sets the actual objective of the talk: a mindset shift, not a toolkit — tools and Foundry specifics are explicitly deferred to a follow-up conversation, not part of the pitch itself. Say it a touch slower and warmer than the first paragraph — this is the one moment in the talk that's genuinely conversational rather than argument-building. Don't add "a bit about me," an agenda slide, or any mention of time/pacing on top of either paragraph; the title card is already doing that work. Go straight from "make that shift concrete" into slide 2's first hand-raise question with no dead air.
+**Delivery note:** the first paragraph is the fixed name/title/topic anchor — keep it to one breath. The second paragraph sets the actual objective of the talk: a mindset shift, not a toolkit — tools and Foundry specifics are explicitly deferred to a follow-up conversation, not part of the pitch itself. Say it a touch slower and warmer than the first paragraph — this is the one moment in the talk that's genuinely conversational rather than argument-building. Don't add "a bit about me," an agenda slide, or any mention of time/pacing on top of either paragraph; the title card is already doing that work.
 
 ---
 
-## Slide 2 — "Two quick shows of hands" (0:20–1:05)
+## Slide 2 — "Who's talking" / speaker bio (0:20–0:35)
+
+*[data-eyebrow: who's talking]*
+
+**Delivery note:** this slide doesn't need its own dedicated paragraph — you've already covered name, role, and company in slide 1. Click forward to it as you finish the second paragraph of slide 1's narration ("Everything after this is just here to make that shift concrete") and let it sit silently for 2–3 seconds while the room reads your photo/bio, then move straight into slide 3's first hand-raise question with no dead air. If you want one optional spoken line to bridge the silence, something like *"—and yes, that's really me, home lab and all"* works as a light aside, but it's not required.
+
+---
+
+## Slide 3 — "Two quick shows of hands" (0:35–1:20)
 
 *[data-eyebrow: before we start]*
 
@@ -33,11 +41,11 @@ Matches `concept.html` 1:1 — 14 sections, in the exact order/wording currently
 
 **Delivery note:** genuinely pause for hands both times — it's audience-participation, not rhetorical. Don't rush past the second question; the visible drop-off in raised hands *is* the hook, let it land silently for a beat before you speak again.
 
-**Mechanics note:** this slide click-to-reveals — it lands blank except the title, and each arrow-key press (or click) reveals the next beat: Question 1, then Question 2, then the "that gap is the whole talk" line. That's 3 presses before a 4th press moves you to slide 3. Time each press to your own pacing (ask Q1 → press → let hands go up → ask Q2 → press → let hands drop → press to reveal the gap line → deliver it → press to advance) rather than pressing ahead of what you're saying.
+**Mechanics note:** this slide click-to-reveals — it lands blank except the title, and each arrow-key press (or click) reveals the next beat: Question 1, then Question 2, then the "that gap is the whole talk" line. That's 3 presses before a 4th press moves you to slide 4. Time each press to your own pacing (ask Q1 → press → let hands go up → ask Q2 → press → let hands drop → press to reveal the gap line → deliver it → press to advance) rather than pressing ahead of what you're saying.
 
 ---
 
-## Slide 3 — "Agent value-add: workflow automation" (0:45–2:00)
+## Slide 4 — "Agent value-add: workflow automation" (1:00–2:15)
 
 *[data-eyebrow: the shift]*
 
@@ -53,7 +61,7 @@ Matches `concept.html` 1:1 — 14 sections, in the exact order/wording currently
 
 ---
 
-## Slide 4 — "95% isn't as safe as it sounds" (2:00–3:30)
+## Slide 5 — "95% isn't as safe as it sounds" (2:15–3:45)
 
 *[data-eyebrow: the math]*
 
@@ -65,11 +73,11 @@ Matches `concept.html` 1:1 — 14 sections, in the exact order/wording currently
 >
 > If failures become inevitable as agents get longer, then we need a way of detecting when those failures increase.
 
-**Delivery note:** let the chart sit on screen for a beat before narrating numbers — don't talk over the visual's first impression. This slide is the entire mathematical justification for the rest of the talk; keep the delivery matter-of-fact, let the curve do the emotional work. The last line is the bridge into slide 5 — without it, "so let's test it" (slide 5's opener) can land as a non sequitur; someone in the room is otherwise entitled to think "so why not just build shorter agents?"
+**Delivery note:** let the chart sit on screen for a beat before narrating numbers — don't talk over the visual's first impression. This slide is the entire mathematical justification for the rest of the talk; keep the delivery matter-of-fact, let the curve do the emotional work. The last line is the bridge into slide 6 — without it, "so let's test it" (slide 6's opener) can land as a non sequitur; someone in the room is otherwise entitled to think "so why not just build shorter agents?"
 
 ---
 
-## Slide 5 — "Your CI passes. Your agent still fails" (3:30–5:00)
+## Slide 6 — "Your CI passes. Your agent still fails" (3:45–5:15)
 
 *[data-eyebrow: the black box]*
 
@@ -83,7 +91,7 @@ Matches `concept.html` 1:1 — 14 sections, in the exact order/wording currently
 
 ---
 
-## Slide 6 — "An eval is just three things" (5:00–6:00)
+## Slide 7 — "An eval is just three things" (5:15–6:15)
 
 *[data-eyebrow: what an eval is]*
 
@@ -91,11 +99,11 @@ Matches `concept.html` 1:1 — 14 sections, in the exact order/wording currently
 >
 > The first two are the easy part, honestly. The hard part, the part we're going to spend the rest of this talk on, is the score. There's no exact answer to assert against here — so how do you judge "good" at the scale of thousands of conversations, without reading every single one yourself?
 
-**Delivery note:** keep this fast and definitional — it's a table-setting slide, not a payoff slide. Land hard on the word "score" since it's the pivot into slide 7.
+**Delivery note:** keep this fast and definitional — it's a table-setting slide, not a payoff slide. Land hard on the word "score" since it's the pivot into slide 8.
 
 ---
 
-## Slide 7 — "Grade a model with a model" (6:00–7:40)
+## Slide 8 — "Grade a model with a model" (6:15–7:55)
 
 *[data-eyebrow: the engine]*
 
@@ -115,7 +123,7 @@ Matches `concept.html` 1:1 — 14 sections, in the exact order/wording currently
 
 ---
 
-## Slide 8 — "Would your judge catch this?" (7:40–9:15)
+## Slide 9 — "Would your judge catch this?" (7:55–9:30)
 
 *[data-eyebrow: trust but verify]*
 
@@ -131,7 +139,7 @@ Matches `concept.html` 1:1 — 14 sections, in the exact order/wording currently
 
 ---
 
-## Slide 9 — "Read the data before you grade it" (9:15–10:45)
+## Slide 10 — "Read the data before you grade it" (9:30–11:00)
 
 *[data-eyebrow: error analysis]*
 
@@ -145,7 +153,7 @@ Matches `concept.html` 1:1 — 14 sections, in the exact order/wording currently
 
 ---
 
-## Slide 10 — "From notes to named failure modes" (10:45–12:00)
+## Slide 11 — "From notes to named failure modes" (11:00–12:15)
 
 *[data-eyebrow: axial coding]*
 
@@ -159,7 +167,7 @@ Matches `concept.html` 1:1 — 14 sections, in the exact order/wording currently
 
 ---
 
-## Slide 11 — "Now wire that eval into CI" (12:00–13:15)
+## Slide 12 — "Now wire that eval into CI" (12:15–13:30)
 
 *[data-eyebrow: the gate]*
 
@@ -171,11 +179,11 @@ Matches `concept.html` 1:1 — 14 sections, in the exact order/wording currently
 >
 > One honest caveat, and hold onto it: a comparison gate like this only stops things from getting *worse*. It quietly assumes today's baseline was acceptable to begin with. What happens when that assumption is wrong is exactly where we're headed.
 
-**Delivery note:** say the phrase "is it worse than production today" slowly and distinctly — it's the thesis sentence of the entire CI-gate section, and it's the direct answer to the "why not an absolute threshold" question if anyone asks in Q&A. Say the package name clearly too; people will want to write it down. The caveat line is deliberate foreshadowing for slide 13 — plant it lightly here so slide 13 reads as payoff, not surprise.
+**Delivery note:** say the phrase "is it worse than production today" slowly and distinctly — it's the thesis sentence of the entire CI-gate section, and it's the direct answer to the "why not an absolute threshold" question if anyone asks in Q&A. Say the package name clearly too; people will want to write it down. The caveat line is deliberate foreshadowing for slide 14; plant it lightly here so slide 14 reads as payoff, not surprise.
 
 ---
 
-## Slide 12 — "What should fail CI?" (13:15–14:15)
+## Slide 13 — "What should fail CI?" (13:30–14:30)
 
 *[data-eyebrow: reading the verdict]*
 
@@ -189,7 +197,7 @@ Matches `concept.html` 1:1 — 14 sections, in the exact order/wording currently
 
 ---
 
-## Slide 13 — "A green gate is not safety" (14:15–16:00)
+## Slide 14 — "A green gate is not safety" (14:30–16:15)
 
 *[data-eyebrow: the catch]*
 
@@ -205,9 +213,27 @@ Matches `concept.html` 1:1 — 14 sections, in the exact order/wording currently
 >
 > So — let's stop talking about it in the abstract. Let's go watch it happen.
 
-**Delivery note:** slow down here — this is the credibility beat of the entire talk *and* the literal hinge into the live demo. Walk the loop with your hand as you narrate it (real conversations → error analysis → build evals → CI gate → ships/blocked → production monitoring → new incidents → back to error analysis) so the audience sees the cycle, not just hears it. The "relative vs. absolute gates" paragraph is a genuine addition, not filler — it's the direct answer if anyone in Q&A pushes back with "so there's just no way to avoid shipping bugs?" Don't rush the final line — let "let's go watch it happen" be the exact moment you switch to the terminal.
+**Delivery note:** slow down here — this is the credibility beat of the entire talk *and* the literal hinge into the live demo. Walk the loop with your hand as you narrate it (real conversations → error analysis → build evals → CI gate → ships/blocked → production monitoring → new incidents → back to error analysis) so the audience sees the cycle, not just hears it. The "relative vs. absolute gates" paragraph is a genuine addition, not filler — it's the direct answer if anyone in Q&A pushes back with "so there's just no way to avoid shipping bugs?" Don't rush the final line — let "let's go watch it happen" be the exact moment you switch away from `concept.html`.
 
 **Accuracy note:** the forward-reference to the demo is deliberately soft ("you'll watch someone delete exactly that kind of instruction") rather than claiming the demo shows a dedicated absolute/safety gate catching it — in the actual demo, that specific guardrail's removal gets caught by the *relative* quality gate (task adherence drops, p < 0.001), not a separate hard check. Don't let this line drift into implying otherwise on stage.
+
+**Mechanics note:** unlike the old deck, there's no on-screen "bridge" slide after this one anymore — slide 15 (Thank You) sits directly behind it in the file, but you don't press forward into it here. Switch away from `concept.html` to the live/terminal demo (`demo.md` / `present.sh`) the moment you say "let's go watch it happen." Come back to `concept.html` and jump straight to slide 15 (type `15` + Enter, or load the `#15` URL) once the live demo is done, rather than clicking forward from 14 — pressing forward from 14 would land you on the Thank You slide before the demo has even happened.
+
+---
+
+## Slide 15 — Thank You / close (post-demo, untimed)
+
+*[data-eyebrow: thank you]*
+
+> That's the loop — error analysis, evals, a CI gate, production monitoring, and back again. Thank you all for your time.
+>
+> If you want to talk Foundry specifics, push back on anything I said, or just want the deep links — I'm on LinkedIn and I write some of this up on dev.to, both are up on screen. And a thank you to PwC for supporting the trip out here.
+>
+> Happy to take questions now, or find me after.
+
+**Delivery note:** this is deliberately short — three or four sentences, not a second recap of the whole talk. The loop-callback opener ties back to slide 14 without re-explaining it. Let the room see the LinkedIn/dev.to links long enough to actually read them before you open the floor.
+
+**Mechanics note:** this slide isn't part of the timed pre-demo budget above — it's delivered after the live demo wraps, reached via the `#15` jump described in slide 14's mechanics note, not by pressing forward through slides 1–14 in sequence.
 
 ---
 
@@ -216,27 +242,30 @@ Matches `concept.html` 1:1 — 14 sections, in the exact order/wording currently
 | Slide | Cumulative time | Section |
 |---|---|---|
 | 1 | 0:20 | title card |
-| 2 | 1:05 | opening |
-| 3 | 2:20 | the shift |
-| 4 | 3:50 | the math |
-| 5 | 5:20 | the black box |
-| 6 | 6:20 | what an eval is |
-| 7 | 8:20 | the engine |
-| 8 | 9:35 | trust but verify |
-| 9 | 11:05 | error analysis |
-| 10 | 12:20 | axial coding |
-| 11 | 13:35 | the gate |
-| 12 | 14:35 | reading the verdict |
-| 13 | 16:20 | the catch → demo |
+| 2 | 0:35 | speaker |
+| 3 | 1:20 | opening |
+| 4 | 2:35 | the shift |
+| 5 | 4:05 | the math |
+| 6 | 5:35 | the black box |
+| 7 | 6:35 | what an eval is |
+| 8 | 8:35 | the engine |
+| 9 | 9:50 | trust but verify |
+| 10 | 11:20 | error analysis |
+| 11 | 12:35 | axial coding |
+| 12 | 13:50 | the gate |
+| 13 | 14:50 | reading the verdict |
+| 14 | 16:35 | the catch → demo (manual switch) |
+| 15 | — | thank you (post-demo, untimed) |
 
-**If running long:** the safest cuts, in order, are (1) the two new slide 7 asides (binary-vs-continuous nuance, "four to seven") and the slide 8 "couldn't you ground it" aside — cut newest content first, they were added deliberately at the expense of demo time and are the least load-bearing if the room is tight, (2) shorten the worked example on slide 9 to just the punchline note, (3) drop the "you'll see these three again" callback on slide 10, (4) as a last resort, the "relative vs. absolute gates" paragraph on slide 13 can compress to one sentence — but try not to, it's the direct answer if anyone pushes back with "so there's no way to avoid shipping bugs?" Do **not** cut the title/intro or the rest of slide 13 — the title and intro are a fixed ~1-minute cost, and slide 13 is the transition into the demo and needs to land at full weight.
+**If running long:** the safest cuts, in order, are (1) the two slide 8 asides (binary-vs-continuous nuance, "four to seven") and the slide 9 "couldn't you ground it" aside — cut newest content first, they were added deliberately at the expense of demo time and are the least load-bearing if the room is tight, (2) shorten the worked example on slide 10 to just the punchline note, (3) drop the "you'll see these three again" callback on slide 11, (4) as a last resort, the "relative vs. absolute gates" paragraph on slide 14 can compress to one sentence — but try not to, it's the direct answer if anyone pushes back with "so there's no way to avoid shipping bugs?" Do **not** cut the title/intro or the rest of slide 14 — the title and intro are a fixed ~1-minute cost, and slide 14 is the transition into the demo and needs to land at full weight. Slide 2 (speaker) and slide 15 (thank you) aren't in this cut list — they're already minimal, and slide 15 doesn't compete with the pre-demo budget anyway.
 
-Note on the 16:20 total above: this table is a deliberately pessimistic pacing target that bakes in every pause (hand-raises, chart-reveal beats). The word-count-verified estimate for the spoken lines alone (intro + all 12 slides) is ~2,355 words, landing at 15.7–18.1 minutes depending on pace. **This deck no longer fits in a 15-minute pre-demo budget** — that's an intentional trade made on 2026-07-26 to add real content (the eval-count reassurance, binary-vs-continuous nuance, and grounded-judge caveat), with the time explicitly taken from the demo rather than found here. **Do a timed run-through before the talk**, and confirm the trimmed demo (`runbook-portal.md`) still fits in whatever's left of the 20-minute slot after this lands. If it runs long, the cut list above is the fallback, in priority order — newest content first.
+Note on the 16:35 total above: this table is a deliberately pessimistic pacing target that bakes in every pause (hand-raises, chart-reveal beats, the silent speaker-slide beat). The word-count-verified estimate for the spoken lines alone (intro through slide 14) is ~2,355 words, landing at 15.7–18.1 minutes depending on pace — slide 2 adds no material word count since it's designed to ride on slide 1's momentum rather than add its own paragraph. **This deck no longer fits in a 15-minute pre-demo budget** — that's an intentional trade made on 2026-07-26 to add real content (the eval-count reassurance, binary-vs-continuous nuance, and grounded-judge caveat), with the time explicitly taken from the demo rather than found here. **Do a timed run-through before the talk**, and confirm the trimmed demo (`runbook-portal.md`) still fits in whatever's left of the 20-minute slot after this lands. If it runs long, the cut list above is the fallback, in priority order — newest content first.
 
 ## Flow check against slide content (verified against `concept.html`)
 
 - Every slide's script only references facts, numbers, and phrases that actually appear on that slide — no forward-spoiling of demo numbers (the real `8/30 vs 23/30`, `p < 0.001`, or the n=12 flip-flop example from `demo.md` are deliberately never mentioned here; those live in the demo itself and the appendix slides).
-- Slide 10's "you'll see these three again" is intentional foreshadowing — task adherence and tool grounding do reappear as the literal CI-gated criteria on slide 12, so the callback is truthful, not a promise the deck doesn't keep.
-- Slide 12's "no domain context" framing matches the deck's amber "production monitoring" tag exactly — the script doesn't invent a justification the slide doesn't already visually support.
-- Slide 13's narration walks the SVG loop in the same left-to-right, top-to-bottom order the arrows actually render in, so pointing gestures will track what's on screen.
-- Word count of the spoken lines is ~2,355 words, landing at 15.7–18.1 minutes at a natural conversational pace (130–150 wpm) — verified by counting (`grep '^> '` + `wc -w` across the whole file), not estimated. This is a real increase from the prior ~2,040-word/15-min-ceiling version: slide 7 gained the binary-vs-continuous nuance and the "four to seven evals" reassurance, and slide 8 gained the "grounded judges still err" aside — all three added 2026-07-26, deliberately, with the cost coming out of demo time rather than being absorbed here. A live timed run-through is worth doing before the talk, with the cut list above ready if needed.
+- Slide 11's "you'll see these three again" is intentional foreshadowing — task adherence and tool grounding do reappear as the literal CI-gated criteria on slide 13, so the callback is truthful, not a promise the deck doesn't keep.
+- Slide 13's "no domain context" framing matches the deck's amber "production monitoring" tag exactly — the script doesn't invent a justification the slide doesn't already visually support.
+- Slide 14's narration walks the SVG loop in the same left-to-right, top-to-bottom order the arrows actually render in, so pointing gestures will track what's on screen.
+- Slide 15's narration only references what's actually on the Thank You slide (LinkedIn, dev.to, PwC sponsor credit) — no fabricated contact details or claims.
+- Word count of the spoken lines is ~2,355 words across slides 1–14 (slide 2 and slide 15 excluded — both are deliberately near-wordless or post-demo), landing at 15.7–18.1 minutes at a natural conversational pace (130–150 wpm) — verified by counting (`grep '^> '` + `wc -w` across the whole file), not estimated. A live timed run-through is worth doing before the talk, with the cut list above ready if needed.
