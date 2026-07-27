@@ -17,3 +17,6 @@ excalidraw.log
 # regenerable slide exports - not checked in for now (large binaries)
 talk/slides/narration/
 talk/slides/concept-slides.pdf
+
+# abandoned pptx-template experiment - not part of the actual deck, don't push
+talk/slides/pptx-template/
