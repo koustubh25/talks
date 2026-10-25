@@ -1,0 +1,7 @@
+Usage: copilot app
+
+Open the GitHub Copilot app in the current directory.
+
+Options:
+  -h, --help
+          Print help (see a summary with '-h')

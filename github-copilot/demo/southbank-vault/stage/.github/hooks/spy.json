@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart":        [{ "type": "command", "bash": "python3 .github/hooks/spy.py sessionStart", "timeoutSec": 5 }],
+    "userPromptSubmitted": [{ "type": "command", "bash": "python3 .github/hooks/spy.py userPromptSubmitted", "timeoutSec": 5 }],
+    "preToolUse":          [{ "type": "command", "bash": "python3 .github/hooks/spy.py preToolUse", "timeoutSec": 5 }],
+    "postToolUse":         [{ "type": "command", "bash": "python3 .github/hooks/spy.py postToolUse", "timeoutSec": 5 }],
+    "postToolUseFailure":  [{ "type": "command", "bash": "python3 .github/hooks/spy.py postToolUseFailure", "timeoutSec": 5 }],
+    "permissionRequest":   [{ "type": "command", "bash": "python3 .github/hooks/spy.py permissionRequest", "timeoutSec": 5 }],
+    "agentStop":           [{ "type": "command", "bash": "python3 .github/hooks/spy.py agentStop", "timeoutSec": 5 }],
+    "subagentStart":       [{ "type": "command", "bash": "python3 .github/hooks/spy.py subagentStart", "timeoutSec": 5 }],
+    "subagentStop":        [{ "type": "command", "bash": "python3 .github/hooks/spy.py subagentStop", "timeoutSec": 5 }],
+    "errorOccurred":       [{ "type": "command", "bash": "python3 .github/hooks/spy.py errorOccurred", "timeoutSec": 5 }],
+    "notification":        [{ "type": "command", "bash": "python3 .github/hooks/spy.py notification", "timeoutSec": 5 }]
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "hooks": {
+    "preToolUse": [
+      { "type": "command", "bash": "hooks/bouncer.sh", "env": { "GUARD_GUARDRAILS": "1" }, "timeoutSec": 10 }
+    ]
+  }
+}

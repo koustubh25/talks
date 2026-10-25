@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "hooks": {
+    "preToolUse": [
+      { "type": "command", "bash": "hooks/bouncer.sh", "timeoutSec": 10 }
+    ]
+  }
+}

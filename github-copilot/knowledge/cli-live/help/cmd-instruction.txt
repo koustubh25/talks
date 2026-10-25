@@ -1,0 +1,13 @@
+Usage: copilot instruction <COMMAND>
+
+Inspect the instruction sources a session would load.
+
+Instructions come from your repository, the working directory, your
+personal configuration, and installed plugins.
+
+Commands:
+  list  List discovered instruction sources
+
+Options:
+  -h, --help
+          Print help (see a summary with '-h')

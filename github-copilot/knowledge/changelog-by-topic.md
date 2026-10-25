@@ -1,0 +1,1784 @@
+# Changelog by topic
+
+Every bullet from `copilot-cli/changelog.md` (188 releases, newest first, up to 1.0.103 on 2026-10-22), grouped by keyword.
+A bullet can appear under more than one topic. Keyword matching is crude: always read the bullet before quoting it.
+
+Topics: [Sandbox](#sandbox) · [Permissions, approvals, allow/deny](#permissions-approvals-allowdeny) · [Assisted permissions / auto-approval judge](#assisted-permissions--auto-approval-judge) · [Hooks](#hooks) · [Modes: Plan, Autopilot, Interactive](#modes-plan-autopilot-interactive) · [Custom instructions (AGENTS.md, copilot-instructions)](#custom-instructions-agentsmd-copilot-instructions) · [Skills](#skills) · [Custom agents and subagents](#custom-agents-and-subagents) · [MCP](#mcp) · [Plugins and marketplaces](#plugins-and-marketplaces) · [Enterprise, organization and managed policy](#enterprise-organization-and-managed-policy) · [Content exclusion](#content-exclusion) · [Worktrees and parallel sessions](#worktrees-and-parallel-sessions) · [Undo, rewind, checkpoints](#undo-rewind-checkpoints) · [Pull requests, review, diff](#pull-requests-review-diff) · [Delegation and cloud agent](#delegation-and-cloud-agent) · [Dynamic workflows](#dynamic-workflows) · [Secrets and credentials](#secrets-and-credentials)
+
+## Sandbox
+
+127 entries.
+
+- `1.0.103 (2026-10-22)` ACP sessions now honor saved sandbox settings and --sandbox/--no-sandbox flags, including on resume.
+- `1.0.103 (2026-10-22)` Allow dnx commands to use existing .NET and NuGet sandbox grants when developer-tool access is enabled
+- `1.0.103 (2026-10-22)` Windows dev-tool shims like npm.cmd now receive the same sandbox grants as npm.
+- `1.0.102 (2026-10-21)` Long-running sandboxed commands continue running reliably past 10 seconds
+- `1.0.102 (2026-10-21)` Sandboxed network traffic now honors NO_PROXY and ALL_PROXY when inheriting host proxy settings
+- `1.0.101 (2026-10-20)` macOS sandboxed commands can connect directly to localhost TCP services when local access is enabled and no host filters apply.
+- `1.0.101 (2026-10-20)` Starting a session with sandboxed MCP servers now avoids unnecessary restarts and responds faster.
+- `1.0.100 (2026-10-19)` Sandbox host-rule traffic now honors HTTPS_PROXY and HTTP_PROXY when no sandbox proxy is configured
+- `1.0.100 (2026-10-19)` Sandboxed shell commands now explain credential-proxy certificate trust failures and can offer an approved rerun outside the sandbox.
+- `1.0.100 (2026-10-19)` Sandboxed commands on Linux start more reliably without intermittent loopback setup failures
+- `1.0.100 (2026-10-19)` Sandboxed commands can write package and build caches when developer tool access is enabled.
+- `1.0.100 (2026-10-19)` Prompt to update the sandbox proxy certificate authority when masked hosts change
+- `1.0.100 (2026-10-19)` Sandboxed git on github.com can use your configured GITHUB_TOKEN from credentials.envVars
+- `1.0.100 (2026-10-19)` /sandbox can keep sandboxing enabled for the current session without enabling it globally
+- `1.0.100 (2026-10-19)` Sandbox allows local network access by default so commands can reach localhost and private-network services.
+- `1.0.96 (2026-10-12)` Interactive sandbox settings suggest possible environment secrets and let you add masking hosts before saving.
+- `1.0.96 (2026-10-12)` /add-dir grants sandbox access to added directories for the current session
+- `1.0.95 (2026-10-09)` copilot config supports sandbox credential injectHosts keys, with key completion in Bash, Zsh, and Fish.
+- `1.0.93 (2026-10-07)` Sandbox local-network allowlists now include localhost and loopback hosts.
+- `1.0.93 (2026-10-07)` Warmed language servers stay running across LSP requests when sandboxing is disabled
+- `1.0.93 (2026-10-07)` Command sandboxing is available to all users via /sandbox and --sandbox.
+- `1.0.92 (2026-10-05)` Sandboxed shells now withhold ambient GITHUB_TOKEN unless explicitly configured.
+- `1.0.92 (2026-10-05)` `copilot sandbox ca` commands now respect `--config-dir` (including with `-C`).
+- `1.0.92 (2026-10-05)` Search commands avoid sandbox bypass prompts when access is already granted
+- `1.0.92 (2026-10-05)` Sandboxed uv commands can write to the uv cache by default when dev tool access is enabled
+- `1.0.92 (2026-10-05)` pnpm commands run in sandboxed sessions without lock-file permission errors
+- `1.0.92 (2026-10-05)` Sandboxed shell commands offer a network bypass prompt whenever the proxy blocks a destination
+- `1.0.92 (2026-10-05)` Sandboxed scripts that run Git now authenticate with masked credentials and SSH remote rewrites
+- `1.0.92 (2026-10-05)` Sandboxed commands on Windows write temporary files to the granted temp directory, so tools that rename a temp file into place work
+- `1.0.92 (2026-10-05)` Hide the automatic sandbox CA setup prompt on Windows accounts that cannot self-elevate
+- `1.0.91 (2026-10-01)` Add `copilot sandbox ca` commands to check, create, trust, rotate, and remove proxy CA trust, including unattended Windows setup; `/sandbox ca install` becomes `create` and `trust`
+- `1.0.91 (2026-10-01)` Sandboxed commands run on Windows versions without filesystem enumeration support, with a warning that PowerShell's current location may be wrong
+- `1.0.91 (2026-10-01)` Offer sandbox network bypass for Node/npm EACCES socket denials on Windows
+- `1.0.89 (2026-09-28)` Agent shell commands in sandbox can access session files and logs
+- `1.0.89 (2026-09-28)` Run wrapped gh and git commands, such as `timeout 60 gh ...`, correctly in sandboxed sessions
+- `1.0.89 (2026-09-28)` Sandboxed commands on supported Windows versions can access localhost when Local network access is on
+- `1.0.88 (2026-09-22)` Sandboxed network denials from proxy tunnel failures now show bypass guidance
+- `1.0.87 (2026-09-21)` Sandbox proxies work on Windows, and a proxy with a username and password works on every platform
+- `1.0.86 (2026-09-17)` /sandbox policy now reports local-network access using your configured setting
+- `1.0.85 (2026-09-16)` Add /sandbox Network host allow/deny rules without replacing your configured upstream proxy
+- `1.0.85 (2026-09-16)` Managed sandbox sessions can now be disabled for the rest of the session from an approved bypass prompt.
+- `1.0.85 (2026-09-16)` Fixed the one-command sandbox bypass on Windows: when the sandbox container refuses a policy-blocked write for want of a privilege, approving the bypass now runs the command instead of stopping after the permissive retry, so it no longer takes disabling the sandbox for the whole session
+- `1.0.85 (2026-09-16)` copilot --help describes the --no-\* options again, and --no-auto-update says it runs the version bundled in the binary. --no-auto-login and --no-sandbox stay supported but remain hidden from help, as they were before the clap port
+- `1.0.85 (2026-09-16)` Windows sandbox denials of loopback and local network access prompt to re-run the command outside the sandbox
+- `1.0.85 (2026-09-16)` Approved sandbox retries are labeled sandbox relaxed while network policy stays enforced, or sandbox bypassed when fully unsandboxed; failed bypasses explain that host permissions still apply
+- `1.0.85 (2026-09-16)` An enterprise-managed sandbox policy delivered by MDM or a managed settings file no longer discards sandbox.allowBypass, so bypass prompts and /sandbox disable work as the policy intends
+- `1.0.85 (2026-09-16)` The managed sandbox startup notice no longer says sandboxing can't be turned off when your organization's policy allows a session opt-out; it names /sandbox disable instead
+- `1.0.85 (2026-09-16)` A failed command whose EPERM or EACCES diagnostic names a sandbox-blocked path now offers to run outside the sandbox, even when the command line never named that path
+- `1.0.85 (2026-09-16)` A write blocked by a read-only sandbox path, and a Node or Go network failure blocked by the sandbox, are now recognized as sandbox denials instead of surfacing as raw errors
+- `1.0.85 (2026-09-16)` Show when sandboxing is only enabled for the current session in /sandbox status and settings.
+- `1.0.85 (2026-09-16)` A PowerShell write the sandbox blocks offers to run the command outside the sandbox
+- `1.0.85 (2026-09-16)` When you have more than one GitHub account in your credential store, a sandboxed gh command now acts as the account gh is logged in as instead of an arbitrary one.
+- `1.0.85 (2026-09-16)` Sandboxed runs now use relocated developer-tool caches from env vars and tool config files
+- `1.0.85 (2026-09-16)` On Windows, a sandboxed command that runs git without naming it — a hook, a build tool, or an npm install that clones over HTTPS — no longer dies inside the credential helper's MSYS2 shell.
+- `1.0.85 (2026-09-16)` /sandbox disable turns the sandbox off for the current session when your organization's policy allows bypass
+- `1.0.85 (2026-09-16)` Show /sandbox filesystem paths as absolute paths; typing ~/path still expands to your home directory
+- `1.0.85 (2026-09-16)` Move the /sandbox Filesystem paths into their own list, opened from a Paths row
+- `1.0.85 (2026-09-16)` Improve /sandbox guidance and show /sandbox policy in command help
+- `1.0.85 (2026-09-16)` On supported Windows sandbox policies, interactive shell commands now record blocked accesses. One approved escalation retries with file and process restrictions recording instead of blocking while network policy remains active, then falls back to the disclosed full bypass only if still blocked
+- `1.0.83 (2026-09-04)` Sandboxed `gh` commands now authenticate as the account configured for the repository instead of the Copilot CLI login
+- `1.0.83 (2026-09-04)` Sandboxed file tools now read the same developer-tool paths as sandboxed shell commands, including token-bearing registry config such as ~/.npmrc; set sandbox.allowDevToolAccess to false to turn these grants off
+- `1.0.83 (2026-09-04)` On macOS and Linux, sandboxed commands can no longer reach services running on your machine. On macOS this also blocks a server the command itself starts on 127.0.0.1, so test suites that bind a local port will fail; turn on Allow local network in /sandbox to reach localhost again.
+- `1.0.83 (2026-09-04)` Linux sandboxing now needs slirp4netns, nsenter, iptables, ip6tables, iptables-restore and ip6tables-restore on PATH. Install them if sandboxed commands start failing to launch.
+- `1.0.83 (2026-09-04)` Linux sandboxes now restrict network egress to the configured proxy; proxy mode requires slirp4netns, util-linux 2.35+, iptables, and /dev/net/tun access
+- `1.0.83 (2026-09-04)` Improve sandboxed Bazel and Bazelisk runs by granting required cache and output paths; macOS requires a future Bazel release or additional sandbox capabilities
+- `1.0.83 (2026-09-04)` Improve /sandbox policy by grouping path grants by source and showing detected developer tools
+- `1.0.81 (2026-08-27)` Add Ctrl+E in /sandbox to open settings.json in your editor
+- `1.0.81 (2026-08-27)` Sandboxed builds on Windows create their scratch caches on first run, so cargo, go, Gradle, and ccache work without a warm cache
+- `1.0.81 (2026-08-27)` `x` is now the delete key everywhere: /sandbox config, /settings, /mcp, the sessions dialog and the diff comments summary move off `d`
+- `1.0.81 (2026-08-27)` When --no-sandbox is ignored because enterprise policy could not be determined, the notice now says so, and no longer points at an administrator, instead of claiming a policy requires the sandbox. The unsupported-host warning says the same rather than contradicting it.
+- `1.0.81 (2026-08-27)` A session sandboxed by an enterprise managed policy now says so on the timeline, including when the policy arrives mid-session, instead of leaving the footer's sandbox chip as the only hint that commands are being restricted
+- `1.0.79 (2026-08-10)` Allow enterprise-managed sandbox policy to enforce a proxy URL while credentials remain user-controlled
+- `1.0.79 (2026-08-10)` Add /sandbox policy to show effective sandbox paths, denials, and network access
+- `1.0.79 (2026-08-10)` A tool directory inside your workspace that is on PATH (.venv/bin, node_modules/.bin, an in-repo GOPATH) no longer turns that part of the workspace read-only in the sandbox
+- `1.0.79 (2026-08-10)` On macOS, a sandbox read-only path nested inside a writable one now stays read-only instead of inheriting the write permission from the wider path
+- `1.0.79 (2026-08-10)` On macOS, sandboxed commands can use UNIX-domain sockets again, so tools that talk over a local IPC pipe (tsx, vite, esbuild, jest workers) no longer fail with `listen EPERM`
+- `1.0.79 (2026-08-10)` Sandboxed commands work when the working directory lives on a Windows Dev Drive
+- `1.0.79 (2026-08-10)` Sandboxed git now authenticates to Azure DevOps, GitHub Enterprise Server, GitLab, and other non-GitHub remotes you have stored HTTPS credentials for
+- `1.0.79 (2026-08-10)` Sandboxed wrapper builds (make and friends) get the dev tool caches their recipes need, based on the build manifests in the working directory
+- `1.0.79 (2026-08-10)` Sandboxed commands can reach the network again on recent Windows builds, where every outbound connection was blocked even with outbound access enabled and no proxy configured
+- `1.0.79 (2026-08-10)` A sandbox that cannot start an MCP server now fails in seconds instead of stalling the session, and sandbox startup failures for both MCP and language servers now say the sandbox was at fault and how to fix or opt out of it
+- `1.0.79 (2026-08-10)` On Linux, searches and most shell commands blocked by the sandbox now offer to re-run outside it
+- `1.0.79 (2026-08-10)` The /sandbox configuration dialog shows where sandbox settings are stored in settings.json
+- `1.0.79 (2026-08-10)` The /sandbox configuration dialog groups the git, gh, and (on macOS) keychain settings under a new Auth tab, and the settings keys moved from `sandbox.gitAuth`/`sandbox.ghAuth` to `sandbox.auth.git`/`sandbox.auth.gh`. There is no migration: the old keys are ignored in settings files, and SDK requests that still send them are rejected as invalid rather than ignored
+- `1.0.79 (2026-08-10)` BREAKING: the sandbox setting `allowDevToolCaches` is renamed `allowDevToolAccess`, since it grants dev-tool config and registries too, not just caches. The old key is no longer read and is ignored silently, so an existing `false` opt-out reverts to the default (on). Rename it in settings.json and in any managed/MDM policy.
+- `1.0.79 (2026-08-10)` /sandbox tags inactive settings as (disabled) and explains why they are locked, and documents dev tool caches in copilot help sandbox
+- `1.0.78 (2026-08-03)` Disabling the sandbox from a bypass prompt applies only to that session; new sessions start sandboxed again
+- `1.0.78 (2026-08-03)` When the sandbox blocks a shell command and bypass is allowed, CLI offers to re-run it outside the sandbox without asking the model
+- `1.0.78 (2026-08-03)` New sandbox setting `allowDevToolCaches` (on by default): grants sandboxed builds access to toolchain caches, registries, and installs so builds work without extra setup. Set false to opt out.
+- `1.0.77 (2026-07-30)` Unconditional autopilot approval now disables sandbox for the current session when bypass is allowed
+- `1.0.77 (2026-07-30)` Support enforcing managed sandbox policy via macOS and Windows native MDM settings
+- `1.0.76 (2026-07-29)` Sandbox denied paths are enforced for relative and symlinked entries on macOS and Linux (Windows cannot deny per path)
+- `1.0.76 (2026-07-29)` URL permission prompts now keep their sandbox-bypass warning and the model's reason when a host integration rebuilds the prompt, so an elevated fetch is no longer shown as an ordinary one
+- `1.0.76 (2026-07-29)` Enterprise administrators can enforce a restrictive sandbox floor: managed settings tighten (but never loosen) the user's sandbox policy, and the `/sandbox` dialog surfaces the org-configured managed values with locked fields and managed filesystem paths so admins can confirm what is enforced.
+- `1.0.76 (2026-07-29)` Sandboxed searches now offer an immediate bypass prompt and avoid duplicate bypass prompts.
+- `1.0.76 (2026-07-29)` web_fetch routes through the configured sandbox proxy when outbound is allowed, and denies egress when network.allowOutbound is false (a proxy no longer overrides the user's outbound policy); when a proxied fetch fails it warns that curl/wget share the same proxy, and suggests requestSandboxBypass only when the sandbox proxy itself is unreachable
+- `1.0.74 (2026-07-23)` Show a first-run splash to opt into the default sandbox
+- `1.0.72 (2026-07-20)` Add opt-in git and gh authentication inside the OS sandbox
+- `1.0.72 (2026-07-20)` Sandbox macOS keychain access now defaults off for tighter isolation; re-enable it in /sandbox if a command needs it
+- `1.0.72 (2026-07-20)` Toggling /sandbox restarts only local MCP servers and leaves remote servers connected
+- `1.0.71 (2026-07-16)` Enforce the sandbox filesystem policy on LSP file reads and rename edits
+- `1.0.71 (2026-07-16)` --sandbox and --no-sandbox now show their "ignored" warning during interactive startup when the sandbox feature is unavailable (previously it was only visible in non-interactive mode)
+- `1.0.70 (2026-07-09)` Add --sandbox and --no-sandbox flags to turn the OS-level shell sandbox on or off for the current session only, without changing your saved sandbox setting (useful with -p)
+- `1.0.70 (2026-07-09)` Dismiss other pending read and fetch sandbox-bypass prompts after you disable the sandbox
+- `1.0.70 (2026-07-09)` Mark locally-spawned MCP servers that run inside the sandbox in `/mcp list` (e.g. `connected (sandboxed)`)
+- `1.0.69 (2026-07-07)` Label built-in file edits with a (sandbox policy) badge instead of (sandboxed), since they follow the sandbox policy on a best-effort basis rather than running in the OS-level sandbox
+- `1.0.69 (2026-07-07)` Let built-in file edits bypass the sandbox when you approve it
+- `1.0.69 (2026-07-07)` web_fetch now follows the active sandbox network policy (denying outbound or local targets the policy blocks) and, when the host opts in via sandbox.allowBypass, lets you approve a one-time bypass from the fetch prompt
+- `1.0.69 (2026-07-07)` Show descriptions for sandbox userPolicy settings in /settings
+- `1.0.69 (2026-07-07)` Improve /sandbox add-path suggestions so they open only when you ask for them
+- `1.0.69 (2026-07-07)` Remove inert sandbox host lists and the Clear policy on exit toggle
+- `1.0.69 (2026-07-07)` Add file and folder completion to /sandbox path entries
+- `1.0.68 (2026-07-01)` Fold symlinked sandbox paths into a single row
+- `1.0.68 (2026-07-01)` Keep file edits and patches within the sandbox filesystem policy
+- `1.0.68 (2026-07-01)` Let git commands work from repo subdirectories in the sandbox
+- `1.0.68 (2026-07-01)` Reject sandbox path edits that conflict with symlinks in other lists
+- `1.0.67 (2026-06-30)` Disabling the sandbox for the rest of the session now takes effect immediately, so shell and search commands stop re-prompting to bypass it mid-turn
+- `1.0.66 (2026-06-30)` Show a (sandboxed) badge on compact Search timeline entries
+- `1.0.66 (2026-06-30)` Git commands work in sandboxed linked worktrees
+- `1.0.66 (2026-06-30)` Let grep and glob retry blocked searches after sandbox approval
+- `1.0.66 (2026-06-30)` Stop showing broken-pipe errors when a sandboxed MCP server exits mid-request
+- `1.0.66 (2026-06-30)` Show sandbox-bypass warnings and label bypassed commands
+- `1.0.64 (2026-06-23)` Add an option to bypass the sandbox for shell commands
+- `1.0.64 (2026-06-23)` Wait for the remote sandbox to start before opening the cloud session
+- `1.0.62 (2026-06-13)` Sandbox tool loads correctly when mxc-sdk is provided by the host environment
+- `1.0.60 (2026-06-05)` Linux sandbox no longer fails when allowedHosts or blockedHosts are configured
+- `1.0.57 (2026-06-01)` Canceling a running shell command (Ctrl+C on a !command, or aborting an agent command — including in sandboxed and background-promoted shells) now terminates the whole process tree instead of leaving orphaned processes running
+
+## Permissions, approvals, allow/deny
+
+159 entries.
+
+- `1.0.102 (2026-10-21)` Subagents honor custom and MCP tool approvals, avoiding duplicate permission prompts and allowing inherited workflows to run
+- `1.0.101 (2026-10-20)` Add assistedApprovalInstructions setting to guide Assisted Permissions confirmation decisions
+- `1.0.101 (2026-10-20)` Shell commands that create and then enter a directory now request path approval instead of being denied early.
+- `1.0.101 (2026-10-20)` Extension capability requests use explicit approval instead of the Assisted judge
+- `1.0.101 (2026-10-20)` Permission approval prompts explain escalation causes and show a request-specific diagnosis command
+- `1.0.100 (2026-10-19)` Add --trust-folder for one-off prompt-mode sessions started with -p or piped stdin
+- `1.0.100 (2026-10-19)` Sandboxed shell commands now explain credential-proxy certificate trust failures and can offer an approved rerun outside the sandbox.
+- `1.0.100 (2026-10-19)` Enterprise-managed ask permissions in Assisted mode now allow safe actions without unnecessary confirmation prompts.
+- `1.0.100 (2026-10-19)` Assisted permissions send nested PowerShell and bash -c commands that only expand plain-data environment variables, single-quoted PowerShell, and PowerShell variable and alias statements to the permission judge instead of requiring unnecessary manual approval
+- `1.0.100 (2026-10-19)` Trusted repository plugins install and update automatically before chat runs.
+- `1.0.98 (2026-10-14)` Resuming a session now respects abandoned pending-permission work and continues only active permission requests.
+- `1.0.97 (2026-10-13)` Autopilot denies a preToolUse hook's "ask" decision instead of stopping on a permission dialog nobody is watching
+- `1.0.97 (2026-10-13)` Keep saved settings such as dismissed prompts, trusted folders and sign-ins when one entry in config.json is invalid, instead of resetting them on every launch
+- `1.0.97 (2026-10-13)` In /config, managed permission rules are read-only and hidden unless set by your organization.
+- `1.0.97 (2026-10-13)` Unavailable permission recovery attempts are now tracked per request, so unrelated calls no longer consume each other's retry budget.
+- `1.0.96 (2026-10-12)` Keep /allow-all available during startup while enterprise policy is still resolving
+- `1.0.96 (2026-10-12)` Timeline now shows whether you, Assisted Permissions, policy, or unattended fallback made each permission decision.
+- `1.0.94 (2026-10-08)` Assisted permissions send visible shell code to the permission judge instead of requiring unnecessary manual approval
+- `1.0.94 (2026-10-08)` Show a policy warning when startup bypass-permission flags are suppressed by managed settings
+- `1.0.94 (2026-10-08)` Managed policy can disable Assisted Permissions and keep sessions in Manual Approval mode.
+- `1.0.93 (2026-10-07)` Add enterprise permissions.limitTo to enforce managed domain boundaries for network requests
+- `1.0.93 (2026-10-07)` GitHub.com Connector users can expand GitHub CLI permissions in place and retry connections without switching sign-in methods.
+- `1.0.92 (2026-10-05)` pnpm commands run in sandboxed sessions without lock-file permission errors
+- `1.0.91 (2026-10-01)` Add `copilot sandbox ca` commands to check, create, trust, rotate, and remove proxy CA trust, including unattended Windows setup; `/sandbox ca install` becomes `create` and `trust`
+- `1.0.91 (2026-10-01)` Complete, statically analyzable read-only shell pipelines can now enter execution-evidence review, while incomplete or unbound pipelines require explicit approval.
+- `1.0.90 (2026-09-30)` Add --mcp-github-auth to scope GitHub account auth to approved MCP server origins
+- `1.0.90 (2026-09-30)` Add session-scoped read-only directory approvals to path access prompts
+- `1.0.90 (2026-09-30)` Permission prompts remain answerable after resuming interrupted sessions.
+- `1.0.90 (2026-09-30)` Auto-approval now takes into account messages you type while the agent is working, as it already did for prompts sent while it was idle
+- `1.0.88 (2026-09-22)` Preserve /allow-all during managed-settings refresh failures, and remember exact session approvals for missing paths without granting their parent directory; exact grants are visible in /list-dirs and cleared by /reset-allowed-tools
+- `1.0.88 (2026-09-22)` Resuming sessions no longer stalls when MCP permission prompts are pending
+- `1.0.88 (2026-09-22)` Enterprise managed settings now apply to sessions opened in ACP mode (`copilot --acp`), by AHP hosts (`copilot --ahp-host`), and by the published `--server` session, which previously ran with no managed MCP, permission, or plugin policy.
+- `1.0.87 (2026-09-21)` Keep --yolo enabled after startup policy checks for authenticated unmanaged sessions
+- `1.0.87 (2026-09-21)` Extension permission handlers approve subagent tool requests without leaving duplicate CLI prompts
+- `1.0.85 (2026-09-16)` Add /sandbox Network host allow/deny rules without replacing your configured upstream proxy
+- `1.0.85 (2026-09-16)` Managed sandbox sessions can now be disabled for the rest of the session from an approved bypass prompt.
+- `1.0.85 (2026-09-16)` Fixed the one-command sandbox bypass on Windows: when the sandbox container refuses a policy-blocked write for want of a privilege, approving the bypass now runs the command instead of stopping after the permissive retry, so it no longer takes disabling the sandbox for the whole session
+- `1.0.85 (2026-09-16)` MCP servers keep correct workspace source labels after trusting a folder
+- `1.0.85 (2026-09-16)` The /permissions picker marks Allow all when --allow-all-tools, --allow-all-paths and --allow-all-urls are all set
+- `1.0.85 (2026-09-16)` Approved sandbox retries are labeled sandbox relaxed while network policy stays enforced, or sandbox bypassed when fully unsandboxed; failed bypasses explain that host permissions still apply
+- `1.0.85 (2026-09-16)` The YOLO status indicator reflects the active session after switching sessions
+- `1.0.85 (2026-09-16)` COPILOT_ALLOW_ALL no longer refuses to start the CLI on values such as 1, 0, yes or an empty string, and falsey values now disable automatic tool approval instead of enabling it
+- `1.0.85 (2026-09-16)` Workspace .mcp.json servers load correctly after trusting a folder on startup
+- `1.0.85 (2026-09-16)` Interactive --yolo startup remains available before authentication when no managed policy evidence is present
+- `1.0.85 (2026-09-16)` Pressing Escape once cancels MCP inference approval prompts once
+- `1.0.85 (2026-09-16)` Choosing approve-for-location now persists tool approval to avoid repeat prompts
+- `1.0.85 (2026-09-16)` Show trust status, tier, and eligibility details for online resource catalogue results
+- `1.0.85 (2026-09-16)` On supported Windows sandbox policies, interactive shell commands now record blocked accesses. One approved escalation retries with file and process restrictions recording instead of blocking while network policy remains active, then falls back to the disclosed full bypass only if still blocked
+- `1.0.83 (2026-09-04)` Enterprise admins can pin sign-in to approved GitHub organizations with the forceLoginOrgs managed setting
+- `1.0.83 (2026-09-04)` Host-provided plugin customizations can be read without redundant path permission prompts
+- `1.0.82 (2026-08-29)` Ctrl+E expands the plan approval card to show the full plan again
+- `1.0.81 (2026-08-27)` Add defaultMode and defaultPermissionMode settings to choose startup mode and approval behavior for new interactive sessions
+- `1.0.81 (2026-08-27)` An enterprise managed-settings policy is no longer rejected when `permissions.disableBypassPermissionsMode` carries an unrecognized value; it is now logged and enforced as `disable`.
+- `1.0.81 (2026-08-27)` Turning allow-all off from an ACP client now reaches the permission engine whenever there is a runtime override or auto-approval to revoke, so the setting can no longer report success while permissions stay enabled (a baseline granted by --allow-all-\* launch flags is still deliberately left intact)
+- `1.0.81 (2026-08-27)` forceRemoteSettingsRefresh now fails closed: when set, the cached managed-settings policy is never served or used as a fetch-failure fallback (skipping both the 1h fast path and the 24h stale fallback), so a failed startup fetch blocks on the unconfirmed policy instead of reverting to a possibly-stale cached one. Concretely, until a fresh policy is fetched the session applies the restrictive undetermined-policy posture: non-default MCP servers are blocked, bypass-permissions mode cannot be enabled, and policy-gated plugin install/update mutations are blocked
+- `1.0.79 (2026-08-10)` Add support for enterprise allow-auto-only policy so /allow-all auto works while full allow-all remains blocked.
+- `1.0.79 (2026-08-10)` Combine `--plan` with `--mode autopilot` to plan first and then implement without waiting for approval
+- `1.0.79 (2026-08-10)` On macOS, a sandbox read-only path nested inside a writable one now stays read-only instead of inheriting the write permission from the wider path
+- `1.0.79 (2026-08-10)` Disabling an extension no longer breaks elicitation, canvases, or tool permission prompts for other extensions
+- `1.0.78 (2026-08-03)` Add /permissions to switch between approval modes.
+- `1.0.78 (2026-08-03)` The /allow-all auto safety-judge model is no longer user-configurable; the judge model is now selected automatically.
+- `1.0.77 (2026-07-30)` Unconditional autopilot approval now disables sandbox for the current session when bypass is allowed
+- `1.0.76 (2026-07-29)` URL permission prompts now keep their sandbox-bypass warning and the model's reason when a host integration rebuilds the prompt, so an elevated fetch is no longer shown as an ordinary one
+- `1.0.76 (2026-07-29)` `web_fetch` now follows HTTP redirects instead of failing, asking permission for the redirect target when it is on a different origin and showing where the redirect came from
+- `1.0.72 (2026-07-20)` Command approvals no longer carry over to another repository after you switch with /cd
+- `1.0.72 (2026-07-20)` /worktree and /move now propagate folder trust to the new worktree before switching when the source is already trusted (avoiding a spurious folder-trust prompt in that case), /move addresses its git stash precisely so a concurrent stash can't misplace changes, and worktree creation skips a leftover directory instead of failing
+- `1.0.72 (2026-07-20)` Modified vim keys (Ctrl+K, uppercase J/K) no longer move the selection in tool-permission prompts and other text-input select menus; only unmodified j/k, the arrow keys, and Ctrl+P/Ctrl+N navigate.
+- `1.0.72 (2026-07-20)` Make the plan-approval menu deterministic across models
+- `1.0.71 (2026-07-16)` Declining folder trust in /cwd keeps your live session open and returns to the previous folder
+- `1.0.71 (2026-07-16)` Reject malformed --allow-tool and --deny-tool patterns with an error message
+- `1.0.70 (2026-07-09)` Let a trusted repository pin the model, effort level, and context tier and extend the URL/MCP/skill deny lists via .github/copilot/settings.json
+- `1.0.70 (2026-07-09)` Declining an extension's permission prompt no longer disables tool approvals for the rest of the session
+- `1.0.70 (2026-07-09)` Restore tool event ordering so permission prompts appear after tool start
+- `1.0.69 (2026-07-07)` Let built-in file edits bypass the sandbox when you approve it
+- `1.0.69 (2026-07-07)` web_fetch now follows the active sandbox network policy (denying outbound or local targets the policy blocks) and, when the host opts in via sandbox.allowBypass, lets you approve a one-time bypass from the fetch prompt
+- `1.0.69 (2026-07-07)` Auto-approval timeline entries now include the request subject, such as the command, path, URL, or tool name
+- `1.0.69 (2026-07-07)` /allow-all auto now requires experimental mode (/experimental on or --experimental) instead of the AUTO_APPROVAL env var or feature flag
+- `1.0.69 (2026-07-07)` Add auto allow-all mode that auto-approves requests an LLM judge evaluates as acceptable
+- `1.0.69 (2026-07-07)` Skip the autopilot permission prompt when bypass mode is disabled by policy
+- `1.0.66 (2026-06-30)` Let grep and glob retry blocked searches after sandbox approval
+- `1.0.66 (2026-06-30)` Fix a soft hang where the CLI stopped responding to input if a startup prompt (folder trust, screen reader, or Copilot free signup) opened while a non-Main home tab was focused
+- `1.0.66 (2026-06-30)` Add --allow-all-mcp-server-instructions to optionally include instructions from all MCP servers in system prompts
+- `1.0.66 (2026-06-30)` Auto-accept opt-in MCP consent prompts in --yolo sessions while still showing system permission prompts
+- `1.0.65 (2026-06-24)` Commands with slash-prefixed string arguments (e.g. --body "/azp run") no longer trigger spurious filesystem permission prompts
+- `1.0.64 (2026-06-23)` Skip computer-use consent prompts in full allow-all sessions
+- `1.0.64 (2026-06-23)` Load workspace MCP servers in trusted server-mode sessions
+- `1.0.64 (2026-06-23)` Allow /allow-all to work in relay sessions
+- `1.0.64 (2026-06-23)` Autopilot mode now auto-handles elicitation, ask_user, sampling, and permission prompts (including on launch with --autopilot and during continuation turns) instead of surfacing dialogs to the user
+- `1.0.62 (2026-06-13)` Show 'YOLO' (allow all) indicator in the footer and add allow-all state to custom statusLine.command
+- `1.0.62 (2026-06-13)` Approving a tool permission prompt no longer causes a second prompt for the same tool call
+- `1.0.62 (2026-06-13)` Claude-format plugin `preToolUse` and `permissionRequest` hooks now fire correctly for tool matchers like `Bash`, `Read`, and `*`, and Claude-format hook payloads carry the Claude tool name (`Bash` rather than `bash`)
+- `1.0.61 (2026-06-09)` Pasted images no longer leak into the main prompt after a permission dialog closes
+- `1.0.60 (2026-06-05)` Cursor renders in the correct position in plan approval and review feedback prompts
+- `1.0.60 (2026-06-05)` Extension permission prompts respect --yolo and pre-approved locations on startup
+- `1.0.60 (2026-06-05)` Trusted folders and other config keys are no longer dropped when experiment assignments are cached concurrently
+- `1.0.60 (2026-06-05)` ACP allow_all config option correctly applies unrestricted permissions for tools, paths, and URLs
+- `1.0.60 (2026-06-05)` Folder trust persists across git worktrees without re-prompting
+- `1.0.60 (2026-06-05)` Prompt for approval before running commands that set dynamic-loader or git-config env vars (e.g. LD_PRELOAD, GIT_EXTERNAL_DIFF)
+- `1.0.60 (2026-06-05)` Enforce bypass permissions policy for --allow-all-tools, --allow-all-paths, and --allow-all-urls flags
+- `1.0.56 (2026-05-29)` Trusted folder confirmation message clarifies that permissions may be remembered for the session
+- `1.0.55 (2026-05-28)` Loading spinner no longer hangs forever when launching in an untrusted folder
+- `1.0.55 (2026-05-28)` Add `permissions.disableBypassPermissionsMode` setting to prevent enabling allow-all/yolo mode
+- `1.0.52 (2026-05-23)` Switching to Autopilot mode no longer triggers unexpected permission prompts for tool, path, or URL access
+- `1.0.49 (2026-05-18)` Repo hooks in `.github/hooks/` now load in prompt mode (`-p`) when the folder is already trusted
+- `1.0.49 (2026-05-18)` Prompt mode (-p) automatically loads workspace MCP sources when the current folder is already trusted
+- `1.0.49 (2026-05-18)` Memory permission prompts now name who can see a stored memory: user scope or the specific `owner/repo` for repository scope. Timeline entries also show the scope (`(for user)` / `(shared with repository collaborators)`).
+- `1.0.46 (2026-05-12)` Read-only gh CLI commands (list, view, status, diff, etc.) are auto-approved without prompting for user confirmation
+- `1.0.45 (2026-05-11)` Sessions with extension permission prompts can be resumed without a "Session file is corrupted" error
+- `1.0.44 (2026-05-08)` Tool permissions granted in autopilot mode are preserved after /clear
+- `1.0.44 (2026-05-08)` Pressing Ctrl+C while a permission prompt is pending no longer causes the CLI to hang
+- `1.0.41 (2026-05-05)` Memory tool confirmation prompt now shows the scope (repository or user) when requesting permission to store a memory
+- `1.0.39 (2026-04-28)` Allow ACP clients to toggle allow-all permission mode via session configuration
+- `1.0.37 (2026-04-27)` Location-based permission persistence is now enabled by default, so approvals carry over across sessions for the same directory
+- `1.0.35 (2026-04-23)` Permission prompts appear correctly in remote sessions for the CLI TUI
+- `1.0.28 (2026-04-16)` Permission prompts show correct repository path when working inside git submodules
+- `1.0.26 (2026-04-14)` Permission prompt notification hook only fires when a prompt is actually shown to the user
+- `1.0.22 (2026-04-09)` Permission checks and other hooks now work correctly when using Anthropic models via BYOM/BYOK configuration
+- `1.0.20 (2026-04-07)` /yolo and --yolo now behave identically and /yolo state persists across /restart
+- `1.0.19 (2026-04-06)` Plugin hook scripts with missing execute permissions now run correctly on macOS
+- `1.0.18 (2026-04-04)` preToolUse hook permissionDecision 'allow' now suppresses the tool approval prompt
+- `1.0.18 (2026-04-04)` Add notification hook event that fires asynchronously on shell completion, permission prompts, elicitation dialogs, and agent completion
+- `1.0.16 (2026-04-02)` Add PermissionRequest hook to allow scripts to programmatically approve or deny tool permission requests
+- `1.0.14 (2026-03-31)` Temp file operations no longer trigger unnecessary permission prompts on macOS
+- `1.0.13 (2026-03-30)` MCP servers can request LLM inference (sampling) with user approval via a new review prompt
+- `1.0.12 (2026-03-26)` Trusted folder access prompts no longer appear incorrectly on Windows OneDrive paths and case-insensitive filesystems
+- `1.0.12 (2026-03-26)` /yolo path permissions persist after using /clear to start a new session
+- `1.0.12 (2026-03-26)` /allow-all (/yolo) now supports on, off, and show subcommands to enable, disable, or check allow-all mode
+- `1.0.10 (2026-03-20)` Workspace MCP servers from .mcp.json, .vscode/mcp.json, and devcontainer.json are now loaded only after folder trust is confirmed
+- `1.0.8 (2026-03-18)` Repo-level hooks are loaded only after folder trust is confirmed, not before the trust dialog is shown
+- `1.0.6 (2026-03-16)` Extension tools now work with the permissions system, use `skipPermission` per-tool to bypass permission prompts
+- `1.0.4 (2026-03-11)` Path permission dialog offers a one-time approval option in addition to adding the path to the allowed list
+- `1.0.4 (2026-03-11)` Hooks can now request user confirmation before tool execution with 'ask' permission decision
+- `1.0.3 (2026-03-09)` /reset-allowed-tools now fully undoes /allow-all and re-triggers the autopilot permission dialog
+- `1.0.3 (2026-03-09)` Prevent env command from being treated as safe to allow without approval
+- `1.0.3 (2026-03-09)` Trust safe sed commands to run without confirmation
+- `0.0.422 (2026-03-05)` Add exitPlanMode.request protocol method for SDK plan approval support
+- `0.0.421 (2026-03-03)` Autopilot permission dialog appears on first prompt submission instead of on mode switch
+- `0.0.415 (2026-02-23)` Plan approval menu shows model-curated actions with a recommended option highlighted first, including autopilot+fleet for parallelizable work
+- `0.0.414 (2026-02-21)` Show permission elevation dialog when accepting a plan with autopilot to prevent auto-denied tool errors
+- `0.0.412 (2026-02-19)` Add exit_plan_mode tool with plan approval dialog for reviewing and accepting plans
+- `0.0.409 (2026-02-12)` Permission prompts with long diffs are scrollable in alt-screen mode
+- `0.0.407 (2026-02-11)` Add option to approve tool permissions permanently for a location
+- `0.0.404 (2026-02-05)` `/allow-all` and `/yolo` execute immediately
+- `0.0.403 (2026-02-04)` Escape key consistently aborts permission dialogs regardless of selection
+- `0.0.400 (2026-01-30)` ACP server support permission flags: --yolo, --allow-all, etc. and permissions config
+- `0.0.399 (2026-01-29)` Add `/allow-all` and `/yolo` commands to auto-approve all permissions during a session
+- `0.0.384 (2026-01-16)` Selecting 'approve for session' now auto-approves pending parallel permission requests of the same type
+- `0.0.381 (2026-01-13)` Add --allow-all and --yolo flags to enable all permissions at once
+- `0.0.380 (2026-01-13)` Provide inline feedback when rejecting tool permission requests so agents don't have to stop due to denying permissions
+- `0.0.375 (2026-01-07)` File edits no longer hang when approving multiple concurrent edits
+- `0.0.372 (2025-12-19)` Add URL permission controls which affect common shell commands which access the web
+- `0.0.360 (2025-11-18)` Fix file operations timing out while waiting for user permission
+- `0.0.359 (2025-11-17)` `copilot -p` will no longer interactively prompt for permission requests
+- `0.0.351 (2025-10-24)` Improved our path detection heuristic to avoid various annoying, unnecessary permissions requests:
+- `0.0.349 (2025-10-22)` Ensure that environment variables are expanded before running path permission checks
+- `0.0.340 (2025-10-13)` Added a prompt to approve new paths in `-p` mode. Also added `--allow-all-paths` argument that approves access to all paths.
+- `0.0.332 (2025-10-01)` Improved how we extract paths from shell commands for permission handling (might fix https://github.com/github/copilot-cli/issues/159, https://github.com/github/copilot-cli/issues/67)
+- `0.0.329 (2025-09-29)` Added glob matching to shell rules. When using `--allow-tool` and `--deny-tool`, you can now specify things like `shell(npm run test:*)` to match any shell commands beginning with `npm run test`
+- `0.0.328 (2025-09-26)` Improved the error message received when using a PAT that is missing the "Copilot Requests" permission (fixes https://github.com/github/copilot-cli/issues/46 )
+
+## Assisted permissions / auto-approval judge
+
+15 entries.
+
+- `1.0.101 (2026-10-20)` Add assistedApprovalInstructions setting to guide Assisted Permissions confirmation decisions
+- `1.0.101 (2026-10-20)` Extension capability requests use explicit approval instead of the Assisted judge
+- `1.0.100 (2026-10-19)` Enterprise-managed ask permissions in Assisted mode now allow safe actions without unnecessary confirmation prompts.
+- `1.0.100 (2026-10-19)` Assisted permissions send nested PowerShell and bash -c commands that only expand plain-data environment variables, single-quoted PowerShell, and PowerShell variable and alias statements to the permission judge instead of requiring unnecessary manual approval
+- `1.0.96 (2026-10-12)` Timeline now shows whether you, Assisted Permissions, policy, or unattended fallback made each permission decision.
+- `1.0.94 (2026-10-08)` Assisted permissions send visible shell code to the permission judge instead of requiring unnecessary manual approval
+- `1.0.94 (2026-10-08)` Managed policy can disable Assisted Permissions and keep sessions in Manual Approval mode.
+- `1.0.90 (2026-09-30)` Auto-approval now takes into account messages you type while the agent is working, as it already did for prompts sent while it was idle
+- `1.0.81 (2026-08-27)` Turning allow-all off from an ACP client now reaches the permission engine whenever there is a runtime override or auto-approval to revoke, so the setting can no longer report success while permissions stay enabled (a baseline granted by --allow-all-\* launch flags is still deliberately left intact)
+- `1.0.78 (2026-08-03)` The /allow-all auto safety-judge model is no longer user-configurable; the judge model is now selected automatically.
+- `1.0.69 (2026-07-07)` Auto-approval timeline entries now include the request subject, such as the command, path, URL, or tool name
+- `1.0.69 (2026-07-07)` Add auto allow-all mode that auto-approves requests an LLM judge evaluates as acceptable
+- `1.0.46 (2026-05-12)` Read-only gh CLI commands (list, view, status, diff, etc.) are auto-approved without prompting for user confirmation
+- `0.0.399 (2026-01-29)` Add `/allow-all` and `/yolo` commands to auto-approve all permissions during a session
+- `0.0.384 (2026-01-16)` Selecting 'approve for session' now auto-approves pending parallel permission requests of the same type
+
+## Hooks
+
+84 entries.
+
+- `1.0.98 (2026-10-14)` Command hooks complete reliably even when child-exit signals are lost under Node
+- `1.0.97 (2026-10-13)` Add agent-scoped declarative hooks for custom agents
+- `1.0.97 (2026-10-13)` Autopilot denies a preToolUse hook's "ask" decision instead of stopping on a permission dialog nobody is watching
+- `1.0.97 (2026-10-13)` Fixed resumed sessions rebuilding plugin hooks from the wrong plugin list, so hooks from repository-local marketplace plugins now keep running after `--resume`, and hooks from plugins your configuration disabled no longer come back
+- `1.0.92 (2026-10-05)` Prompt-mode sessions fire a single sessionEnd hook after Stop-hook continuations complete
+- `1.0.88 (2026-09-22)` Hook commands without an explicit `cwd` again run in the project root instead of the session's current directory, so repo-relative hook scripts still resolve from a subdirectory.
+- `1.0.88 (2026-09-22)` Session and subagent start hooks combine successful additional-context contributions within the hook-output limit
+- `1.0.85 (2026-09-16)` Earlier messages remain visible when switching back to a background session with frequent hooks.
+- `1.0.85 (2026-09-16)` Run sessionEnd hooks when /clear closes an interactive session
+- `1.0.85 (2026-09-16)` Configured hooks keep running after an extension restarts instead of silently stopping and later denying every tool call; the extension's own callback hooks resume once it re-registers
+- `1.0.85 (2026-09-16)` The `allowManagedHooksOnly` policy now also blocks extension-registered `preToolUse`, `postToolUse` and `postToolUseFailure` callbacks, which previously bypassed the managed-only lockdown that every other hook event already applied
+- `1.0.85 (2026-09-16)` On Windows, a sandboxed command that runs git without naming it — a hook, a build tool, or an npm install that clones over HTTPS — no longer dies inside the credential helper's MSYS2 shell.
+- `1.0.81 (2026-08-27)` Hooks can now receive the current OpenTelemetry trace context and emit correlated spans: inputs gain `traceparent` (plus `tracestate` when the span has vendor state); command hooks also get env vars.
+- `1.0.81 (2026-08-27)` Hook lifecycle events (`hook.start`/`hook.end`) from hooks inside a subagent are now recorded on that subagent's session and re-emitted on its parent, instead of being dropped on an internal session.
+- `1.0.81 (2026-08-27)` Enabling and disabling hooks and LSP servers is temporarily unavailable: those toggles existed only in the `/plugins` dashboard that this release removes.
+- `1.0.78 (2026-08-03)` A run whose prompt is piped over stdin now treats its `sessionEnd` hook the same way `-p` does: the hook fires once per completed agent turn with `reason` `complete` (or `error` if the turn failed), instead of once at shutdown with `user_exit`. As with `-p`, a piped run that exits before completing a turn fires no `sessionEnd` hook
+- `1.0.78 (2026-08-03)` Switching sessions no longer restarts MCP servers or rebuilds hook state, so a turn running in another session is never halted with a stale-hook error
+- `1.0.76 (2026-07-29)` Add enable/disable controls in /plugins for plugins, instructions, agents, LSP servers, and hooks
+- `1.0.76 (2026-07-29)` A `userPromptSubmitted` hook returning a non-string value for `modifiedPrompt`, `modifiedTransformedPrompt`, or a handled `responseContent` no longer corrupts the session; the value is ignored, a type-only warning naming the field is logged, an empty-string replacement is rejected instead of blanking the model-facing content, a hook that sets `handled` without a usable `responseContent` is now diagnosed instead of silently falling through to the model, and a `null` `additionalContext` is treated as absent instead of being injected as the literal text `null`; hook output is also bounded at 10 MiB per invocation, so an HTTP or command hook returning an unbounded response can no longer exhaust memory or leave an oversized session behind
+- `1.0.72 (2026-07-20)` An `agentStop` hook that always blocks no longer loops indefinitely: the CLI now ends the turn after 8 consecutive blocks, and `agentStop` hooks receive a `stop_hook_active` flag so they can detect a forced continuation and self-limit
+- `1.0.72 (2026-07-20)` Lifecycle and subagent hook commands run in the current session directory after /cd
+- `1.0.71 (2026-07-16)` Keep valid hooks in a config file when one hook entry is malformed
+- `1.0.70 (2026-07-09)` preToolUse hooks that exit with code 2 deny tool calls
+- `1.0.68 (2026-07-01)` Stop hooks from erroring and denying every tool when a session's working directory or git worktree has been deleted
+- `1.0.67 (2026-06-30)` Allow tool calls to continue when hooks time out
+- `1.0.66 (2026-06-30)` Inline hook settings now handle nested Claude-style hook groups correctly
+- `1.0.65 (2026-06-24)` Prevent brief console windows from flashing on Windows when the agent runs hook commands or resolves command paths
+- `1.0.65 (2026-06-24)` Include userPromptSubmitted hook additionalContext in the model-facing prompt
+- `1.0.63 (2026-06-15)` PostToolUse hook matchers (e.g. `Edit|Write`) are now honored instead of silently dropped, so formatters and linters run only after the tools they target
+- `1.0.62 (2026-06-13)` Claude-format plugin `preToolUse` and `permissionRequest` hooks now fire correctly for tool matchers like `Bash`, `Read`, and `*`, and Claude-format hook payloads carry the Claude tool name (`Bash` rather than `bash`)
+- `1.0.61 (2026-06-09)` /env output hides internal hooks and shows full file paths for hook sources
+- `1.0.61 (2026-06-09)` Hook progress status lines marked as temporary collapse in place instead of accumulating in the conversation timeline
+- `1.0.60 (2026-06-05)` LSP server config accepts `bash`, `powershell`, and `cwd` keys; command launch default cwd stays project-root unless `cwd` is set, and `cwd` expansion now supports plugin vars like `PLUGIN_ROOT` while shell launches keep hook-matching cwd/env behavior
+- `1.0.60 (2026-06-05)` /env command now shows hook counts and source provenance for active hooks
+- `1.0.57 (2026-06-01)` preToolUse hook errors now deny the tool call instead of silently allowing execution
+- `1.0.55 (2026-05-28)` Hook progress streaming shows real-time status messages from long-running hooks in the timeline
+- `1.0.51 (2026-05-20)` Add preMcpToolCall hook for hook providers to control outgoing MCP request metadata
+- `1.0.51 (2026-05-20)` postToolUse hooks can now inject additionalContext into successful tool results
+- `1.0.49 (2026-05-18)` postToolUse hook additionalContext is now injected as a system message for the model instead of being silently discarded
+- `1.0.49 (2026-05-18)` Repo hooks in `.github/hooks/` now load in prompt mode (`-p`) when the folder is already trusted
+- `1.0.49 (2026-05-18)` Hooks (preToolUse, postToolUse, subagentStart, subagentStop) now fire correctly for sub-agent tool calls
+- `1.0.45 (2026-05-11)` agentStop hook now fires correctly when the agent stops via task_complete
+- `1.0.44 (2026-05-08)` userPromptSubmitted hooks can now handle requests directly, bypassing the LLM and returning a response without making a model call
+- `1.0.40 (2026-05-01)` Prompt mode (-p) now gates repo hooks and workspace MCP behind opt-in env vars (GITHUB_COPILOT_PROMPT_MODE_REPO_HOOKS and GITHUB_COPILOT_PROMPT_MODE_WORKSPACE_MCP) for secure-by-default behavior
+- `1.0.36 (2026-04-24)` Fixed an issue where preToolUse.matcher was ignored. After upgrade, hooks with matcher run only for tool names that fully match the regex.
+- `1.0.35 (2026-04-23)` Add HTTP hook support, allowing hooks to POST JSON payloads to a configured URL instead of running a local command
+- `1.0.26 (2026-04-14)` Permission prompt notification hook only fires when a prompt is actually shown to the user
+- `1.0.26 (2026-04-14)` Plugin hooks receive PLUGIN_ROOT, COPILOT_PLUGIN_ROOT, and CLAUDE_PLUGIN_ROOT env vars with the plugin's installation directory
+- `1.0.24 (2026-04-10)` preToolUse hooks now respect modifiedArgs/updatedInput, and additionalContext fields
+- `1.0.22 (2026-04-09)` Permission checks and other hooks now work correctly when using Anthropic models via BYOM/BYOK configuration
+- `1.0.22 (2026-04-09)` sessionStart and sessionEnd hooks fire once per session in interactive mode instead of once per prompt
+- `1.0.21 (2026-04-07)` Hooks configured with PascalCase event names now receive VS Code-compatible snake_case payloads with hook_event_name, session_id, and ISO 8601 timestamps
+- `1.0.19 (2026-04-06)` Plugin hook scripts with missing execute permissions now run correctly on macOS
+- `1.0.18 (2026-04-04)` preToolUse hook permissionDecision 'allow' now suppresses the tool approval prompt
+- `1.0.18 (2026-04-04)` Add notification hook event that fires asynchronously on shell completion, permission prompts, elicitation dialogs, and agent completion
+- `1.0.16 (2026-04-02)` Add PermissionRequest hook to allow scripts to programmatically approve or deny tool permission requests
+- `1.0.15 (2026-04-01)` Add postToolUseFailure hooks for tool errors and make postToolUse run only after successful tool calls
+- `1.0.12 (2026-03-26)` Plugin hooks now receive CLAUDE_PROJECT_DIR and CLAUDE_PLUGIN_DATA environment variables, and support {{project_dir}} and {{plugin_data_dir}} template variables in hook configurations
+- `1.0.12 (2026-03-26)` OTEL hook executions are now recorded as span events instead of child spans, reducing trace clutter
+- `1.0.11 (2026-03-23)` Extension hooks from multiple extensions now merge instead of overwriting each other or hooks from hooks.json
+- `1.0.11 (2026-03-23)` sessionStart hook additionalContext is now injected into the conversation
+- `1.0.11 (2026-03-23)` Startup 'Environment loaded' message now shows the number of loaded hooks
+- `1.0.10 (2026-03-20)` Repo hooks (.github/hooks/) now fire correctly when using prompt mode (-p flag)
+- `1.0.10 (2026-03-20)` Hook matcher filters defined in nested hook structures are now correctly applied to inner hook items
+- `1.0.8 (2026-03-18)` Repo-level hooks are loaded only after folder trust is confirmed, not before the trust dialog is shown
+- `1.0.8 (2026-03-18)` Support defining hooks in settings.json, settings.local.json, and config.json
+- `1.0.7 (2026-03-17)` Add subagentStart hook that fires when a subagent is spawned, with support for injecting additional context into the subagent's prompt
+- `1.0.6 (2026-03-16)` Hooks fire correctly when resuming a previous session
+- `1.0.6 (2026-03-16)` Hook configuration files now work across VS Code, Claude Code, and the CLI without modification by accepting PascalCase event names alongside camelCase
+- `1.0.6 (2026-03-16)` Hook config files now support Claude Code's nested matcher/hooks structure and optional type field
+- `1.0.6 (2026-03-16)` Improve compatibility with the Open Plugins spec: support `.lsp.json`, PascalCase hook event names, `exclusive` path mode, and `:` namespace separator
+- `1.0.5 (2026-03-13)` Add preCompact hook to run commands before context compaction starts
+- `1.0.5 (2026-03-13)` Hooks config files that omit the version field are now accepted by the CLI
+- `1.0.4 (2026-03-11)` Support disableAllHooks flag to disable all hooks from a configuration file
+- `1.0.4 (2026-03-11)` Hooks can now request user confirmation before tool execution with 'ask' permission decision
+- `1.0.3 (2026-03-09)` Extensions are now available as an experimental feature — ask Copilot to write custom tools and hooks for itself using @github/copilot-sdk
+- `1.0.2 (2026-03-06)` Support 'command' field as cross-platform alias for bash/powershell in hook configs
+- `1.0.2 (2026-03-06)` Hook configurations now accept timeout as alias for timeoutSec
+- `0.0.422 (2026-03-05)` Load personal hooks from ~/.copilot/hooks in addition to repo-level .github/hooks
+- `0.0.422 (2026-03-05)` Add startup prompt hooks to auto-submit prompts or slash commands when a session starts
+- `0.0.421 (2026-03-03)` Git hooks can detect Copilot CLI subprocesses via the COPILOT_CLI=1 environment variable to skip interactive prompts
+- `0.0.402 (2026-02-03)` Plugins can provide hooks for session lifecycle events
+- `0.0.401 (2026-02-03)` Add agentStop and subagentStop hooks to control agent completion
+- `0.0.396 (2026-01-27)` preToolUse hooks can deny tool execution and modify arguments
+
+## Modes: Plan, Autopilot, Interactive
+
+91 entries.
+
+- `1.0.100 (2026-10-19)` Plan, autopilot, and shell mode badges stay visible while startup components load and the agent works. The badge replaces the mode suffix that used to trail the activity text (`Working - plan`), and the startup `Loading:` row now truncates its diagnostics to keep the status row on one line
+- `1.0.97 (2026-10-13)` Autopilot denies a preToolUse hook's "ask" decision instead of stopping on a permission dialog nobody is watching
+- `1.0.92 (2026-10-05)` Plan usage reflects the current billing period after quota resets
+- `1.0.89 (2026-09-28)` Autocomplete model IDs in /model and /model plan argument pickers
+- `1.0.86 (2026-09-17)` Autopilot stops after accepted task completion instead of continuing unexpectedly
+- `1.0.85 (2026-09-16)` Interactive mode submits startup prompts even when model discovery is still loading.
+- `1.0.85 (2026-09-16)` Interactive mode starts and submits the initial prompt when using --auth-token-env
+- `1.0.85 (2026-09-16)` Command-line parsing moved from Commander to a Rust grammar; error and help wording changed, `copilot login --host` now works, and `--max-autopilot-continues` no longer accepts scientific notation
+- `1.0.83 (2026-09-04)` A follow-up prompt typed while autopilot is running no longer disappears from the timeline
+- `1.0.83 (2026-09-04)` The collapsed autopilot goal panel now reads as a single-line pinned prompt, keeping the frame it shares with a pinned prompt instead of compressing into a bare band wedged against the chrome above it
+- `1.0.82 (2026-08-29)` Ctrl+E expands the plan approval card to show the full plan again
+- `1.0.81 (2026-08-27)` Compact the autopilot goal panel to its identity row on a short terminal (a paused goal keeps its resume note), with ctrl+x → g to expand or collapse it by hand
+- `1.0.81 (2026-08-27)` Render the autopilot goal panel as a pinned prompt frame, drop its progress bar for the exact todo count, fold the subagent hint into the row it toggles, and keep its metrics on a narrow pane
+- `1.0.81 (2026-08-27)` Show your last prompt as the inferred objective in the Autopilot status panel
+- `1.0.81 (2026-08-27)` ACP clients receive subagent IDs, raw event subscriptions, and live title, mode, command, and plan updates
+- `1.0.79 (2026-08-10)` Combine `--plan` with `--mode autopilot` to plan first and then implement without waiting for approval
+- `1.0.79 (2026-08-10)` Model picker groups models into Recent, Recommended, New, and other sections, and Shift+Tab switches grouping views.
+- `1.0.77 (2026-07-30)` Unconditional autopilot approval now disables sandbox for the current session when bypass is allowed
+- `1.0.76 (2026-07-29)` Resuming a session now restores its autopilot or plan mode instead of reverting to interactive, so the autopilot-only `task_complete` tool stays available and the mode matches the session you left
+- `1.0.76 (2026-07-29)` Autopilot stays selected after task_complete by default; set stayInAutopilot to false to return to interactive mode after each task
+- `1.0.74 (2026-07-23)` Plan mode now allows session-folder planning artifacts while still blocking clear file mutations outside the session folder.
+- `1.0.74 (2026-07-23)` Add `/model plan` (or `/model --plan`) to pick a model used while in plan mode; pass a model id, `off` to clear, or no id to open the picker. Reverts to the session model when you leave plan mode.
+- `1.0.72 (2026-07-20)` Make the plan-approval menu deterministic across models
+- `1.0.71 (2026-07-16)` `copilot -p --autopilot` no longer hangs when a background shell or agent outlives the turn; it now honors the COPILOT_TASK_WAIT_TIMEOUT_SECONDS timeout the same way plain `-p` does.
+- `1.0.71 (2026-07-16)` Plan mode now hard-blocks built-in tool calls that would modify the workspace, so the agent can no longer edit files or run mutating shell commands while planning (built-in mutators like opening a pull request are blocked; MCP and external tools are still allowed)
+- `1.0.71 (2026-07-16)` Switching to autopilot mid-turn now auto-answers questions asked during that same turn
+- `1.0.71 (2026-07-16)` Validate --max-autopilot-continues rejects NaN, negative, and fractional values
+- `1.0.71 (2026-07-16)` --sandbox and --no-sandbox now show their "ignored" warning during interactive startup when the sandbox feature is unavailable (previously it was only visible in non-interactive mode)
+- `1.0.70 (2026-07-09)` Open the plan file or research report with Ctrl+Y in any mode
+- `1.0.69 (2026-07-07)` Prevent `copilot init` from hanging in non-interactive mode
+- `1.0.69 (2026-07-07)` Add a `stayInAutopilot` setting (default false) that keeps the CLI in autopilot mode after an autopilot task completes
+- `1.0.69 (2026-07-07)` Skip the autopilot permission prompt when bypass mode is disabled by policy
+- `1.0.68 (2026-07-01)` Show plan budget details in the statusline and /usage for supported plans
+- `1.0.64 (2026-06-23)` Autopilot mode now returns to interactive mode after the agent calls task_complete, so you aren't left in autopilot for your next prompt
+- `1.0.64 (2026-06-23)` Autopilot mode now auto-handles elicitation, ask_user, sampling, and permission prompts (including on launch with --autopilot and during continuation turns) instead of surfacing dialogs to the user
+- `1.0.63 (2026-06-15)` Plan review menus work on strict OpenAI-compatible backends
+- `1.0.62 (2026-06-13)` Autopilot continues cleanly in relay sessions and /plan shows the short prompt
+- `1.0.60 (2026-06-05)` Add the max reasoning effort level for Anthropic models and make all effort levels available on every plan
+- `1.0.60 (2026-06-05)` Cursor renders in the correct position in plan approval and review feedback prompts
+- `1.0.60 (2026-06-05)` Session completion signal (terminal beep, autopilot continuation) now waits for background shell commands to finish
+- `1.0.55 (2026-05-28)` Free and Student plan users on token-based billing are restricted to Auto model selection, with an explanation shown in the model picker
+- `1.0.55 (2026-05-28)` The exit_plan_mode tool is only offered to the model while the session is in plan mode
+- `1.0.55 (2026-05-28)` Add /autopilot <objective> to keep autopilot focused, with /goal as an alias
+- `1.0.52 (2026-05-23)` Switching to Autopilot mode no longer triggers unexpected permission prompts for tool, path, or URL access
+- `1.0.51 (2026-05-20)` Loading indicator color matches the active mode (plan, autopilot, shell)
+- `1.0.48 (2026-05-14)` Auto-disable the built-in github-mcp-server in Azure DevOps-only workspaces when running in prompt/headless mode, matching interactive mode behavior
+- `1.0.45 (2026-05-11)` Add /autopilot slash command to toggle between interactive and autopilot modes
+- `1.0.44 (2026-05-08)` Tool permissions granted in autopilot mode are preserved after /clear
+- `1.0.40 (2026-05-01)` Autopilot mode now limits continuation messages to 5 by default (configurable with --max-autopilot-continues)
+- `1.0.40 (2026-05-01)` ACP clients (e.g. Zed) now display the agent's live plan as it works through multi-step tasks
+- `1.0.33 (2026-04-20)` Non-interactive mode waits for all background agents to finish before exiting
+- `1.0.32 (2026-04-17)` Multiline input is preserved when using /plan and plan mode
+- `1.0.23 (2026-04-10)` Add --mode, --autopilot, and --plan flags to start the CLI directly in a specific agent mode
+- `1.0.22 (2026-04-09)` sessionStart and sessionEnd hooks fire once per session in interactive mode instead of once per prompt
+- `1.0.21 (2026-04-07)` Plan mode timeline display shows user text without a redundant "Plan" prefix
+- `1.0.19 (2026-04-06)` Slash command timeline entries now include the command name (e.g., "Review", "Plan") for better context
+- `1.0.15 (2026-04-01)` Copilot mascot now blinks with subtle eye animations in interactive mode
+- `1.0.15 (2026-04-01)` Autopilot no longer continues after pressing Escape or Ctrl+C to cancel
+- `1.0.12 (2026-03-26)` Pressing Escape multiple times during autopilot cancellation no longer leaves the session stuck
+- `1.0.12 (2026-03-26)` Ctrl+Y in plan mode opens the most recent research report when no plan exists yet
+- `1.0.10 (2026-03-20)` Elicitation form shows Shift+Tab hint for navigating between fields in reverse
+- `1.0.10 (2026-03-20)` Model picker reorganizes models into Available, Blocked/Disabled, and Upgrade tabs based on user plan and policy
+- `1.0.8 (2026-03-18)` Exit plan mode tool remains available when an extension subprocess joins an active session
+- `1.0.6 (2026-03-16)` Autopilot continuation no longer gets permanently blocked after an error in a previous turn
+- `1.0.6 (2026-03-16)` In autopilot, task_complete summary is now required and renders as markdown
+- `1.0.4 (2026-03-11)` Autopilot mode stops continuing after API errors instead of looping indefinitely
+- `1.0.3 (2026-03-09)` /reset-allowed-tools now fully undoes /allow-all and re-triggers the autopilot permission dialog
+- `0.0.422 (2026-03-05)` Timeline now shows the question in a box and displays 'Making best guess on autopilot' when ask_user is auto-responded
+- `0.0.422 (2026-03-05)` Add exitPlanMode.request protocol method for SDK plan approval support
+- `0.0.421 (2026-03-03)` Autopilot permission dialog appears on first prompt submission instead of on mode switch
+- `0.0.415 (2026-02-23)` Plan approval menu shows model-curated actions with a recommended option highlighted first, including autopilot+fleet for parallelizable work
+- `0.0.414 (2026-02-21)` Show permission elevation dialog when accepting a plan with autopilot to prevent auto-denied tool errors
+- `0.0.412 (2026-02-19)` Edit plan in terminal editor with ctrl+y
+- `0.0.412 (2026-02-19)` Add exit_plan_mode tool with plan approval dialog for reviewing and accepting plans
+- `0.0.412 (2026-02-19)` /clear preserves agent mode (autopilot, plan, or interactive)
+- `0.0.411 (2026-02-17)` SDK APIs for plan mode, autopilot, fleet, and workspace files
+- `0.0.411 (2026-02-17)` Autopilot mode and /fleet command now available to all users
+- `0.0.410 (2026-02-14)` Shell mode removed from Shift+Tab cycle, accessed only via `!`
+- `0.0.407 (2026-02-11)` Autopilot mode works with custom agents that specify explicit tools
+- `0.0.407 (2026-02-11)` Tab cycles modes forward, Shift+Tab backward; shell is now a mode
+- `0.0.406 (2026-02-07)` Markdown formatting displays in non-interactive mode output
+- `0.0.402 (2026-02-03)` ACP server supports agent and plan session modes
+- `0.0.400 (2026-01-30)` Add autopilot mode for autonomous task completion (experimental)
+- `0.0.397 (2026-01-28)` Plan mode input text is more readable
+- `0.0.396 (2026-01-27)` Open plan files in VS Code on WSL and devcontainers
+- `0.0.390 (2026-01-22)` Enable steering during plan mode
+- `0.0.387 (2026-01-20)` Add plan mode with dedicated panel for viewing implementation plans
+- `0.0.380 (2026-01-13)` The `--agent` flag now works in interactive mode
+- `0.0.375 (2026-01-07)` Add --share and --share-gist flags for session sharing in non-interactive mode
+- `0.0.331 (2025-10-01)` Improved the `/model`s list to ensure that a user only sees models they have access to use -- previously, if a user tries to use a model they do not have access to (because of their Copilot plan, their geographic region, etc), they received a `model_not_supported` error. This should prevent that by not even showing such models as options in the list (Fixes https://github.com/github/copilot-cli/issues/112, https://github.com/github/copilot-cli/issues/85, https://github.com/github/copilot-cli/issues/40)
+- `0.0.329 (2025-09-29)` Improved error messages when users provide incorrect command-line arguments. (Addresses feedback of the discoverability of non-interactive mode from https://github.com/github/copilot-cli/issues/96)
+
+## Custom instructions (AGENTS.md, copilot-instructions)
+
+52 entries.
+
+- `1.0.101 (2026-10-20)` Add assistedApprovalInstructions setting to guide Assisted Permissions confirmation decisions
+- `1.0.100 (2026-10-19)` Path-specific instruction files in the repository root .github/instructions are now applied automatically when the agent reads or edits a matching file
+- `1.0.92 (2026-10-05)` MCP tools recover within the same turn when server instructions change
+- `1.0.90 (2026-09-30)` Compaction now returns a summary even when instructions ask for tool use.
+- `1.0.89 (2026-09-28)` Add support for Claude Code rule files in .claude/rules as custom instructions
+- `1.0.86 (2026-09-17)` Custom agents can opt into repository instruction files (AGENTS.md, copilot-instructions.md, CLAUDE.md) by setting `include-custom-instructions: true` in their frontmatter.
+- `1.0.85 (2026-09-16)` Add `copilot instruction list` and `copilot lsp list`, replacing `copilot plugins list --kind instruction` and `--kind lsp`
+- `1.0.85 (2026-09-16)` `copilot init` now removes the `.github` directory it created when the run exits without writing an instructions file.
+- `1.0.85 (2026-09-16)` Subagent launches honor explicit model, reasoning effort, and context tier preferences from applicable global and custom instructions
+- `1.0.85 (2026-09-16)` `copilot plugins list` is now an alias of `copilot plugin list` and reports only plugins, no longer MCP servers, skills, instructions or LSP servers
+- `1.0.81 (2026-08-27)` Show each user instruction file separately in /instructions
+- `1.0.81 (2026-08-27)` Removed `/plugins`; its resources moved to `/plugin`, `/mcp` and `/skills`, with `/subagents` and `/instructions` for agents and instructions.
+- `1.0.76 (2026-07-29)` Add enable/disable controls in /plugins for plugins, instructions, agents, LSP servers, and hooks
+- `1.0.76 (2026-07-29)` Startup tips only suggest /init in repositories that don't already have Copilot instructions
+- `1.0.76 (2026-07-29)` The /instructions picker now respects --no-custom-instructions.
+- `1.0.73 (2026-07-20)` Resolve relative links in custom agent instructions from the agent file location
+- `1.0.68 (2026-07-01)` Find agents and instructions under Win32 extended-length paths on Windows
+- `1.0.66 (2026-06-30)` Expand @-style imports in AGENTS.md, CLAUDE.md, and Copilot instruction files
+- `1.0.66 (2026-06-30)` Add --allow-all-mcp-server-instructions to optionally include instructions from all MCP servers in system prompts
+- `1.0.61 (2026-06-09)` `/help` now lists `$HOME/.copilot/instructions/**/*.instructions.md` alongside the other user-level instruction locations
+- `1.0.60 (2026-06-05)` /context separates Custom Instructions from the system prompt and cross-references per-server MCP tool token costs with /mcp
+- `1.0.60 (2026-06-05)` Custom agent instructions are no longer duplicated each turn, reducing context window usage
+- `1.0.52 (2026-05-23)` /compact accepts optional focus instructions to shape the compaction summary
+- `1.0.49 (2026-05-18)` Reduce PowerShell syntax errors on Windows by avoiding && chaining instructions when using legacy PowerShell 5.x
+- `1.0.48 (2026-05-14)` Instruction files with unquoted glob patterns in applyTo frontmatter (e.g. applyTo: \*_/_.ts) are now applied correctly
+- `1.0.36 (2026-04-24)` Custom instruction files in .gitignored directories (e.g., .github/instructions/) now load correctly
+- `1.0.35 (2026-04-23)` Show a helpful error message with install instructions when clipboard utilities (wl-clipboard or xclip) are missing on Linux
+- `1.0.35 (2026-04-23)` Pattern-specific instruction files (.github/instructions/\*.instructions.md) no longer include their full body in the system prompt on every session
+- `1.0.28 (2026-04-16)` MCP migration hint now links to documentation with platform-specific instructions instead of embedding shell commands inline
+- `1.0.26 (2026-04-14)` Avoid sending duplicate custom instruction files (e.g. copilot-instructions.md and CLAUDE.md with identical content) to reduce wasted tokens per turn
+- `1.0.26 (2026-04-14)` Instruction files with specific applyTo patterns are consolidated into a table instead of inlining full content, reducing context window usage
+- `1.0.25 (2026-04-13)` Add /env command to show loaded environment details (instructions, MCP servers, skills, agents, plugins)
+- `1.0.25 (2026-04-13)` Custom instruction files preserve special characters like & and <placeholders>
+- `1.0.25 (2026-04-13)` Skill instructions persist correctly across conversation turns
+- `1.0.22 (2026-04-09)` Plugins can now display a post-install message with setup instructions after installation
+- `1.0.11 (2026-03-23)` Custom instructions, MCP servers, skills, and agents are now discovered at every directory level from the working directory up to the git root, enabling full monorepo support
+- `1.0.6 (2026-03-16)` Instruction file frontmatter applyTo field accepts both string and array values
+- `1.0.6 (2026-03-16)` Custom instruction file paths load correctly when using COPILOT_CUSTOM_INSTRUCTIONS_DIRS
+- `1.0.5 (2026-03-13)` Add experimental embedding-based dynamic retrieval of MCP and skill instructions per turn
+- `1.0.4 (2026-03-11)` Show individual instruction file names in /instructions picker with [external] labels for injected files
+- `1.0.3 (2026-03-09)` Suppress /init suggestion when .github/instructions/ contains instructions
+- `0.0.412 (2026-02-19)` Add `/update` command to view changelog and update instructions
+- `0.0.412 (2026-02-19)` Support ~/.copilot/instructions/\*.instructions.md files for user-level instructions across all repositories
+- `0.0.412 (2026-02-19)` Instructions picker opens as a full-screen alt-screen view when alt-screen mode is enabled
+- `0.0.411 (2026-02-17)` Custom instruction files are recognized regardless of casing
+- `0.0.407 (2026-02-11)` Add `/instructions` command to view and toggle custom instruction files
+- `0.0.400 (2026-01-30)` Add MCP server instructions support
+- `0.0.399 (2026-01-29)` Add Copilot option for agent creation wizard to generate name, description, and instructions based on initial agent description
+- `0.0.396 (2026-01-27)` Add `/init` command to generate Copilot instructions
+- `0.0.394 (2026-01-24)` Deduplicate identical model instruction files to save context
+- `0.0.385 (2026-01-19)` Combine all custom instruction files instead of using priority-based fallbacks
+- `0.0.362 (2025-11-20)` Cleanup and update prompts and tool instructions to be more fluid
+
+## Skills
+
+102 entries.
+
+- `1.0.100 (2026-10-19)` Install verified Skills and plugins from GitHub install links via copilot plugin install "ghapp://air/install?..."
+- `1.0.100 (2026-10-19)` A skill `allowed-tools` rule keeps commas inside its arguments instead of being split apart. Where a list's structure is ambiguous, its unscoped rules now prompt instead of being granted.
+- `1.0.97 (2026-10-13)` Skills and custom agents from --plugin-dir plugins now reach autocomplete and invocation instead of going missing.
+- `1.0.93 (2026-10-07)` Plugin skill commands stay available after reloading enabled plugins
+- `1.0.88 (2026-09-22)` Support namespaced custom skills and ignored skill directories during skill discovery
+- `1.0.86 (2026-09-17)` Resuming an active session without plugin-directory, discovery, or working-directory overrides preserves marketplace plugins and skills after reload. Configuration read or validation failures no longer discard active plugins; missing-file and intentional-removal behavior is unchanged.
+- `1.0.85 (2026-09-16)` Add `enable` and `disable` to `copilot plugin`, `copilot mcp` and `copilot skill`, replacing `copilot plugins enable/disable --plugin|--mcp|--skill`
+- `1.0.85 (2026-09-16)` Skills from directories added with --add-dir are no longer missing when a skills load races the directory registration
+- `1.0.85 (2026-09-16)` Replace `copilot plugins install --skill [--scope project]` with `copilot skill add [--project]`; the `--scope` spelling is gone
+- `1.0.85 (2026-09-16)` Remove the cross-kind `--kind`, `--scope`, `--mcp` and `--skill` flags from `copilot plugins`; use `copilot mcp` and `copilot skill`
+- `1.0.85 (2026-09-16)` `copilot plugins list` is now an alias of `copilot plugin list` and reports only plugins, no longer MCP servers, skills, instructions or LSP servers
+- `1.0.81 (2026-08-27)` The plugins dashboard is available to everyone: run `/plugin`, `/mcp`, or `/skills`. Set `PLUGINS_DASHBOARD=false` to opt out of it and the `copilot plugins` command.
+- `1.0.81 (2026-08-27)` Agents, skills and MCP servers contributed by installed plugins are no longer dropped in non-interactive (-p) runs, so --agent <plugin>:<agent> works headlessly without --plugin-dir
+- `1.0.81 (2026-08-27)` Skills and custom agents are discovered from directories added with --add-dir
+- `1.0.81 (2026-08-27)` Removed the `PLUGINS_DASHBOARD` opt-out and the legacy skills picker it kept alive. `/skills`, bare `/mcp`, and `/mcp show` (with no server name) always open the dashboard; `/mcp config` still opens the dedicated MCP wizard.
+- `1.0.81 (2026-08-27)` Removed `/plugins`; its resources moved to `/plugin`, `/mcp` and `/skills`, with `/subagents` and `/instructions` for agents and instructions.
+- `1.0.78 (2026-08-03)` Ctrl+Q now enqueues the highlighted mid-text skill completion instead of the partial token
+- `1.0.74 (2026-07-23)` Fully honor the skill disable-model-invocation flag
+- `1.0.72 (2026-07-20)` Add `update`/`uninstall` verbs to `/plugins`, let `enable`/`disable`/`remove` target plugins, MCP servers, or skills via `--plugin`/`--mcp`/`--skill` flags or a positional kind, and support installing skills with `/plugins install --skill`
+- `1.0.72 (2026-07-20)` Add a /plugins help command plus skill, MCP, and marketplace management for full /plugin parity
+- `1.0.72 (2026-07-20)` `copilot skill list` now strips terminal control characters from skill names and descriptions, so a crafted skill can no longer inject ANSI escape sequences into the listing output.
+- `1.0.72 (2026-07-20)` Install skills from the CLI with `copilot plugins install --skill <file, URL, or directory>` (add `--scope project` to a file or URL install to install into the repository)
+- `1.0.72 (2026-07-20)` Add --plugin, --mcp, and --skill flags for plugin mutations
+- `1.0.72 (2026-07-20)` Add skill removal support to `copilot plugins remove --skill`
+- `1.0.71 (2026-07-16)` Mark disabled skills in `copilot skill list` and its JSON output
+- `1.0.71 (2026-07-16)` Show repo-enabled plugins in /plugin list and skill pickers
+- `1.0.71 (2026-07-16)` Display plugin root skills as /plugin instead of /plugin:plugin
+- `1.0.71 (2026-07-16)` Show clean failure messages when copilot skill add fails
+- `1.0.71 (2026-07-16)` Make bare `copilot mcp` and `copilot skill` print help and exit 0, matching `copilot plugin`. Consistent with `plugin`, the implicit `help <subcommand>` form is not supported for these groups; use `copilot mcp <subcommand> --help` (or `copilot skill <subcommand> --help`) instead.
+- `1.0.70 (2026-07-09)` Show a single Error prefix for mcp and skill command failures
+- `1.0.70 (2026-07-09)` Create draft skills when Forge finds a clear workflow pattern
+- `1.0.70 (2026-07-09)` Let a trusted repository pin the model, effort level, and context tier and extend the URL/MCP/skill deny lists via .github/copilot/settings.json
+- `1.0.70 (2026-07-09)` Show clear validation errors for empty or non-ASCII skill and command names
+- `1.0.69 (2026-07-07)` Surface skill loading errors and warnings in `skill list`
+- `1.0.68 (2026-07-01)` Avoid duplicate skill and command parse errors from symlinked scan roots
+- `1.0.68 (2026-07-01)` Keep embedded /skill tokens in skill prompt context
+- `1.0.66 (2026-06-30)` Allow skills with the same name from different plugins to coexist
+- `1.0.66 (2026-06-30)` Add `/chronicle skills review` for reviewing proposed draft skill changes, with options to accept, reject, or defer each draft
+- `1.0.66 (2026-06-30)` Add persisted dynamicRetrieval setting (and --dynamic-retrieval skills=<on|off> flag) to enable or disable embeddings-based retrieval of skills
+- `1.0.66 (2026-06-30)` COPILOT_HOME and --config-dir stop loading skills from ~/.agents/skills
+- `1.0.65 (2026-06-24)` Add a `copilot skill` subcommand (and a `/skill` alias for `/skills`) to list, add, and remove skills from a file, URL, or directory
+- `1.0.64 (2026-06-23)` Add argument-hint frontmatter support for skills
+- `1.0.64 (2026-06-23)` Slash-command picker name column widened from 25 to 35 characters so fewer long skill names are truncated
+- `1.0.62 (2026-06-13)` Load skills from symlinked directories outside the configured root
+- `1.0.60 (2026-06-05)` Skill and slash command picker rows correctly display multi-line descriptions as a single line
+- `1.0.57 (2026-06-01)` /skills add and /skills remove correctly handle paths wrapped in quotes (e.g., from Windows Explorer "Copy as path")
+- `1.0.55 (2026-05-28)` Custom agents and skills are now discovered recursively in subdirectories
+- `1.0.55 (2026-05-28)` Feedback dialog and /skills help text use Copilot-consistent log paths and terminology
+- `1.0.55 (2026-05-28)` --plugin-dir skills now take precedence over personal-home (~/.copilot, ~/.agents) skills with the same name. Order is now project > plugin-dir > personal > custom.
+- `1.0.53 (2026-05-24)` /skills picker now correctly honors --config-dir when saving skill preferences
+- `1.0.48 (2026-05-14)` Skill content injected to the model no longer includes YAML frontmatter metadata
+- `1.0.44 (2026-05-08)` Slash commands can now appear mid-input, and multiple skills can be invoked in a single message
+- `1.0.40 (2026-05-01)` Skills are available as slash commands in ACP clients, matching the CLI experience
+- `1.0.37 (2026-04-27)` Skill picker list stays fully visible when skills have errors or warnings
+- `1.0.36 (2026-04-24)` Disabled skills no longer appear in the slash command list
+- `1.0.36 (2026-04-24)` Custom agents, skills, and commands from ~/.claude/ are no longer loaded by the Copilot CLI
+- `1.0.35 (2026-04-23)` Skill slash commands (e.g. /skill-name) passed as the initial prompt via -i are recognized correctly on startup
+- `1.0.35 (2026-04-23)` Custom agents and skills in ~/.claude/ are no longer incorrectly loaded as Copilot project config
+- `1.0.33 (2026-04-20)` Skill picker correctly truncates CJK/Japanese descriptions and long skill names without wrapping
+- `1.0.32 (2026-04-17)` Skills that exceed the token limit are still discoverable and invocable by name
+- `1.0.30 (2026-04-16)` Plugin skills and commands are correctly discovered when using skills.discover
+- `1.0.30 (2026-04-16)` Remove --list-env flag that logged loaded plugins, agents, skills, and MCP servers in prompt mode
+- `1.0.29 (2026-04-16)` Add --list-env flag to log loaded plugins, agents, skills, and MCP servers when running in prompt mode, helping verify environment configuration in CI pipelines
+- `1.0.25 (2026-04-13)` Add /env command to show loaded environment details (instructions, MCP servers, skills, agents, plugins)
+- `1.0.25 (2026-04-13)` Skill picker list scrolls correctly when the list exceeds the terminal height
+- `1.0.25 (2026-04-13)` Skill instructions persist correctly across conversation turns
+- `1.0.23 (2026-04-10)` Slash command picker shows full skill descriptions and a refined scrollbar
+- `1.0.22 (2026-04-09)` Custom agents can now declare a `skills` field to eagerly load skill content into agent context at startup
+- `1.0.17 (2026-04-03)` Built-in skills are now included with the CLI, starting with a guide for customizing Copilot cloud agent's environment
+- `1.0.15 (2026-04-01)` Config settings askUser, autoUpdate, storeTokenPlaintext, logLevel, skillDirectories, and disabledSkills now use camelCase names (snake_case still accepted)
+- `1.0.11 (2026-03-23)` Add ~/.agents/skills/ as a personal skill discovery directory, aligning with VS Code's GHCP4A extension default
+- `1.0.11 (2026-03-23)` Custom instructions, MCP servers, skills, and agents are now discovered at every directory level from the working directory up to the git root, enabling full monorepo support
+- `1.0.7 (2026-03-17)` Add experimental SDK session APIs to list and manage skills, MCP servers, and plugins, with optional config auto-discovery from the working directory
+- `1.0.5 (2026-03-13)` Add experimental embedding-based dynamic retrieval of MCP and skill instructions per turn
+- `1.0.4 (2026-03-11)` Add configure-copilot sub-agent for managing MCP servers, custom agents, and skills via the task tool
+- `1.0.3 (2026-03-09)` Suppress unknown field warnings in skill and command frontmatter
+- `0.0.417 (2026-02-25)` Plugin agents and skills are available immediately after install without restarting
+- `0.0.417 (2026-02-25)` Plugin skills and commands load from custom paths declared in plugin.json
+- `0.0.415 (2026-02-23)` Skill files saved with a UTF-8 BOM (common on Windows editors) now load correctly instead of failing with a frontmatter parse error
+- `0.0.415 (2026-02-23)` Add env loading indicator showing skills, MCPs, plugins, ... being loaded
+- `0.0.413 (2026-02-20)` Skill files with YAML array syntax for allowed-tools now load correctly
+- `0.0.412 (2026-02-19)` Skills support `disable-model-invocation` frontmatter field
+- `0.0.412 (2026-02-19)` Show a warning in the timeline when skills fail to load at startup, with a prompt to run /skills for details
+- `0.0.412 (2026-02-19)` Skills picker opens as a full-screen alt-screen view when alt-screen mode is enabled
+- `0.0.410 (2026-02-14)` Extend skill name validation to support underscores, dots, and spaces; make name and description optional in skill frontmatter with sensible fallbacks
+- `0.0.407 (2026-02-11)` Skill changes from `/skills` commands take effect immediately
+- `0.0.406 (2026-02-07)` Commands from plugins are now translated into skills
+- `0.0.403 (2026-02-04)` Plugin skills work in prompt mode
+- `0.0.403 (2026-02-04)` Skills with unknown frontmatter fields now load with warnings instead of being silently skipped
+- `0.0.401 (2026-02-03)` Support `.agents/skills` directory for auto-loading skills
+- `0.0.399 (2026-01-29)` Skills remain effective after conversation history is compacted
+- `0.0.399 (2026-01-29)` Support `.claude/commands/` single-file commands as simpler alternative to skills
+- `0.0.399 (2026-01-29)` Skills load correctly on Windows
+- `0.0.398 (2026-01-28)` Skills from parent directories are now invocable and work in non-git directories
+- `0.0.396 (2026-01-27)` Skill names can include uppercase letters
+- `0.0.396 (2026-01-27)` `/skills add` works with directories that contain SKILL.md directly
+- `0.0.396 (2026-01-27)` /skills add correctly counts skills when directory path has trailing slash
+- `0.0.395 (2026-01-26)` Plugin skills are now usable by the agent
+- `0.0.394 (2026-01-24)` Plugin skills work in agent responses
+- `0.0.389 (2026-01-22)` Invoke skills using slash commands like /skill-name
+- `0.0.387 (2026-01-20)` Skill tool handles large directories without exceeding context limits
+- `0.0.371 (2025-12-18)` Update skills help text to reference correct ~/.copilot/skills/ directory
+
+## Custom agents and subagents
+
+133 entries.
+
+- `1.0.102 (2026-10-21)` Subagents honor custom and MCP tool approvals, avoiding duplicate permission prompts and allowing inherited workflows to run
+- `1.0.101 (2026-10-20)` Add native structured output for dynamic workflow subagents on supported models
+- `1.0.100 (2026-10-19)` Custom agents that declare the documented `search`, `web` or `todo` tool aliases, or name `github-mcp-server/web_search`, now receive the matching tools
+- `1.0.97 (2026-10-13)` Add agent-scoped declarative hooks for custom agents
+- `1.0.97 (2026-10-13)` Discover all custom agents even when repositories define more than 100 or nest agent files deeply.
+- `1.0.97 (2026-10-13)` Skills and custom agents from --plugin-dir plugins now reach autocomplete and invocation instead of going missing.
+- `1.0.92 (2026-10-05)` Custom agent model entries keep model-bound reasoning effort only when that model is selected
+- `1.0.92 (2026-10-05)` Custom agents launched through ACP task calls now resolve and run correctly
+- `1.0.92 (2026-10-05)` Sub-agents keep working after you replace your GitHub authentication credentials
+- `1.0.92 (2026-10-05)` Copilot no longer describes a subagent as configured when the current session cannot run it. Previously a session that could not use rubber-duck still reported it as set up in /subagents, and asking for it failed instead of being skipped cleanly.
+- `1.0.88 (2026-09-22)` A custom agent's `reasoning-effort` now applies when the agent is selected, instead of only its model. An explicit `--reasoning-effort` still wins, and a level the selected model does not offer is reported and left unapplied
+- `1.0.88 (2026-09-22)` Session and subagent start hooks combine successful additional-context contributions within the hook-output limit
+- `1.0.87 (2026-09-21)` Extension permission handlers approve subagent tool requests without leaving duplicate CLI prompts
+- `1.0.87 (2026-09-21)` Show live elapsed time for execution subagents in timeline entries
+- `1.0.86 (2026-09-17)` Custom agents can opt into repository instruction files (AGENTS.md, copilot-instructions.md, CLAUDE.md) by setting `include-custom-instructions: true` in their frontmatter.
+- `1.0.85 (2026-09-16)` Add /settings options to opt in to context management tools for agents and subagents
+- `1.0.85 (2026-09-16)` Subagent launches honor explicit model, reasoning effort, and context tier preferences from applicable global and custom instructions
+- `1.0.83 (2026-09-04)` Custom agents can list several models in `model`, tried in order until one is available to you, and `model-policy: required` keeps model changes on that list
+- `1.0.83 (2026-09-04)` MCP servers configured by your agent stay available after built-in sub-agent turns.
+- `1.0.81 (2026-08-27)` Hook lifecycle events (`hook.start`/`hook.end`) from hooks inside a subagent are now recorded on that subagent's session and re-emitted on its parent, instead of being dropped on an internal session.
+- `1.0.81 (2026-08-27)` Render the autopilot goal panel as a pinned prompt frame, drop its progress bar for the exact todo count, fold the subagent hint into the row it toggles, and keep its metrics on a narrow pane
+- `1.0.81 (2026-08-27)` Skills and custom agents are discovered from directories added with --add-dir
+- `1.0.81 (2026-08-27)` ACP clients receive subagent IDs, raw event subscriptions, and live title, mode, command, and plan updates
+- `1.0.81 (2026-08-27)` Removed `/plugins`; its resources moved to `/plugin`, `/mcp` and `/skills`, with `/subagents` and `/instructions` for agents and instructions.
+- `1.0.79 (2026-08-10)` Plugin custom agents honor deferred-tool-loading frontmatter
+- `1.0.79 (2026-08-10)` Improve teleported subagent /tasks navigation with nested tree browsing, current/all and finished-task filters, and a live timeline you can steer
+- `1.0.76 (2026-07-29)` Sessions no longer fail every turn with "Holder terminated during creation" after a subagent finishes
+- `1.0.76 (2026-07-29)` Improve subagent delegation for small tasks and parallel work
+- `1.0.74 (2026-07-23)` Multi-turn subagent timelines show every prompt and response in the correct order after reopening /tasks
+- `1.0.74 (2026-07-23)` Subagent timelines identify whether prompts came from the main agent or another subagent
+- `1.0.73 (2026-07-20)` Anthropic subagents continue working when additional directories are configured
+- `1.0.73 (2026-07-20)` Resolve relative links in custom agent instructions from the agent file location
+- `1.0.72 (2026-07-20)` Lifecycle and subagent hook commands run in the current session directory after /cd
+- `1.0.72 (2026-07-20)` Multi-turn subagents are always enabled, so you can send follow-up messages to running agents
+- `1.0.71 (2026-07-16)` Reopening the /subagents model picker keeps each agent's reasoning effort and context tier
+- `1.0.71 (2026-07-16)` Limit which built-in agents are available to tasks and subagents
+- `1.0.71 (2026-07-16)` Custom agents that request a shell tool by alias now also receive the matching read, list, and stop shell tools
+- `1.0.71 (2026-07-16)` Apply updated session options (shell flags, streaming, custom agent defaults) immediately after /settings changes
+- `1.0.71 (2026-07-16)` Show selected custom agents once in /agent and keep their source label when the file name differs from the display name
+- `1.0.71 (2026-07-16)` Surface the real load error for malformed custom agents
+- `1.0.71 (2026-07-16)` Lower the default maximum sub-agent nesting depth from 6 to 4 to curb runaway recursive sub-agent delegation. Usage-based billing users can still adjust `subagents.maxDepth` (up to 128).
+- `1.0.70 (2026-07-09)` Show the real parse error when --agent selects a malformed custom agent
+- `1.0.70 (2026-07-09)` Treat superseded subagent runs as cancellations instead of failures
+- `1.0.70 (2026-07-09)` Hide /agent picker navigation hints when there is nothing to select
+- `1.0.68 (2026-07-01)` Custom agents keep their tool filters in nested subagents
+- `1.0.67 (2026-06-30)` Subagent sessions keep parent tool restrictions
+- `1.0.67 (2026-06-30)` Show warnings and errors when host custom agents fail to load
+- `1.0.66 (2026-06-30)` Configure subagent concurrency and depth limits in /settings (usage-based billing users)
+- `1.0.66 (2026-06-30)` Let custom agents set reasoning effort in their definitions
+- `1.0.65 (2026-06-24)` /cd now persists the working directory so resuming a session returns to it, and discovers custom agents in the new directory
+- `1.0.65 (2026-06-24)` Keep custom-agent subagent model selections when using BYOK providers
+- `1.0.64 (2026-06-23)` Configure the rubber-duck subagent in /subagents, including a complementary model strategy that picks an opposite-family model
+- `1.0.64 (2026-06-23)` Add tab completion for /agent names
+- `1.0.64 (2026-06-23)` Keep task companion tools available to custom agents that use the task or agent alias
+- `1.0.64 (2026-06-23)` Custom agents using a tools wildcard '\*' now respect deferredToolLoading opt-in switch
+- `1.0.64 (2026-06-23)` Respect `deferTools` on MCP servers configured in custom agent frontmatter
+- `1.0.64 (2026-06-23)` Allow disabling task and explore built-in subagents
+- `1.0.62 (2026-06-13)` Configure subagent model, reasoning effort, and context tier via user settings or the /subagents (also /agents) picker
+- `1.0.62 (2026-06-13)` Custom agents in nested .github/agents and .claude/agents directories are now discovered when the session is started from a subdirectory of the repository root
+- `1.0.62 (2026-06-13)` Keep custom agents on their configured model when using BYOK providers
+- `1.0.62 (2026-06-13)` Remote MCP OAuth servers start only once per matching config instead of restarting for each subagent
+- `1.0.62 (2026-06-13)` Nested subagents respect concurrency limits without blocking terminal input
+- `1.0.61 (2026-06-09)` Number-key selection in pickers (e.g. /agent) works for items 10 and beyond
+- `1.0.61 (2026-06-09)` Press '/' in the /agent picker to filter agents by name
+- `1.0.60 (2026-06-05)` Custom agent instructions are no longer duplicated each turn, reducing context window usage
+- `1.0.55 (2026-05-28)` Custom agents and skills are now discovered recursively in subdirectories
+- `1.0.52 (2026-05-23)` Custom agents support opt-in deferred tool loading via `deferred-tool-loading` in agent frontmatter, enabling tool-search discovery for agents with large tool lists
+- `1.0.52 (2026-05-23)` General-purpose subagents use GPT-5.4 or GPT-5.5 when available
+- `1.0.49 (2026-05-18)` Hooks (preToolUse, postToolUse, subagentStart, subagentStop) now fire correctly for sub-agent tool calls
+- `1.0.49 (2026-05-18)` Plugins loaded via --plugin-dir now correctly register their agents as available task(agent_type=...) subagents in prompt mode
+- `1.0.44 (2026-05-08)` Timeline shows the resolved model for rubber-duck sub-agents (e.g. Rubber-duck(claude-opus-4.7))
+- `1.0.40 (2026-05-01)` /clear and /new reset the active custom agent selection
+- `1.0.40 (2026-05-01)` Subagents correctly evaluate tool search support for their own model instead of inheriting the parent session's settings
+- `1.0.40 (2026-05-01)` /research uses an orchestrator/subagent model for more thorough and reliable deep research results
+- `1.0.40 (2026-05-01)` ACP clients can now list and switch custom agents via the agent config option
+- `1.0.36 (2026-04-24)` Custom agents, skills, and commands from ~/.claude/ are no longer loaded by the Copilot CLI
+- `1.0.35 (2026-04-23)` Custom agents and skills in ~/.claude/ are no longer incorrectly loaded as Copilot project config
+- `1.0.35 (2026-04-23)` Hide subagent thinking from the timeline
+- `1.0.35 (2026-04-23)` Custom agent name is now visible in the statusline footer and can be toggled via /statusline
+- `1.0.33 (2026-04-20)` Sub-agents in auto mode now inherit the session model
+- `1.0.24 (2026-04-10)` Custom agent model field now accepts display names and vendor suffixes from VS Code (e.g., "Claude Sonnet 4.5", "GPT-5.4 (copilot)")
+- `1.0.23 (2026-04-10)` /diff, /agent, /feedback, /ide, and /tuikit work while the agent is running
+- `1.0.22 (2026-04-09)` Sub-agent activity no longer shows duplicated tool names (e.g. "view view the file...")
+- `1.0.22 (2026-04-09)` Custom agents can now declare a `skills` field to eagerly load skill content into agent context at startup
+- `1.0.22 (2026-04-09)` Add sub-agent depth and concurrency limits to prevent runaway agent spawning
+- `1.0.19 (2026-04-06)` OpenTelemetry monitoring: subagent spans now use INTERNAL span kind, and chat spans include a `github.copilot.time_to_first_chunk` attribute (streaming only)
+- `1.0.19 (2026-04-06)` Custom agent is properly restored when resuming a session where the agent display name differs from its filename
+- `1.0.12 (2026-03-26)` Resume session restores the previously selected custom agent
+- `1.0.8 (2026-03-18)` Idle subagents no longer clutter the /tasks view — they are hidden after 2 minutes of inactivity
+- `1.0.7 (2026-03-17)` Add subagentStart hook that fires when a subagent is spawned, with support for injecting additional context into the subagent's prompt
+- `1.0.6 (2026-03-16)` Resolve session crashes caused by HTTP/2 connection pool race conditions when sub-agents are active
+- `1.0.6 (2026-03-16)` Subagent elapsed time in /tasks view freezes when idle and resumes when active again
+- `1.0.6 (2026-03-16)` Sub-agents launched by the task tool are assigned human-readable IDs based on their name (e.g., `math-helper-0`) instead of generic `agent-0` identifiers
+- `1.0.4 (2026-03-11)` Custom agents from --plugin-dir plugins now load correctly in ACP mode
+- `1.0.4 (2026-03-11)` Add configure-copilot sub-agent for managing MCP servers, custom agents, and skills via the task tool
+- `0.0.415 (2026-02-23)` Custom agents support the `model` field to specify which model to use, and unknown fields now warn instead of blocking agent load
+- `0.0.413 (2026-02-20)` Fixed alt-screen timeline entries not updating when tool calls complete (particularly sub-agent calls)
+- `0.0.412 (2026-02-19)` Hide custom agents with `user-invocable: false` from the `/agents` picker
+- `0.0.412 (2026-02-19)` /fleet orchestrator validates subagent work
+- `0.0.412 (2026-02-19)` /fleet mode dispatches more subagents in parallel for faster execution
+- `0.0.411 (2026-02-17)` Custom agents use `disable-model-invocation` instead of `infer` (backward compatible)
+- `0.0.409 (2026-02-12)` Subagents return complete responses
+- `0.0.407 (2026-02-11)` Subagents fall back to session model when default model blocked by policy
+- `0.0.407 (2026-02-11)` Autopilot mode works with custom agents that specify explicit tools
+- `0.0.403 (2026-02-04)` Support comma-separated tools in custom agent frontmatter
+- `0.0.402 (2026-02-03)` Custom agents with unknown fields load with warnings instead of errors
+- `0.0.402 (2026-02-03)` Custom agents receive environment context when run as subagents
+- `0.0.401 (2026-02-03)` Add agentStop and subagentStop hooks to control agent completion
+- `0.0.399 (2026-01-29)` /usage now includes token consumption from sub-agents (e.g., the general-purpose agent)
+- `0.0.396 (2026-01-27)` Subagent timeline entries display with bold, capitalized names
+- `0.0.396 (2026-01-27)` Create custom agents through interactive CLI wizard
+- `0.0.396 (2026-01-27)` Tool filtering flags now apply to subagents
+- `0.0.396 (2026-01-27)` Plugins can provide custom agents
+- `0.0.393 (2026-01-23)` Add support for GHE Cloud (\*.ghe.com) remote custom agents
+- `0.0.390 (2026-01-22)` Custom agents with MCP servers avoid unnecessary restarts
+- `0.0.389 (2026-01-22)` Subagents receive correct tools when using different models
+- `0.0.389 (2026-01-22)` Subagents no longer hang on user input requests
+- `0.0.385 (2026-01-19)` MCP server management when swapping between custom agents with /agent
+- `0.0.384 (2026-01-16)` MCP servers now start correctly for custom agents
+- `0.0.384 (2026-01-16)` Custom agent discovery now follows symbolic links to agent definition files
+- `0.0.384 (2026-01-16)` Add additional prompting for custom agent delegation
+- `0.0.380 (2026-01-13)` Abort signals now propagate to sub-agents, allowing task cancellation to stop all nested agent work
+- `0.0.380 (2026-01-13)` Custom agent tool aliasing for the task tool
+- `0.0.376 (2026-01-08)` Task tool subagents can now process images
+- `0.0.375 (2026-01-07)` Shutdown MCP servers after subagent execution completes
+- `0.0.374 (2026-01-02)` Built-in subagents for exploring and managing tasks
+- `0.0.366 (2025-12-03)` Add `infer` property to control custom agent tool visibility
+- `0.0.359 (2025-11-17)` Fix an issue where sourcing custom agents from the remote repository's default branch led to confusions about whether the local copy of the agent was being used
+- `0.0.359 (2025-11-17)` Fix custom agents configuration issues
+- `0.0.355 (2025-11-12)` Improved parsing of VS Code-formatted custom agents with the `.agent.md` suffix
+- `0.0.355 (2025-11-12)` Fixed a bug where remote MCP server configuration in custom agents was not fetched properly
+- `0.0.354 (2025-11-03)` Custom agents with special characters in filenames no longer fail
+- `0.0.353 (2025-10-28)` Added support for custom agents. Custom agent definitions are pulled from `~/.copilot/agents`, `.github/agents` in your repository, or your organization's `.github` repository. You can explicitly invoke an agent with the `/agent` slash command interactively or `--agent <agent>` noninteractively. Agents are also provided as tools that the model can call during completion of a task
+
+## MCP
+
+324 entries.
+
+- `1.0.103 (2026-10-22)` Reuse cached local MCP tool snapshots across registered Git worktrees in one repository
+- `1.0.102 (2026-10-21)` Subagents honor custom and MCP tool approvals, avoiding duplicate permission prompts and allowing inherited workflows to run
+- `1.0.101 (2026-10-20)` Headless and SDK sessions without an OAuth handler skip MCP connections when saved tokens require sign-in, while renewable grants still connect.
+- `1.0.101 (2026-10-20)` Explicit Entra MCP sign-in now recovers from rejected cached tokens by continuing to interactive sign-in.
+- `1.0.101 (2026-10-20)` Configured MCP inventory reads no longer fail when startup state is unchanged
+- `1.0.101 (2026-10-20)` Shared MCP auth errors point to your client's sign-in settings; CLI authentication warnings still show /mcp auth.
+- `1.0.101 (2026-10-20)` Preserve MCP PNG images that include ICC color profiles instead of omitting them
+- `1.0.101 (2026-10-20)` Starting a session with sandboxed MCP servers now avoids unnecessary restarts and responds faster.
+- `1.0.100 (2026-10-19)` Sessions no longer stall for minutes when an MCP server hangs while loading tools.
+- `1.0.100 (2026-10-19)` Back from MCP resource details stays on the list during live metadata refreshes
+- `1.0.100 (2026-10-19)` Custom agents that declare the documented `search`, `web` or `todo` tool aliases, or name `github-mcp-server/web_search`, now receive the matching tools
+- `1.0.100 (2026-10-19)` MCP resource dashboard stays interactive while inventory adapters refresh
+- `1.0.100 (2026-10-19)` Start git, shell commands, and MCP servers on Windows when process snapshot thread enumeration fails
+- `1.0.98 (2026-10-14)` MCP status and /mcp commands stay synced to the active session after split-view session switches
+- `1.0.97 (2026-10-13)` Power BI and Bluebird MCP servers accept their published resource scopes during sign-in
+- `1.0.97 (2026-10-13)` Explicit GitHub MCP tool and toolset selections use the correct endpoint, so requested write tools stay available.
+- `1.0.97 (2026-10-13)` Cached MCP tool calls recheck their definition when a concurrent tool-list refresh changes the catalog.
+- `1.0.94 (2026-10-08)` copilot mcp add recovers cleanly after interrupted MCP config initialization
+- `1.0.94 (2026-10-08)` MCP enable/disable now works before server discovery without starting MCP servers
+- `1.0.93 (2026-10-07)` MCP server configuration changes apply between turns without restarting the session.
+- `1.0.92 (2026-10-05)` Entra-protected MCP servers can silently renew access-token-only credentials.
+- `1.0.92 (2026-10-05)` Legacy HTTP+SSE MCP connections no longer hang indefinitely when a message POST is never acknowledged; the acknowledgement is bounded by the server's configured timeout
+- `1.0.92 (2026-10-05)` MCP tools recover within the same turn when server instructions change
+- `1.0.92 (2026-10-05)` Reconnect to remote MCP servers after idle Streamable HTTP sessions expire
+- `1.0.92 (2026-10-05)` MCP tools continue working after OAuth reauthentication when tool definitions are unchanged
+- `1.0.92 (2026-10-05)` Improve startup responsiveness when connecting many MCP servers at once
+- `1.0.90 (2026-09-30)` Add --mcp-github-auth to scope GitHub account auth to approved MCP server origins
+- `1.0.90 (2026-09-30)` MCP tools recover after transient discovery failures without restarting the session; unchanged catalogs remain available during recovery.
+- `1.0.90 (2026-09-30)` MCP tool calls complete even when servers keep sending progress updates after responding
+- `1.0.90 (2026-09-30)` MCP OAuth sign-in to servers such as Datadog reuses a still-valid cached token
+- `1.0.89 (2026-09-28)` MCP pre-registered OAuth clients honor configured oauthScopes.
+- `1.0.89 (2026-09-28)` server/tool and server/\* tool filters now match MCP tool names that contain a slash
+- `1.0.89 (2026-09-28)` Extensions no longer fail to load under enterprise managed settings while managed MCP policy is still being applied
+- `1.0.89 (2026-09-28)` Gemini models no longer fail every request with 400 invalid request body when an MCP server exposes a tool whose schema puts a type or properties beside anyOf, such as a nullable discriminated union
+- `1.0.89 (2026-09-28)` GitHub MCP tools connect correctly on first CLI startup after sign-in
+- `1.0.89 (2026-09-28)` MCP config loading keeps valid workspace servers when sibling entries are invalid
+- `1.0.88 (2026-09-22)` Deferred MCP tools whose registered name needed sanitizing or shortening are now listed under that name, so tool search can find them, and deferred MCP tools with no resolvable server name are now listed with the other tools instead of being left out of the reminder
+- `1.0.88 (2026-09-22)` Resuming sessions no longer stalls when MCP permission prompts are pending
+- `1.0.88 (2026-09-22)` MCP tools recover more reliably from transient listing, connection, and OAuth failures
+- `1.0.88 (2026-09-22)` Enterprise managed settings now apply to sessions opened in ACP mode (`copilot --acp`), by AHP hosts (`copilot --ahp-host`), and by the published `--server` session, which previously ran with no managed MCP, permission, or plugin policy.
+- `1.0.88 (2026-09-22)` GitHub MCP scope escalation now uses the CLI OAuth app's registered /callback redirect URI
+- `1.0.88 (2026-09-22)` Cached MCP tools stay scoped to environment-resolved server addresses and headers
+- `1.0.88 (2026-09-22)` MCP and plugin views show server display names and plugin descriptions for clearer status.
+- `1.0.87 (2026-09-21)` Mouse-selected text is visibly highlighted in /help and /mcp show screens
+- `1.0.87 (2026-09-21)` MCP auth status warnings stay accurate during reconnects and startup refreshes
+- `1.0.87 (2026-09-21)` A failing MCP server no longer removes other servers' tools
+- `1.0.87 (2026-09-21)` `copilot mcp list` and `copilot mcp get` now report the built-in `github-mcp-server` when you are signed in, instead of showing it only in the interactive `/mcp` view
+- `1.0.87 (2026-09-21)` MCP servers that advertise list-change capabilities but do not implement subscriptions now connect instead of failing
+- `1.0.87 (2026-09-21)` Session resume no longer hangs while reconnecting MCP servers
+- `1.0.87 (2026-09-21)` Configure per-server MCP slow-connection warning thresholds with slowConnectionThresholdMs
+- `1.0.85 (2026-09-16)` Add `enable` and `disable` to `copilot plugin`, `copilot mcp` and `copilot skill`, replacing `copilot plugins enable/disable --plugin|--mcp|--skill`
+- `1.0.85 (2026-09-16)` MCP servers no longer fail to load when the CLI is connected to a running IDE. The in-process IDE bridge was rejected by config validation, which failed the plugin reload and restricted the session
+- `1.0.85 (2026-09-16)` MCP turns continue even if tool list refresh fails after a tool change
+- `1.0.85 (2026-09-16)` MCP servers keep correct workspace source labels after trusting a folder
+- `1.0.85 (2026-09-16)` Plugin agents expand ${PLUGIN_ROOT} placeholders in mcp-servers frontmatter
+- `1.0.85 (2026-09-16)` A relative `--additional-mcp-config @<file>` path now resolves against the session working directory under `--resume=<id>` and `--worktree` instead of the launch directory, and `~/` expands.
+- `1.0.85 (2026-09-16)` Cancelling an MCP tool call now notifies the MCP server and cleanly ends the turn.
+- `1.0.85 (2026-09-16)` MCP OAuth requests additional scopes when needed and retries the tool call
+- `1.0.85 (2026-09-16)` MCP tools with boolean property or array-item schemas work with Gemini instead of causing a 400 error
+- `1.0.85 (2026-09-16)` Report in-memory MCP servers as memory instead of local in copilot mcp list
+- `1.0.85 (2026-09-16)` Workspace .mcp.json servers load correctly after trusting a folder on startup
+- `1.0.85 (2026-09-16)` Fixed same-turn MCP tool-list refresh after received change notifications, including modern subscription-based servers.
+- `1.0.85 (2026-09-16)` OAuth-authenticated MCP servers connect reliably during session startup
+- `1.0.85 (2026-09-16)` MCP servers now see the same copilot-cli client identity when you add a server and when a session connects, carrying the shipped CLI version instead of 0.0.0
+- `1.0.85 (2026-09-16)` Pressing Escape once cancels MCP inference approval prompts once
+- `1.0.85 (2026-09-16)` MCP reload summary shows servers still starting after timeout
+- `1.0.85 (2026-09-16)` Remove the cross-kind `--kind`, `--scope`, `--mcp` and `--skill` flags from `copilot plugins`; use `copilot mcp` and `copilot skill`
+- `1.0.85 (2026-09-16)` `copilot plugins list` is now an alias of `copilot plugin list` and reports only plugins, no longer MCP servers, skills, instructions or LSP servers
+- `1.0.83 (2026-09-04)` Add Client ID Metadata Document (CIMD) support for MCP OAuth sign-in
+- `1.0.83 (2026-09-04)` MCP tools remain callable after MCP server restarts
+- `1.0.83 (2026-09-04)` MCP servers configured by your agent stay available after built-in sub-agent turns.
+- `1.0.83 (2026-09-04)` Enterprise-denied MCP servers can no longer start before the managed allow/deny policy resolves; server startup now waits for the managed-settings fetch instead of racing it
+- `1.0.83 (2026-09-04)` MCP servers contributed by a plugin are no longer labelled "User" in the MCP dashboard, and a server from a bundled plugin is now shown as built-in and names the plugin it came from.
+- `1.0.83 (2026-09-04)` `/mcp config` and the MCP add/edit/authenticate forms now open in the plugins dashboard instead of a separate MCP manager, so closing a form returns to the server list.
+- `1.0.81 (2026-08-27)` The plugins dashboard is available to everyone: run `/plugin`, `/mcp`, or `/skills`. Set `PLUGINS_DASHBOARD=false` to opt out of it and the `copilot plugins` command.
+- `1.0.81 (2026-08-27)` Ship MCP 2026-07-28 support to CLI, SDK, IDE, and in-memory clients
+- `1.0.81 (2026-08-27)` Windows: remote MCP servers protected by Microsoft Entra ID can now sign in through the OS authentication broker (WAM), usually with no prompt at all. Other platforms, `--device-code`, and machines without the broker library keep the existing browser flow.
+- `1.0.81 (2026-08-27)` An MCP server blocked by an enterprise policy now shows as blocked in /mcp instead of spinning as pending forever
+- `1.0.81 (2026-08-27)` A failed tool call no longer stacks its `(MCP: server)` label one character per line down the timeline — the label and the error now share the row, with the longer side truncating
+- `1.0.81 (2026-08-27)` Agents, skills and MCP servers contributed by installed plugins are no longer dropped in non-interactive (-p) runs, so --agent <plugin>:<agent> works headlessly without --plugin-dir
+- `1.0.81 (2026-08-27)` `x` is now the delete key everywhere: /sandbox config, /settings, /mcp, the sessions dialog and the diff comments summary move off `d`
+- `1.0.81 (2026-08-27)` forceRemoteSettingsRefresh now fails closed: when set, the cached managed-settings policy is never served or used as a fetch-failure fallback (skipping both the 1h fast path and the 24h stale fallback), so a failed startup fetch blocks on the unconfirmed policy instead of reverting to a possibly-stale cached one. Concretely, until a fresh policy is fetched the session applies the restrictive undetermined-policy posture: non-default MCP servers are blocked, bypass-permissions mode cannot be enabled, and policy-gated plugin install/update mutations are blocked
+- `1.0.81 (2026-08-27)` Removed the `PLUGINS_DASHBOARD` opt-out and the legacy skills picker it kept alive. `/skills`, bare `/mcp`, and `/mcp show` (with no server name) always open the dashboard; `/mcp config` still opens the dedicated MCP wizard.
+- `1.0.81 (2026-08-27)` Removed `/plugins`; its resources moved to `/plugin`, `/mcp` and `/skills`, with `/subagents` and `/instructions` for agents and instructions.
+- `1.0.79 (2026-08-10)` A sandbox that cannot start an MCP server now fails in seconds instead of stalling the session, and sandbox startup failures for both MCP and language servers now say the sandbox was at fault and how to fix or opt out of it
+- `1.0.78 (2026-08-03)` Switching sessions no longer restarts MCP servers or rebuilds hook state, so a turn running in another session is never halted with a stale-hook error
+- `1.0.78 (2026-08-03)` Refresh deferred MCP tools after OAuth authentication
+- `1.0.78 (2026-08-03)` Honor explicit GitHub MCP toolset/tool config: keep gh-overlap tools and stop steering to the gh CLI when you opt in
+- `1.0.76 (2026-07-29)` MCP tools load faster from definition-scoped snapshots, with process-wide and per-server cache opt-outs.
+- `1.0.74 (2026-07-23)` Add support for Open Plugin Spec v1 plugin manifests and mcp.json configuration
+- `1.0.74 (2026-07-23)` IDE integration reconnects reliably when the CLI reloads MCP servers or changes directory
+- `1.0.74 (2026-07-23)` The `/mcp add` and `/mcp edit` wizard now preserves `=` characters in environment variable values (such as base64 padding), so secrets and tokens are stored correctly.
+- `1.0.72 (2026-07-20)` Deleting an MCP server with /mcp delete stops its running background process
+- `1.0.72 (2026-07-20)` Toggling /sandbox restarts only local MCP servers and leaves remote servers connected
+- `1.0.72 (2026-07-20)` Show a connected message after a slow MCP server eventually connects
+- `1.0.72 (2026-07-20)` Add `update`/`uninstall` verbs to `/plugins`, let `enable`/`disable`/`remove` target plugins, MCP servers, or skills via `--plugin`/`--mcp`/`--skill` flags or a positional kind, and support installing skills with `/plugins install --skill`
+- `1.0.72 (2026-07-20)` Add a /plugins help command plus skill, MCP, and marketplace management for full /plugin parity
+- `1.0.72 (2026-07-20)` Show MCP server status correctly for names like constructor and **proto**
+- `1.0.72 (2026-07-20)` Add --plugin, --mcp, and --skill flags for plugin mutations
+- `1.0.71 (2026-07-16)` Keep MCP tool lists up to date when servers change
+- `1.0.71 (2026-07-16)` Keep all MCP Server Type options visible on short terminals
+- `1.0.71 (2026-07-16)` Plan mode now hard-blocks built-in tool calls that would modify the workspace, so the agent can no longer edit files or run mutating shell commands while planning (built-in mutators like opening a pull request are blocked; MCP and external tools are still allowed)
+- `1.0.71 (2026-07-16)` Persist GitHub MCP toolset/tool config via settings.json (githubMcpToolsets, githubMcpTools, etc.)
+- `1.0.71 (2026-07-16)` Using --add-github-mcp-tool "\*" now enables all GitHub MCP tools
+- `1.0.71 (2026-07-16)` Show a warning when a workspace MCP config is malformed or cannot be loaded
+- `1.0.71 (2026-07-16)` Make bare `copilot mcp` and `copilot skill` print help and exit 0, matching `copilot plugin`. Consistent with `plugin`, the implicit `help <subcommand>` form is not supported for these groups; use `copilot mcp <subcommand> --help` (or `copilot skill <subcommand> --help`) instead.
+- `1.0.71 (2026-07-16)` Server mode reconnects OAuth MCP servers from cached tokens
+- `1.0.71 (2026-07-16)` Show the full command with its arguments (not just the wrapper) in the /mcp server detail view
+- `1.0.70 (2026-07-09)` Show a single Error prefix for mcp and skill command failures
+- `1.0.70 (2026-07-09)` Add paginated session.mcp.resources read/list/listTemplates RPCs for MCP server resources
+- `1.0.70 (2026-07-09)` Let a trusted repository pin the model, effort level, and context tier and extend the URL/MCP/skill deny lists via .github/copilot/settings.json
+- `1.0.70 (2026-07-09)` Expose SDK APIs to manage live MCP servers in running sessions
+- `1.0.70 (2026-07-09)` Mark locally-spawned MCP servers that run inside the sandbox in `/mcp list` (e.g. `connected (sandboxed)`)
+- `1.0.69 (2026-07-07)` Disconnect a repo-scoped plugin's MCP server when the repo disables it or the session leaves the declaring repository
+- `1.0.69 (2026-07-07)` Sign in to MCP servers through the CLI OAuth callback flow
+- `1.0.69 (2026-07-07)` Add /mcp list to show attached MCP servers and their status, and allow /mcp list and /plugin list to run while the agent is working
+- `1.0.69 (2026-07-07)` Allow opening the /mcp manager while the agent is working to enable or disable servers mid-turn; add, edit, delete, and re-auth stay paused until the turn finishes
+- `1.0.69 (2026-07-07)` Warn when multiple plugins define the same MCP server
+- `1.0.69 (2026-07-07)` OAuth-gated MCP servers now register their tools after reconnect
+- `1.0.69 (2026-07-07)` Show Authenticate for cancelled MCP OAuth requests
+- `1.0.69 (2026-07-07)` Keep MCP servers in needs-auth after OAuth cancellation
+- `1.0.69 (2026-07-07)` Skip unnecessary MCP reloads when returning to an already-loaded session
+- `1.0.68 (2026-07-01)` The focused field in the /mcp config form is marked with a "❯ " chevron, not color alone
+- `1.0.67 (2026-06-30)` MCP OAuth against Microsoft Entra servers behind a tenant vanity domain (e.g. Copilot Studio) no longer fails to refresh or re-authenticate (AADSTS9010010 / AADSTS90023)
+- `1.0.66 (2026-06-30)` MCP add/edit form accepts HTTP-style `Key: value` headers
+- `1.0.66 (2026-06-30)` Filter non-JSON stdout lines from MCP servers during startup
+- `1.0.66 (2026-06-30)` Resolve package argument placeholders when installing MCP registry entries
+- `1.0.66 (2026-06-30)` Stop showing broken-pipe errors when a sandboxed MCP server exits mid-request
+- `1.0.66 (2026-06-30)` Properly recover MCP host-delegated connections when OAuth tokens expire or need broader scopes
+- `1.0.66 (2026-06-30)` Add toggle to enable or disable MCP servers in the CLI from MCP list view
+- `1.0.66 (2026-06-30)` MCP tools on OAuth-authenticated remote servers now recover automatically after a mid-session token expiry, matching the existing OIDC retry behaviour. A 401 during a tool call triggers a non-interactive reconnect, and servers needing interactive re-auth are retried at the start of the next turn.
+- `1.0.66 (2026-06-30)` Added runtime telemetry for the MCP host token-injection OAuth flow, recording when an OAuth broadcast is emitted to the host and how the host responds (token or cancelled) with response latency
+- `1.0.66 (2026-06-30)` Refresh MCP server headers automatically after authentication changes
+- `1.0.66 (2026-06-30)` Add --allow-all-mcp-server-instructions to optionally include instructions from all MCP servers in system prompts
+- `1.0.66 (2026-06-30)` Auto-accept opt-in MCP consent prompts in --yolo sessions while still showing system permission prompts
+- `1.0.65 (2026-06-24)` Keep Windows paths intact when adding stdio MCP servers
+- `1.0.65 (2026-06-24)` Stop MCP shutdown from waiting on in-flight server connects
+- `1.0.65 (2026-06-24)` Silent MCP OAuth refresh reuses the granted scope so reconnects stay signed in
+- `1.0.64 (2026-06-23)` Support static OAuth client overrides, including client secrets, for MCP server authentication
+- `1.0.64 (2026-06-23)` Add SDK support for host-provided OAuth tokens for remote MCP servers
+- `1.0.64 (2026-06-23)` Apply MCP org policy when sessions create or reload MCP servers
+- `1.0.64 (2026-06-23)` Respect `deferTools` on MCP servers configured in custom agent frontmatter
+- `1.0.64 (2026-06-23)` Marketplace plugins that declare MCP servers in marketplace.json now authenticate correctly with OAuth
+- `1.0.64 (2026-06-23)` Load workspace MCP servers in trusted server-mode sessions
+- `1.0.64 (2026-06-23)` Show installed plugin MCP servers in `mcp` commands
+- `1.0.64 (2026-06-23)` Add /mcp registry installation for browsing and installing MCP servers
+- `1.0.64 (2026-06-23)` Discover MCP servers provided by installed plugins
+- `1.0.64 (2026-06-23)` Add CSV output support for MCP tools
+- `1.0.63 (2026-06-15)` Add deferTools option to MCP server config to keep a server's tools always available, even when tool search is enabled
+- `1.0.62 (2026-06-13)` Make the MCP server config form easier to use with a picker-based flow
+- `1.0.62 (2026-06-13)` MCP server names with dots and slashes map to valid Responses API namespaces
+- `1.0.62 (2026-06-13)` Keep workspace MCP servers from restarting in a loop
+- `1.0.62 (2026-06-13)` Remote MCP OAuth servers start only once per matching config instead of restarting for each subagent
+- `1.0.61 (2026-06-09)` Auto-load MCP servers from .github/mcp.json workspace config file
+- `1.0.61 (2026-06-09)` Gemini models work correctly with MCP tools that use nullable schema types
+- `1.0.61 (2026-06-09)` MCP OAuth re-authentication correctly uses the saved OAuth client ID for remote servers
+- `1.0.61 (2026-06-09)` /mcp search works correctly with external registries
+- `1.0.60 (2026-06-05)` MCP tools glyph in /context legend displays at the correct size
+- `1.0.60 (2026-06-05)` /context separates Custom Instructions from the system prompt and cross-references per-server MCP tool token costs with /mcp
+- `1.0.60 (2026-06-05)` MCP OAuth re-authentication no longer fails with an address-in-use error when a login is already in progress
+- `1.0.60 (2026-06-05)` MCP allowlist now matches npm scoped servers whose registry entry drops the leading @ from the package identifier
+- `1.0.60 (2026-06-05)` MCP servers registered via Azure API Center are no longer incorrectly blocked by the allowlist
+- `1.0.60 (2026-06-05)` Local MCP servers sharing a serialized token broker (e.g. M365) reliably start instead of intermittently failing
+- `1.0.60 (2026-06-05)` MCP tools added or removed by a server mid-turn are now available immediately in the same turn
+- `1.0.57 (2026-06-01)` In Azure DevOps-only repositories, the built-in GitHub MCP server now exposes only the web_search tool instead of being fully disabled
+- `1.0.57 (2026-06-01)` MCP server timeout configuration is preserved after tools list changes
+- `1.0.57 (2026-06-01)` MCP servers configured with npx --registry are no longer incorrectly blocked by policy
+- `1.0.56 (2026-05-29)` MCP tools that return both human-readable `content` text and a `structuredContent` payload now surface both to the agent instead of dropping either side. When the text is the literal JSON serialization (per MCP spec §5.2.6) it is deduplicated; otherwise the two are concatenated.
+- `1.0.56 (2026-05-29)` When gh CLI is on PATH, GitHub MCP server now omits redundant gh-replaceable tools by default, reducing token usage
+- `1.0.55 (2026-05-28)` MCP server configuration form saves the latest typed value when pressing Ctrl+S
+- `1.0.55 (2026-05-28)` Show per-MCP-server token usage in /mcp and break out MCP tool tokens in /context
+- `1.0.55 (2026-05-28)` MCP configuration now opens in its own dedicated screen, with scrollable server and tool lists when content exceeds the visible area
+- `1.0.52 (2026-05-23)` Non-interactive subcommands (plugin list, mcp list, help, version) no longer consume stdin
+- `1.0.52 (2026-05-23)` Legacy nested `oauth.clientId` and `oauth.callbackPort` keys in MCP server configs are now migrated to the supported `oauthClientId` and `auth.redirectPort` keys instead of being silently dropped
+- `1.0.52 (2026-05-23)` MCP OAuth re-authentication honors the configured redirectPort
+- `1.0.51 (2026-05-20)` MCP tool loading at startup is faster for users with many HTTP-based MCP servers
+- `1.0.51 (2026-05-20)` Add preMcpToolCall hook for hook providers to control outgoing MCP request metadata
+- `1.0.51 (2026-05-20)` MCP servers using OAuth stay connected when authentication was performed in a separate session
+- `1.0.51 (2026-05-20)` GitHub MCP web search tool is available immediately without requiring tool search
+- `1.0.49 (2026-05-18)` MCP servers using static OAuth clients correctly persist registration for token refreshes
+- `1.0.49 (2026-05-18)` Add `auth.redirectPort` config option for MCP servers to pin the OAuth callback to a fixed port
+- `1.0.49 (2026-05-18)` MCP server configurations with no `args` field are now accepted and treated as an empty args list
+- `1.0.49 (2026-05-18)` MCP stdio servers now display type as 'stdio' instead of 'local' for consistency
+- `1.0.49 (2026-05-18)` Prompt mode (-p) automatically loads workspace MCP sources when the current folder is already trusted
+- `1.0.49 (2026-05-18)` Experimental: /mcp search command to search and install MCP servers from registry
+- `1.0.49 (2026-05-18)` Experimental: Tool search with deferred loading for MCP and external tools
+- `1.0.49 (2026-05-18)` --plugin-dir and --additional-mcp-config now work in --server / --headless mode
+- `1.0.49 (2026-05-18)` MCP OAuth token lookups are correctly scoped to the active session
+- `1.0.48 (2026-05-14)` Auto-disable the built-in github-mcp-server in Azure DevOps-only workspaces when running in prompt/headless mode, matching interactive mode behavior
+- `1.0.45 (2026-05-11)` OpenTelemetry output aligns with GenAI semantic conventions: MCP tool calls now use standard tool_call spans, and a new gen_ai.client.operation.duration metric tracks tool execution time
+- `1.0.43 (2026-05-06)` MCP server child processes (e.g. started via npx or uvx) are now fully terminated when a session ends
+- `1.0.42 (2026-05-06)` MCP server failure warning now suggests a directly runnable `/mcp show` command when the server name contains whitespace
+- `1.0.42 (2026-05-06)` MCP server failure warnings include stderr output to help diagnose connection errors
+- `1.0.41 (2026-05-05)` Add experimental MCP Tasks support: MCP tools with `taskSupport: "required"` run as non-blocking background agents trackable via `list_agents` and `read_agent` (available when experimental mode is enabled, e.g. via `/experimental on` or the `--experimental` flag)
+- `1.0.40 (2026-05-01)` Add support for `client_credentials` OAuth grant type for MCP servers, enabling fully headless authentication without a browser
+- `1.0.40 (2026-05-01)` Detect Azure DevOps repositories and auto-disable the GitHub MCP server
+- `1.0.40 (2026-05-01)` MCP OAuth tokens cache correctly when multiple servers share the same URL but use different static OAuth client IDs
+- `1.0.40 (2026-05-01)` MCP tool names with dots or other invalid characters are now sanitized correctly
+- `1.0.40 (2026-05-01)` Prompt mode (-p) now gates repo hooks and workspace MCP behind opt-in env vars (GITHUB_COPILOT_PROMPT_MODE_REPO_HOOKS and GITHUB_COPILOT_PROMPT_MODE_WORKSPACE_MCP) for secure-by-default behavior
+- `1.0.35 (2026-04-23)` MCP server names with spaces and special characters are now supported
+- `1.0.35 (2026-04-23)` Move MCP OAuth into the shared runtime flow and clear associated OAuth state when removing an MCP server.
+- `1.0.30 (2026-04-16)` Remove --list-env flag that logged loaded plugins, agents, skills, and MCP servers in prompt mode
+- `1.0.29 (2026-04-16)` Remote MCP server config now allows omitting the type field, defaulting to http
+- `1.0.29 (2026-04-16)` Add --list-env flag to log loaded plugins, agents, skills, and MCP servers when running in prompt mode, helping verify environment configuration in CI pipelines
+- `1.0.29 (2026-04-16)` Shell commands and MCP servers now receive COPILOT_AGENT_SESSION_ID as an environment variable
+- `1.0.28 (2026-04-16)` MCP migration hint now links to documentation with platform-specific instructions instead of embedding shell commands inline
+- `1.0.25 (2026-04-13)` Install MCP servers from the registry with guided configuration directly in the CLI
+- `1.0.25 (2026-04-13)` ACP clients can now provide MCP servers (stdio, HTTP, SSE) when starting or loading sessions
+- `1.0.25 (2026-04-13)` Add /env command to show loaded environment details (instructions, MCP servers, skills, agents, plugins)
+- `1.0.25 (2026-04-13)` MCP client reports the correct CLI version during server handshake
+- `1.0.25 (2026-04-13)` MCP remote server connections automatically retry on transient network failures
+- `1.0.23 (2026-04-10)` Migration notice for .vscode/mcp.json now includes a jq command to migrate your config to .mcp.json
+- `1.0.22 (2026-04-09)` MCP tools with non-standard JSON schemas are now sanitized for compatibility with all model providers
+- `1.0.22 (2026-04-09)` Better handling of large images from MCP and extension tools
+- `1.0.22 (2026-04-09)` Remove .vscode/mcp.json and .devcontainer/devcontainer.json as MCP server config sources; CLI now only reads .mcp.json. A migration hint appears when .vscode/mcp.json is detected without .mcp.json.
+- `1.0.21 (2026-04-07)` Add `copilot mcp` command for managing MCP servers
+- `1.0.19 (2026-04-06)` /mcp enable and /mcp disable now persist across sessions
+- `1.0.17 (2026-04-03)` MCP OAuth flows now support HTTPS redirect URIs via a self-signed certificate fallback, improving compatibility with OAuth providers that require HTTPS (e.g., Slack)
+- `1.0.16 (2026-04-02)` MCP tool calls display tool name and parameter summary in the timeline
+- `1.0.16 (2026-04-02)` MCP server reconnects correctly with valid authentication when the working directory changes
+- `1.0.16 (2026-04-02)` MCP servers load correctly after login, user switch, and /mcp reload
+- `1.0.15 (2026-04-01)` Add mcp.config.list, mcp.config.add, mcp.config.update, and mcp.config.remove server RPCs for managing persistent MCP server configuration
+- `1.0.15 (2026-04-01)` Add device code flow (RFC 8628) as a fallback for MCP OAuth in headless and CI environments
+- `1.0.15 (2026-04-01)` Add `/mcp auth` command and re-authentication UI for MCP OAuth servers with account switching support
+- `1.0.15 (2026-04-01)` MCP servers that are slow to connect no longer block the agent from starting
+- `1.0.14 (2026-03-31)` MCP servers using Microsoft Entra ID authentication no longer show the consent screen on every login
+- `1.0.14 (2026-03-31)` MCP servers blocked by allowlist policy are now hidden from /mcp show
+- `1.0.14 (2026-03-31)` MCP server OAuth authentication works when the CLI runs in ACP mode
+- `1.0.14 (2026-03-31)` MCP registry lookups are more reliable with automatic retries and request timeouts
+- `1.0.13 (2026-03-30)` MCP servers using Microsoft Entra ID authentication no longer show the consent screen on every login
+- `1.0.13 (2026-03-30)` MCP registry lookups are more reliable with automatic retries and request timeouts
+- `1.0.13 (2026-03-30)` MCP servers can request LLM inference (sampling) with user approval via a new review prompt
+- `1.0.13 (2026-03-30)` MCP servers blocked by allowlist policy are now hidden from /mcp show
+- `1.0.13 (2026-03-30)` MCP server OAuth authentication works when the CLI runs in ACP mode
+- `1.0.12 (2026-03-26)` MCP servers defined in .mcp.json start correctly when the working directory is the git root
+- `1.0.12 (2026-03-26)` Workspace MCP servers are now correctly loaded and visible to the agent
+- `1.0.12 (2026-03-26)` /clear preserves MCP servers in the new session
+- `1.0.11 (2026-03-23)` Show a warning when MCP servers are blocked by policy (e.g. allowlist enforcement)
+- `1.0.11 (2026-03-23)` Organization policy for third-party MCP servers is now enforced for all users
+- `1.0.11 (2026-03-23)` GitHub MCP server user configuration is respected when connecting to remote hosts
+- `1.0.11 (2026-03-23)` MCP OAuth authentication works with MCP servers like the Atlassian Rovo MCP Server which support Dynamic Client Registration but host authorization metadata at a non-standard URL
+- `1.0.11 (2026-03-23)` Custom instructions, MCP servers, skills, and agents are now discovered at every directory level from the working directory up to the git root, enabling full monorepo support
+- `1.0.10 (2026-03-20)` Plugins using .claude-plugin/ or .plugin/ manifest directories now load their MCP and LSP servers correctly
+- `1.0.10 (2026-03-20)` Workspace MCP servers from .mcp.json, .vscode/mcp.json, and devcontainer.json are now loaded only after folder trust is confirmed
+- `1.0.8 (2026-03-18)` MCP servers can be validated against configured registries using the experimental MCP_ALLOWLIST feature flag
+- `1.0.7 (2026-03-17)` Add experimental SDK session APIs to list and manage skills, MCP servers, and plugins, with optional config auto-discovery from the working directory
+- `1.0.6 (2026-03-16)` Flags --enable-all-github-mcp-tools, --add-github-mcp-toolset, and --add-github-mcp-tool now take effect when using the SDK (ACP mode)
+- `1.0.5 (2026-03-13)` Add experimental embedding-based dynamic retrieval of MCP and skill instructions per turn
+- `1.0.4 (2026-03-11)` MCP OAuth re-authentication works reliably when callback port changes or when using Microsoft Entra ID
+- `1.0.4 (2026-03-11)` Add configure-copilot sub-agent for managing MCP servers, custom agents, and skills via the task tool
+- `1.0.3 (2026-03-09)` Read MCP server configuration from .devcontainer/devcontainer.json
+- `1.0.3 (2026-03-09)` MCP servers with non-conforming outputSchema are now accessible
+- `0.0.423 (2026-03-06)` MCP servers can now request users to visit a URL for out-of-band interactions such as OAuth flows or API key entry
+- `0.0.422 (2026-03-05)` GitHub MCP server stays enabled in repositories that have both Azure DevOps and GitHub remotes
+- `0.0.422 (2026-03-05)` GitHub MCP server connection status is accurately tracked and counted in the status indicator
+- `0.0.421 (2026-03-03)` Add structured form input for the ask_user tool using MCP Elicitations (experimental)
+- `0.0.421 (2026-03-03)` Python-based MCP servers no longer time out due to buffered stdout
+- `0.0.421 (2026-03-03)` MCP server availability correctly updates after signing in, switching accounts, or signing out
+- `0.0.421 (2026-03-03)` MCP elicitation form displays taller multi-line text input, hides tab bar for single-field forms, and fixes error flashing on field navigation
+- `0.0.419 (2026-02-27)` /mcp enable works for built-in servers that were auto-disabled before configuration
+- `0.0.419 (2026-02-27)` MCP server env vars referenced in command, args, or cwd fields are automatically included in the server environment
+- `0.0.419 (2026-02-27)` MCP server names now support dots, slashes, and @ characters, enabling npm-style names like @modelcontextprotocol/server and io.github/server
+- `0.0.417 (2026-02-25)` MCP servers no longer intermittently fail to load when opening a new session
+- `0.0.416 (2026-02-24)` Block third-party MCP servers when the Copilot MCP policy does not allow them
+- `0.0.415 (2026-02-23)` Env loading indicator no longer hangs indefinitely on MCP startup error or session resume
+- `0.0.415 (2026-02-23)` MCP tool results with giant single lines are truncated correctly
+- `0.0.415 (2026-02-23)` `/mcp show` groups servers into User, Workspace, Plugins, and Built-in sections and makes all servers navigable
+- `0.0.414 (2026-02-21)` Explore agent can now use GitHub MCP tools when available
+- `0.0.412 (2026-02-19)` MCP servers with invalid tool schemas no longer lose all tools
+- `0.0.412 (2026-02-19)` Add `/mcp reload` command to reload MCP configuration
+- `0.0.412 (2026-02-19)` MCP error messages include the server name
+- `0.0.411 (2026-02-17)` Support MCP servers from Windows On-Device Registry
+- `0.0.410 (2026-02-14)` Support tilde (~) expansion in MCP server cwd configuration
+- `0.0.410 (2026-02-14)` MCP server list selection adjusts correctly after deletion
+- `0.0.410 (2026-02-14)` MCP server errors and loading issues surface in timeline
+- `0.0.409 (2026-02-12)` Add `list_copilot_spaces` tool to default GitHub MCP config
+- `0.0.408 (2026-02-12)` MCP servers respect the `cwd` working directory property
+- `0.0.407 (2026-02-11)` Editing MCP servers shows existing configuration values
+- `0.0.407 (2026-02-11)` Add workspace-local MCP configuration via `.vscode/mcp.json`
+- `0.0.407 (2026-02-11)` /mcp disable and /mcp enable show clear error when server name doesn't exist
+- `0.0.407 (2026-02-11)` MCP servers using Microsoft OAuth configure automatically without manual client ID setup
+- `0.0.406 (2026-02-07)` `/mcp show` displays enabled/disabled status for MCP tools
+- `0.0.406 (2026-02-07)` MCP tool responses now include structured content (images, resources) for richer UI display in VS Code
+- `0.0.404 (2026-02-05)` MCP servers shut down concurrently for improved performance
+- `0.0.404 (2026-02-05)` MCP server configurations default to all tools when tools parameter not specified
+- `0.0.403 (2026-02-04)` Stop MCP servers before updating plugins
+- `0.0.402 (2026-02-03)` MCP configuration applies to ACP mode
+- `0.0.402 (2026-02-03)` Stop MCP servers when uninstalling plugins
+- `0.0.401 (2026-02-03)` MCP tools returning structuredContent now display correctly in CLI
+- `0.0.401 (2026-02-03)` Support Claude-style .mcp.json format without mcpServers wrapper
+- `0.0.400 (2026-01-30)` Add MCP server instructions support
+- `0.0.400 (2026-01-30)` CLI now sends DELETE requests to remove MCP servers when shutting down
+- `0.0.400 (2026-01-30)` Improve compatibility with remote MCP servers that use OAuth
+- `0.0.397 (2026-01-28)` `/mcp show <server-name>` displays server details and available tools
+- `0.0.395 (2026-01-26)` `/mcp show` displays all configured MCP servers including defaults and servers from additional configuration.
+- `0.0.395 (2026-01-26)` `/mcp show` displays servers from installed plugins
+- `0.0.393 (2026-01-23)` Expose MCP server and tool names in tool.execution_start events for better error handling
+- `0.0.390 (2026-01-22)` Custom agents with MCP servers avoid unnecessary restarts
+- `0.0.389 (2026-01-22)` MCP servers can now authenticate using OAuth 2.0 with automatic token management and refresh
+- `0.0.389 (2026-01-22)` Display progress messages from MCP tools in timeline
+- `0.0.389 (2026-01-22)` Plugins can bundle MCP servers that load automatically when installed
+- `0.0.388 (2026-01-20)` `--enable-all-github-mcp-tools` flag now enables read-write GitHub MCP tools
+- `0.0.385 (2026-01-19)` MCP server management when swapping between custom agents with /agent
+- `0.0.384 (2026-01-16)` MCP servers now start correctly for custom agents
+- `0.0.375 (2026-01-07)` Shutdown MCP servers after subagent execution completes
+- `0.0.374 (2026-01-02)` MCP server type help text displays correct options
+- `0.0.373 (2025-12-30)` Enable Copilot Spaces tools in GitHub MCP Server
+- `0.0.370 (2025-12-18)` Disabled MCP servers are now properly ignored when using --disable-mcp-server
+- `0.0.370 (2025-12-18)` Add STDIO type as synonymous for Local for MCP servers in CLI configuration UI
+- `0.0.363 (2025-11-24)` MCP servers work in `--prompt` mode
+- `0.0.355 (2025-11-12)` Fixed a bug where remote MCP server configuration in custom agents was not fetched properly
+- `0.0.354 (2025-11-03)` Support for MCP server tool notifications
+- `0.0.354 (2025-11-03)` MCP servers in GitHub Actions environments automatically use `GITHUB_WORKSPACE` as working directory
+- `0.0.352 (2025-10-27)` Improve handling of MCP tools containing slashes
+- `0.0.350 (2025-10-23)` To conserve context window space, we've limited the list of tools available to the default GitHub MCP server. In our tests, the model will use the [GitHub CLI, `gh`](https://github.com/cli/cli) (if installed) in lieu of missing MCP tools. We added an `--enable-all-github-mcp-tools` if you wish to turn on all available tools.
+- `0.0.350 (2025-10-23)` Fixed a bug where MCP tools with arguments would fail with streaming enabled
+- `0.0.344 (2025-10-17)` Enabled GitHub MCP server in prompt mode
+- `0.0.343 (2025-10-16)` Added a flag to augment MCP server configuration to temporarily add or override server configuration per session: `--additional-mcp-config` (fixes https://github.com/github/copilot-cli/issues/288)
+- `0.0.342 (2025-10-15)` Fixed a bug where sessions could enter a stuck state after a failed MCP tool call (fixes https://github.com/github/copilot-cli/issues/312)
+- `0.0.341 (2025-10-14)` Fixed a bug where rejecting an MCP tool call would reject all future tool calls (fixes https://github.com/github/copilot-cli/issues/290)
+- `0.0.340 (2025-10-13)` Changed parsing of environment variables in MCP server configuration to treat the value of the `env` section as literal values (fixes https://github.com/github/copilot-cli/issues/26).
+- `0.0.339 (2025-10-10)` Improved argument input to MCP servers in `/mcp add` -- previously, users had to use comma-separated syntax to specify arguments. Now, the "Command" field allows users to input the full command to start the server as if they were running it in a shell
+- `0.0.337 (2025-10-08)` Added validation for MCP server names (fixes https://github.com/github/copilot-cli/issues/110)
+- `0.0.332 (2025-10-01)` Fixed a bug where switching to another user with `/user switch` did not take effect in the GitHub MCP server
+
+## Plugins and marketplaces
+
+172 entries.
+
+- `1.0.102 (2026-10-21)` Plugin marketplaces accept git-subdir sources and long plugin descriptions
+- `1.0.102 (2026-10-21)` Chats no longer get blocked by organization plugin preparation while sending messages
+- `1.0.101 (2026-10-20)` Install Team-assigned plugins from Team-defined GitHub marketplaces
+- `1.0.100 (2026-10-19)` Install verified Skills and plugins from GitHub install links via copilot plugin install "ghapp://air/install?..."
+- `1.0.100 (2026-10-19)` Managed plugins update activation in existing sessions when managed policy changes
+- `1.0.100 (2026-10-19)` Plugin enable, disable, update, and uninstall actions now route reliably after plugin inventory refreshes.
+- `1.0.100 (2026-10-19)` Native chats can start and finish while optional managed plugin downloads continue in the background.
+- `1.0.100 (2026-10-19)` Trusted repository plugins install and update automatically before chat runs.
+- `1.0.100 (2026-10-19)` Rename the built-in browser plugin to browser-use and keep existing browser plugin preferences working after upgrade
+- `1.0.97 (2026-10-13)` Remote plugin marketplace and plugin fetches retry once with your signed-in GitHub token after HTTPS auth fails.
+- `1.0.97 (2026-10-13)` Skills and custom agents from --plugin-dir plugins now reach autocomplete and invocation instead of going missing.
+- `1.0.97 (2026-10-13)` Fixed resumed sessions rebuilding plugin hooks from the wrong plugin list, so hooks from repository-local marketplace plugins now keep running after `--resume`, and hooks from plugins your configuration disabled no longer come back
+- `1.0.95 (2026-10-09)` Managed plugin setup retries hourly or after policy changes instead of on every message failure
+- `1.0.93 (2026-10-07)` Plugin skill commands stay available after reloading enabled plugins
+- `1.0.89 (2026-09-28)` Direct plugin installs can now be enabled and disabled. One already recorded as disabled now stops loading; re-enable it with copilot plugin enable
+- `1.0.88 (2026-09-22)` Enterprise managed settings now apply to sessions opened in ACP mode (`copilot --acp`), by AHP hosts (`copilot --ahp-host`), and by the published `--server` session, which previously ran with no managed MCP, permission, or plugin policy.
+- `1.0.88 (2026-09-22)` Agents from a plugin mounted with --plugin-dir now appear in server-mode sessions
+- `1.0.88 (2026-09-22)` MCP and plugin views show server display names and plugin descriptions for clearer status.
+- `1.0.87 (2026-09-21)` Empty strictKnownMarketplaces allowlists now hide and block built-in plugin marketplaces.
+- `1.0.87 (2026-09-21)` Managed plugin commands load organization marketplace policy with environment, GitHub CLI, broker, and persisted authentication
+- `1.0.86 (2026-09-17)` Resuming an active session without plugin-directory, discovery, or working-directory overrides preserves marketplace plugins and skills after reload. Configuration read or validation failures no longer discard active plugins; missing-file and intentional-removal behavior is unchanged.
+- `1.0.85 (2026-09-16)` Add `copilot instruction list` and `copilot lsp list`, replacing `copilot plugins list --kind instruction` and `--kind lsp`
+- `1.0.85 (2026-09-16)` Add `--json` to `copilot plugin list`, `copilot plugin marketplace list` and `copilot plugin marketplace browse`
+- `1.0.85 (2026-09-16)` Add `enable` and `disable` to `copilot plugin`, `copilot mcp` and `copilot skill`, replacing `copilot plugins enable/disable --plugin|--mcp|--skill`
+- `1.0.85 (2026-09-16)` MCP servers no longer fail to load when the CLI is connected to a running IDE. The in-process IDE bridge was rejected by config validation, which failed the plugin reload and restricted the session
+- `1.0.85 (2026-09-16)` Plugin agents expand ${PLUGIN_ROOT} placeholders in mcp-servers frontmatter
+- `1.0.85 (2026-09-16)` Computer Use now stays in sync across /computer and whole-plugin /plugin toggles.
+- `1.0.85 (2026-09-16)` Plugin-contributed agents discovered by the CLI can now be selected and run.
+- `1.0.85 (2026-09-16)` Replace `copilot plugins install --skill [--scope project]` with `copilot skill add [--project]`; the `--scope` spelling is gone
+- `1.0.85 (2026-09-16)` Remove the cross-kind `--kind`, `--scope`, `--mcp` and `--skill` flags from `copilot plugins`; use `copilot mcp` and `copilot skill`
+- `1.0.85 (2026-09-16)` `copilot plugins list --json` now emits a flat array of plugins instead of the cross-kind `{ plugins, errors }` object; scripts reading `.plugins` must be updated
+- `1.0.85 (2026-09-16)` `copilot plugins list` is now an alias of `copilot plugin list` and reports only plugins, no longer MCP servers, skills, instructions or LSP servers
+- `1.0.83 (2026-09-04)` Host-provided plugin customizations can be read without redundant path permission prompts
+- `1.0.83 (2026-09-04)` A relative `--add-dir` or `--plugin-dir` path now resolves against the session's working directory under `--resume=<id>` and `--worktree`, instead of the directory the CLI was launched from. Relative values are also resolved after `-C` is applied, so `-C` no longer has to precede either option on the command line
+- `1.0.83 (2026-09-04)` MCP servers contributed by a plugin are no longer labelled "User" in the MCP dashboard, and a server from a bundled plugin is now shown as built-in and names the plugin it came from.
+- `1.0.83 (2026-09-04)` `/mcp config` and the MCP add/edit/authenticate forms now open in the plugins dashboard instead of a separate MCP manager, so closing a form returns to the server list.
+- `1.0.83 (2026-09-04)` Plugin list commands and /plugin now show bundled built-in plugins.
+- `1.0.81 (2026-08-27)` The plugins dashboard is available to everyone: run `/plugin`, `/mcp`, or `/skills`. Set `PLUGINS_DASHBOARD=false` to opt out of it and the `copilot plugins` command.
+- `1.0.81 (2026-08-27)` Fixed an indefinite "Loading…/Resuming…" hang at startup when a repository plugin activates a contributed extension (or another extension reload races the initial load), which previously left the environment stuck on "still waiting on extensions"
+- `1.0.81 (2026-08-27)` The startup status finishes after extension configuration during plugin reconciliation
+- `1.0.81 (2026-08-27)` Agents, skills and MCP servers contributed by installed plugins are no longer dropped in non-interactive (-p) runs, so --agent <plugin>:<agent> works headlessly without --plugin-dir
+- `1.0.81 (2026-08-27)` /plugin now flags installed plugins and marketplaces that have a newer version upstream, and offers an Update action to pull it
+- `1.0.81 (2026-08-27)` Path-sourced plugins in a local (directory-source) marketplace now load live from their real directory, so editing one takes effect on `/restart` or a new session — no `/plugin update`
+- `1.0.81 (2026-08-27)` forceRemoteSettingsRefresh now fails closed: when set, the cached managed-settings policy is never served or used as a fetch-failure fallback (skipping both the 1h fast path and the 24h stale fallback), so a failed startup fetch blocks on the unconfirmed policy instead of reverting to a possibly-stale cached one. Concretely, until a fresh policy is fetched the session applies the restrictive undetermined-policy posture: non-default MCP servers are blocked, bypass-permissions mode cannot be enabled, and policy-gated plugin install/update mutations are blocked
+- `1.0.81 (2026-08-27)` Managed settings now win per entry for enabledPlugins and extraKnownMarketplaces, so a plugin or marketplace your organization pins can't be overridden locally
+- `1.0.81 (2026-08-27)` Removed the `PLUGINS_DASHBOARD` opt-out and the legacy skills picker it kept alive. `/skills`, bare `/mcp`, and `/mcp show` (with no server name) always open the dashboard; `/mcp config` still opens the dedicated MCP wizard.
+- `1.0.81 (2026-08-27)` Removed `/plugins`; its resources moved to `/plugin`, `/mcp` and `/skills`, with `/subagents` and `/instructions` for agents and instructions.
+- `1.0.81 (2026-08-27)` Enabling and disabling hooks and LSP servers is temporarily unavailable: those toggles existed only in the `/plugins` dashboard that this release removes.
+- `1.0.79 (2026-08-10)` Agent Plugins spec plugins can now ship extensions under a com.github.copilot/extensions/ directory
+- `1.0.79 (2026-08-10)` Set "autoUpdate": true on an extraKnownMarketplaces entry in your user settings to auto-update its plugins at session start
+- `1.0.79 (2026-08-10)` Plugin custom agents honor deferred-tool-loading frontmatter
+- `1.0.78 (2026-08-03)` First-party plugins automatically update to the latest version at session start
+- `1.0.78 (2026-08-03)` Added a forceRemoteSettingsRefresh managed setting that requires a fresh managed-settings fetch on startup; when the setting is in effect and that refresh cannot be confirmed, plugin mutations and read-only marketplace operations alike (including `plugins marketplace` list, browse, and refresh) fail closed rather than proceeding without the server-managed policy
+- `1.0.76 (2026-07-29)` Add enable/disable controls in /plugins for plugins, instructions, agents, LSP servers, and hooks
+- `1.0.74 (2026-07-23)` Add support for Open Plugin Spec v1 plugin manifests and mcp.json configuration
+- `1.0.72 (2026-07-20)` Add `update`/`uninstall` verbs to `/plugins`, let `enable`/`disable`/`remove` target plugins, MCP servers, or skills via `--plugin`/`--mcp`/`--skill` flags or a positional kind, and support installing skills with `/plugins install --skill`
+- `1.0.72 (2026-07-20)` Add a /plugins help command plus skill, MCP, and marketplace management for full /plugin parity
+- `1.0.72 (2026-07-20)` Install skills from the CLI with `copilot plugins install --skill <file, URL, or directory>` (add `--scope project` to a file or URL install to install into the repository)
+- `1.0.72 (2026-07-20)` Add --plugin, --mcp, and --skill flags for plugin mutations
+- `1.0.72 (2026-07-20)` Add skill removal support to `copilot plugins remove --skill`
+- `1.0.71 (2026-07-16)` Allow empty owner and author emails in marketplace metadata
+- `1.0.71 (2026-07-16)` Add `plugins marketplace` subcommands to list, add, and remove plugin marketplaces
+- `1.0.71 (2026-07-16)` Add plugins marketplace browse and update commands
+- `1.0.71 (2026-07-16)` Show repo-enabled plugins in /plugin list and skill pickers
+- `1.0.71 (2026-07-16)` Display plugin root skills as /plugin instead of /plugin:plugin
+- `1.0.71 (2026-07-16)` Make bare `copilot mcp` and `copilot skill` print help and exit 0, matching `copilot plugin`. Consistent with `plugin`, the implicit `help <subcommand>` form is not supported for these groups; use `copilot mcp <subcommand> --help` (or `copilot skill <subcommand> --help`) instead.
+- `1.0.71 (2026-07-16)` Show --plugin-dir plugins in copilot plugin list
+- `1.0.71 (2026-07-16)` Surface --plugin-dir warnings in the terminal
+- `1.0.71 (2026-07-16)` Keep stored Git credential helpers available for marketplace plugin installs
+- `1.0.71 (2026-07-16)` Remove duplicate Error: prefixes from plugin command failures
+- `1.0.70 (2026-07-09)` Pin plugins to an exact commit SHA using the `sha` field in plugin source configuration
+- `1.0.70 (2026-07-09)` Re-sync managed plugins when their cache is missing or empty
+- `1.0.70 (2026-07-09)` Fail fast when marketplace plugin git auth needs a terminal prompt
+- `1.0.69 (2026-07-07)` Reload installed plugin extensions without restarting a session
+- `1.0.69 (2026-07-07)` Add a /plugins dashboard to manage installed plugins
+- `1.0.69 (2026-07-07)` Disconnect a repo-scoped plugin's MCP server when the repo disables it or the session leaves the declaring repository
+- `1.0.69 (2026-07-07)` Add /mcp list to show attached MCP servers and their status, and allow /mcp list and /plugin list to run while the agent is working
+- `1.0.69 (2026-07-07)` Warn when multiple plugins define the same MCP server
+- `1.0.68 (2026-07-01)` Skip malformed plugin manifests and keep loading valid plugins
+- `1.0.66 (2026-06-30)` Allow skills with the same name from different plugins to coexist
+- `1.0.64 (2026-06-23)` Marketplace plugins that declare MCP servers in marketplace.json now authenticate correctly with OAuth
+- `1.0.64 (2026-06-23)` Repo-scoped plugins no longer leak into global config across projects
+- `1.0.64 (2026-06-23)` Show installed plugin MCP servers in `mcp` commands
+- `1.0.64 (2026-06-23)` Discover MCP servers provided by installed plugins
+- `1.0.62 (2026-06-13)` Plugins can now ship extensions, making them installable via the plugin marketplace
+- `1.0.62 (2026-06-13)` Claude-format plugin `preToolUse` and `permissionRequest` hooks now fire correctly for tool matchers like `Bash`, `Read`, and `*`, and Claude-format hook payloads carry the Claude tool name (`Bash` rather than `bash`)
+- `1.0.62 (2026-06-13)` Plugin install works when the marketplace ref is a fully-qualified tag (e.g. refs/tags/v2.1.0)
+- `1.0.61 (2026-06-09)` Plugin install enforces managed marketplace policy even when settings cannot be fetched due to network errors
+- `1.0.60 (2026-06-05)` LSP server config accepts `bash`, `powershell`, and `cwd` keys; command launch default cwd stays project-root unless `cwd` is set, and `cwd` expansion now supports plugin vars like `PLUGIN_ROOT` while shell launches keep hook-matching cwd/env behavior
+- `1.0.60 (2026-06-05)` Force-removing a marketplace no longer causes its plugins to reinstall on next launch
+- `1.0.60 (2026-06-05)` Repository plugin overrides no longer change globally enabled plugin settings
+- `1.0.57 (2026-06-01)` Plugin slash commands (/plugin install, uninstall, update, marketplace add/remove/browse) now show immediate feedback while the operation is in progress
+- `1.0.57 (2026-06-01)` Plugins auto-installed from repository settings no longer leak into user global config
+- `1.0.57 (2026-06-01)` `copilot plugin marketplace list` now honors repo-level `extraKnownMarketplaces` settings from `.github/copilot/settings.json`
+- `1.0.57 (2026-06-01)` Installed plugins no longer include the .git directory from the plugin source repository
+- `1.0.55 (2026-05-28)` pluginDirectories on session.create and session.resume RPC: SDK clients can mount Open Plugins-format directories per session.
+- `1.0.55 (2026-05-28)` Support owner/repo#ref syntax when adding plugins from the marketplace
+- `1.0.55 (2026-05-28)` --plugin-dir skills now take precedence over personal-home (~/.copilot, ~/.agents) skills with the same name. Order is now project > plugin-dir > personal > custom.
+- `1.0.52 (2026-05-23)` Non-interactive subcommands (plugin list, mcp list, help, version) no longer consume stdin
+- `1.0.49 (2026-05-18)` Add `copilot plugin update --all` to update all installed plugins at once
+- `1.0.49 (2026-05-18)` Add COPILOT_PLUGIN_DIR_ONLY environment variable to disable automatic plugin discovery, enabling deterministic plugin sets when using --plugin-dir
+- `1.0.49 (2026-05-18)` Plugins loaded via --plugin-dir now correctly register their agents as available task(agent_type=...) subagents in prompt mode
+- `1.0.49 (2026-05-18)` --plugin-dir and --additional-mcp-config now work in --server / --headless mode
+- `1.0.41 (2026-05-05)` Adding a plugin marketplace using a git SSH URL (e.g. git@github.com:owner/repo) now works correctly
+- `1.0.40 (2026-05-01)` `copilot plugin list` shows the correct version after running `copilot plugin update`
+- `1.0.40 (2026-05-01)` --config-dir now propagates correctly to plugin subcommands; --config-dir is deprecated in favor of COPILOT_HOME
+- `1.0.35 (2026-04-23)` Plugins take effect immediately after install without requiring a restart
+- `1.0.30 (2026-04-16)` Plugin skills and commands are correctly discovered when using skills.discover
+- `1.0.30 (2026-04-16)` Remove --list-env flag that logged loaded plugins, agents, skills, and MCP servers in prompt mode
+- `1.0.29 (2026-04-16)` Add --list-env flag to log loaded plugins, agents, skills, and MCP servers when running in prompt mode, helping verify environment configuration in CI pipelines
+- `1.0.27 (2026-04-15)` Add `copilot plugin marketplace update` command to refresh plugin catalogs
+- `1.0.26 (2026-04-14)` Plugin hooks receive PLUGIN_ROOT, COPILOT_PLUGIN_ROOT, and CLAUDE_PLUGIN_ROOT env vars with the plugin's installation directory
+- `1.0.26 (2026-04-14)` Installing a plugin named 'git' from a marketplace no longer fails due to incorrect URL parsing
+- `1.0.25 (2026-04-13)` Add /env command to show loaded environment details (instructions, MCP servers, skills, agents, plugins)
+- `1.0.22 (2026-04-09)` Plugins can now display a post-install message with setup instructions after installation
+- `1.0.22 (2026-04-09)` Plugins remain enabled across sessions and auto-install on startup based on user config
+- `1.0.22 (2026-04-09)` Plugin agents respect the model specified in their frontmatter
+- `1.0.19 (2026-04-06)` Plugin hook scripts with missing execute permissions now run correctly on macOS
+- `1.0.16 (2026-04-02)` Remove deprecated `marketplaces` repository setting (use `extraKnownMarketplaces` instead)
+- `1.0.16 (2026-04-02)` Remove deprecated `marketplaces` repository setting (use `extraKnownMarketplaces` instead)
+- `1.0.14 (2026-03-31)` Show underlying error details when a Git marketplace URL fails to clone
+- `1.0.14 (2026-03-31)` Uninstalling a marketplace plugin removes its cached data from disk
+- `1.0.13 (2026-03-30)` Uninstalling a marketplace plugin removes its cached data from disk
+- `1.0.12 (2026-03-26)` Plugin hooks now receive CLAUDE_PROJECT_DIR and CLAUDE_PLUGIN_DATA environment variables, and support {{project_dir}} and {{plugin_data_dir}} template variables in hook configurations
+- `1.0.10 (2026-03-20)` Plugins using .claude-plugin/ or .plugin/ manifest directories now load their MCP and LSP servers correctly
+- `1.0.10 (2026-03-20)` Plugins loaded via --plugin-dir now appear in /plugin list under a separate 'External Plugins' section
+- `1.0.9 (2026-03-19)` Marketplace and plugin installs from shortened URLs (e.g., aka.ms links) now work correctly
+- `1.0.7 (2026-03-17)` Add experimental SDK session APIs to list and manage skills, MCP servers, and plugins, with optional config auto-discovery from the working directory
+- `1.0.6 (2026-03-16)` Plugins using .claude-plugin/plugin.json are discovered when loaded via --plugin-dir
+- `1.0.6 (2026-03-16)` Support Open Plugin spec file locations for loading plugin and marketplace manifests
+- `1.0.6 (2026-03-16)` Improve compatibility with the Open Plugins spec: support `.lsp.json`, PascalCase hook event names, `exclusive` path mode, and `:` namespace separator
+- `1.0.5 (2026-03-13)` Plugin uninstall reliably removes files using the stored install path
+- `1.0.4 (2026-03-11)` Custom agents from --plugin-dir plugins now load correctly in ACP mode
+- `1.0.3 (2026-03-09)` Add extraKnownMarketplaces repository setting to replace marketplaces
+- `1.0.3 (2026-03-09)` /plugin update now works for GitHub-installed plugins
+- `1.0.3 (2026-03-09)` /plugin update now works with marketplaces defined in project settings
+- `0.0.422 (2026-03-05)` Plugin cache automatically recovers from a corrupted or incomplete clone without manual intervention
+- `0.0.422 (2026-03-05)` Show a clear, actionable error message when git is not installed and a remote plugin or marketplace is used
+- `0.0.422 (2026-03-05)` Plugin-contributed LSP servers are now loaded, started, and shown in /lsp show
+- `0.0.422 (2026-03-05)` Support enabledPlugins in config for automatic plugin installation at startup
+- `0.0.422 (2026-03-05)` Support installing plugins from ssh:// URLs
+- `0.0.421 (2026-03-03)` Plugin commands read extraKnownMarketplaces from project-level .claude/settings.json for Claude compatibility
+- `0.0.421 (2026-03-03)` Add --plugin-dir flag to load a plugin from a local directory
+- `0.0.421 (2026-03-03)` Support repo-level config via .github/copilot/config.json for shared project settings like marketplaces and launch messages
+- `0.0.420 (2026-02-27)` Plugin and marketplace git repos update correctly after force-pushes and tag-based installs
+- `0.0.418 (2026-02-25)` Plugin agents specified as file paths in plugin.json load correctly
+- `0.0.417 (2026-02-25)` Plugin agents and skills are available immediately after install without restarting
+- `0.0.417 (2026-02-25)` Plugin skills and commands load from custom paths declared in plugin.json
+- `0.0.415 (2026-02-23)` Add env loading indicator showing skills, MCPs, plugins, ... being loaded
+- `0.0.415 (2026-02-23)` /plugin marketplace add and /plugin install support local paths containing spaces
+- `0.0.415 (2026-02-23)` `/mcp show` groups servers into User, Workspace, Plugins, and Built-in sections and makes all servers navigable
+- `0.0.413 (2026-02-20)` Support remote plugin sources (GitHub repos and git URLs) in marketplace.json plugin entries
+- `0.0.409 (2026-02-12)` Include default plugin marketplaces (copilot-plugins, awesome-copilot) for easier plugin discovery
+- `0.0.406 (2026-02-07)` Commands from plugins are now translated into skills
+- `0.0.406 (2026-02-07)` plugin marketplace add accepts URLs as sources
+- `0.0.405 (2026-02-05)` Plugin and marketplace names support uppercase letters
+- `0.0.405 (2026-02-05)` Plugins can bundle LSP server configurations
+- `0.0.403 (2026-02-04)` Stop MCP servers before updating plugins
+- `0.0.403 (2026-02-04)` Plugin skills work in prompt mode
+- `0.0.402 (2026-02-03)` Plugins can provide hooks for session lifecycle events
+- `0.0.402 (2026-02-03)` Plugin update command works for direct plugins and handles Windows file locks
+- `0.0.402 (2026-02-03)` Stop MCP servers when uninstalling plugins
+- `0.0.400 (2026-01-30)` Add `copilot plugin` subcommand for non-interactive plugin management
+- `0.0.396 (2026-01-27)` `/plugin install` supports GitHub repos, URLs, and local paths
+- `0.0.396 (2026-01-27)` Plugins can provide custom agents
+- `0.0.395 (2026-01-26)` `/mcp show` displays servers from installed plugins
+- `0.0.395 (2026-01-26)` Plugin skills are now usable by the agent
+- `0.0.394 (2026-01-24)` Plugin skills work in agent responses
+- `0.0.393 (2026-01-23)` Plugin uninstall now works correctly
+- `0.0.392 (2026-01-22)` Add `/plugin` command for plugin marketplace management
+- `0.0.392 (2026-01-22)` Add /plugin update command to update installed plugins
+- `0.0.389 (2026-01-22)` Plugins can bundle MCP servers that load automatically when installed
+
+## Enterprise, organization and managed policy
+
+105 entries.
+
+- `1.0.103 (2026-10-22)` Resume sessions under mandatory managed model defaults without rejecting saved preferences
+- `1.0.102 (2026-10-21)` Prompt mode now honors managed Auto model selection for -p and piped stdin runs
+- `1.0.102 (2026-10-21)` Chats no longer get blocked by organization plugin preparation while sending messages
+- `1.0.101 (2026-10-20)` Model picker marks your administrator-managed model as the default when it is available
+- `1.0.100 (2026-10-19)` Managed plugins update activation in existing sessions when managed policy changes
+- `1.0.100 (2026-10-19)` Native chats can start and finish while optional managed plugin downloads continue in the background.
+- `1.0.100 (2026-10-19)` Managed account policy and bypass-mode warnings stay accurate after switching accounts, even when a policy cache miss happens.
+- `1.0.100 (2026-10-19)` Enterprise-managed ask permissions in Assisted mode now allow safe actions without unnecessary confirmation prompts.
+- `1.0.100 (2026-10-19)` Show a clear notice when administrator-managed settings override your selected model
+- `1.0.97 (2026-10-13)` In /config, managed permission rules are read-only and hidden unless set by your organization.
+- `1.0.96 (2026-10-12)` Keep /allow-all available during startup while enterprise policy is still resolving
+- `1.0.96 (2026-10-12)` Timeline now shows whether you, Assisted Permissions, policy, or unattended fallback made each permission decision.
+- `1.0.95 (2026-10-09)` Managed plugin setup retries hourly or after policy changes instead of on every message failure
+- `1.0.94 (2026-10-08)` Show a policy warning when startup bypass-permission flags are suppressed by managed settings
+- `1.0.94 (2026-10-08)` Show update guidance when managed settings request a newer CLI version without blocking normal prompts
+- `1.0.94 (2026-10-08)` Managed policy can disable Assisted Permissions and keep sessions in Manual Approval mode.
+- `1.0.93 (2026-10-07)` Add enterprise permissions.limitTo to enforce managed domain boundaries for network requests
+- `1.0.89 (2026-09-28)` Extensions no longer fail to load under enterprise managed settings while managed MCP policy is still being applied
+- `1.0.89 (2026-09-28)` Show managed Connector consent progress with a copyable authorization URL during connect and reconnect.
+- `1.0.88 (2026-09-22)` Preserve /allow-all during managed-settings refresh failures, and remember exact session approvals for missing paths without granting their parent directory; exact grants are visible in /list-dirs and cleared by /reset-allowed-tools
+- `1.0.88 (2026-09-22)` Enterprise managed settings now apply to sessions opened in ACP mode (`copilot --acp`), by AHP hosts (`copilot --ahp-host`), and by the published `--server` session, which previously ran with no managed MCP, permission, or plugin policy.
+- `1.0.87 (2026-09-21)` Add user and managed startup defaults for the Auto routing tier, including strict and user-overridable organization policy
+- `1.0.87 (2026-09-21)` Keep --yolo enabled after startup policy checks for authenticated unmanaged sessions
+- `1.0.87 (2026-09-21)` Managed plugin commands load organization marketplace policy with environment, GitHub CLI, broker, and persisted authentication
+- `1.0.86 (2026-09-17)` /sandbox policy now reports local-network access using your configured setting
+- `1.0.85 (2026-09-16)` Managed sandbox sessions can now be disabled for the rest of the session from an approved bypass prompt.
+- `1.0.85 (2026-09-16)` Fixed the one-command sandbox bypass on Windows: when the sandbox container refuses a policy-blocked write for want of a privilege, approving the bypass now runs the command instead of stopping after the permissive retry, so it no longer takes disabling the sandbox for the whole session
+- `1.0.85 (2026-09-16)` Approved sandbox retries are labeled sandbox relaxed while network policy stays enforced, or sandbox bypassed when fully unsandboxed; failed bypasses explain that host permissions still apply
+- `1.0.85 (2026-09-16)` An enterprise-managed sandbox policy delivered by MDM or a managed settings file no longer discards sandbox.allowBypass, so bypass prompts and /sandbox disable work as the policy intends
+- `1.0.85 (2026-09-16)` The managed sandbox startup notice no longer says sandboxing can't be turned off when your organization's policy allows a session opt-out; it names /sandbox disable instead
+- `1.0.85 (2026-09-16)` Interactive --yolo startup remains available before authentication when no managed policy evidence is present
+- `1.0.85 (2026-09-16)` Use /settings taskbarPresence false to disable Windows taskbar session status. Loader-managed sessions restart immediately; standalone sessions require a manual restart.
+- `1.0.85 (2026-09-16)` The `allowManagedHooksOnly` policy now also blocks extension-registered `preToolUse`, `postToolUse` and `postToolUseFailure` callbacks, which previously bypassed the managed-only lockdown that every other hook event already applied
+- `1.0.85 (2026-09-16)` Apply managed Edit and Write rules to recognized native shell redirections and supported in-place sed operations
+- `1.0.85 (2026-09-16)` /sandbox disable turns the sandbox off for the current session when your organization's policy allows bypass
+- `1.0.85 (2026-09-16)` Improve /sandbox guidance and show /sandbox policy in command help
+- `1.0.85 (2026-09-16)` On supported Windows sandbox policies, interactive shell commands now record blocked accesses. One approved escalation retries with file and process restrictions recording instead of blocking while network policy remains active, then falls back to the disclosed full bypass only if still blocked
+- `1.0.83 (2026-09-04)` Custom agents can list several models in `model`, tried in order until one is available to you, and `model-policy: required` keeps model changes on that list
+- `1.0.83 (2026-09-04)` Enterprise admins can pin sign-in to approved GitHub organizations with the forceLoginOrgs managed setting
+- `1.0.83 (2026-09-04)` Enterprise-denied MCP servers can no longer start before the managed allow/deny policy resolves; server startup now waits for the managed-settings fetch instead of racing it
+- `1.0.83 (2026-09-04)` Improve /sandbox policy by grouping path grants by source and showing detected developer tools
+- `1.0.81 (2026-08-27)` An MCP server blocked by an enterprise policy now shows as blocked in /mcp instead of spinning as pending forever
+- `1.0.81 (2026-08-27)` Signing out of an account now clears its cached enterprise managed settings, so signing back in generally re-fetches the policy rather than re-applying the one cached before sign-out
+- `1.0.81 (2026-08-27)` An enterprise managed-settings policy is no longer rejected when `permissions.disableBypassPermissionsMode` carries an unrecognized value; it is now logged and enforced as `disable`.
+- `1.0.81 (2026-08-27)` When --no-sandbox is ignored because enterprise policy could not be determined, the notice now says so, and no longer points at an administrator, instead of claiming a policy requires the sandbox. The unsupported-host warning says the same rather than contradicting it.
+- `1.0.81 (2026-08-27)` A session sandboxed by an enterprise managed policy now says so on the timeline, including when the policy arrives mid-session, instead of leaving the footer's sandbox chip as the only hint that commands are being restricted
+- `1.0.81 (2026-08-27)` forceRemoteSettingsRefresh now fails closed: when set, the cached managed-settings policy is never served or used as a fetch-failure fallback (skipping both the 1h fast path and the 24h stale fallback), so a failed startup fetch blocks on the unconfirmed policy instead of reverting to a possibly-stale cached one. Concretely, until a fresh policy is fetched the session applies the restrictive undetermined-policy posture: non-default MCP servers are blocked, bypass-permissions mode cannot be enabled, and policy-gated plugin install/update mutations are blocked
+- `1.0.81 (2026-08-27)` Managed settings now win per entry for enabledPlugins and extraKnownMarketplaces, so a plugin or marketplace your organization pins can't be overridden locally
+- `1.0.79 (2026-08-10)` Add support for enterprise allow-auto-only policy so /allow-all auto works while full allow-all remains blocked.
+- `1.0.79 (2026-08-10)` Allow enterprise-managed sandbox policy to enforce a proxy URL while credentials remain user-controlled
+- `1.0.79 (2026-08-10)` Add /sandbox policy to show effective sandbox paths, denials, and network access
+- `1.0.79 (2026-08-10)` Sandboxed git now authenticates to Azure DevOps, GitHub Enterprise Server, GitLab, and other non-GitHub remotes you have stored HTTPS credentials for
+- `1.0.79 (2026-08-10)` BREAKING: the sandbox setting `allowDevToolCaches` is renamed `allowDevToolAccess`, since it grants dev-tool config and registries too, not just caches. The old key is no longer read and is ignored silently, so an existing `false` opt-out reverts to the default (on). Rename it in settings.json and in any managed/MDM policy.
+- `1.0.78 (2026-08-03)` Added a forceRemoteSettingsRefresh managed setting that requires a fresh managed-settings fetch on startup; when the setting is in effect and that refresh cannot be confirmed, plugin mutations and read-only marketplace operations alike (including `plugins marketplace` list, browse, and refresh) fail closed rather than proceeding without the server-managed policy
+- `1.0.78 (2026-08-03)` Managed settings now fall back to the persistent cache whenever a server-managed settings fetch fails for any reason (network error, a non-success HTTP status, or a malformed/unparseable response), and fail open — starting without the unconfirmed server restriction rather than the prior fail-closed behavior — when no usable cached policy is available
+- `1.0.77 (2026-07-30)` Support enforcing managed sandbox policy via macOS and Windows native MDM settings
+- `1.0.76 (2026-07-29)` Enterprise administrators can enforce a restrictive sandbox floor: managed settings tighten (but never loosen) the user's sandbox policy, and the `/sandbox` dialog surfaces the org-configured managed values with locked fields and managed filesystem paths so admins can confirm what is enforced.
+- `1.0.76 (2026-07-29)` web_fetch routes through the configured sandbox proxy when outbound is allowed, and denies egress when network.allowOutbound is false (a proxy no longer overrides the user's outbound policy); when a proxied fetch fails it warns that curl/wget share the same proxy, and suggests requestSandboxBypass only when the sandbox proxy itself is unreachable
+- `1.0.72 (2026-07-20)` Require SSO for remote control when managed settings demand it
+- `1.0.71 (2026-07-16)` Enforce the sandbox filesystem policy on LSP file reads and rename edits
+- `1.0.71 (2026-07-16)` Show malformed allowed_models.txt policy errors cleanly in -p mode
+- `1.0.70 (2026-07-09)` Re-sync managed plugins when their cache is missing or empty
+- `1.0.70 (2026-07-09)` Long-running sessions refresh enterprise managed settings hourly
+- `1.0.69 (2026-07-07)` Label built-in file edits with a (sandbox policy) badge instead of (sandboxed), since they follow the sandbox policy on a best-effort basis rather than running in the OS-level sandbox
+- `1.0.69 (2026-07-07)` web_fetch now follows the active sandbox network policy (denying outbound or local targets the policy blocks) and, when the host opts in via sandbox.allowBypass, lets you approve a one-time bypass from the fetch prompt
+- `1.0.69 (2026-07-07)` Show descriptions for sandbox userPolicy settings in /settings
+- `1.0.69 (2026-07-07)` Skip the autopilot permission prompt when bypass mode is disabled by policy
+- `1.0.69 (2026-07-07)` Remove inert sandbox host lists and the Clear policy on exit toggle
+- `1.0.68 (2026-07-01)` Keep file edits and patches within the sandbox filesystem policy
+- `1.0.68 (2026-07-01)` Let device-managed settings override server-managed settings
+- `1.0.68 (2026-07-01)` PowerShell variable references no longer trigger content-policy refusals
+- `1.0.66 (2026-06-30)` Retry managed settings fetch after transient connection-pool errors
+- `1.0.66 (2026-06-30)` Let managed settings configure OpenTelemetry export
+- `1.0.64 (2026-06-23)` Apply MCP org policy when sessions create or reload MCP servers
+- `1.0.63 (2026-06-15)` Blocked image attachments now explain what to do — enable vision via the "Editor preview features" policy, switch to a vision-capable model, or try a different image — instead of showing a confusing error.
+- `1.0.62 (2026-06-13)` An image attachment rejected because vision is disabled by policy or unsupported by the current model no longer poisons the rest of the session. The image is stripped from conversation history after the 400 so subsequent prompts succeed.
+- `1.0.62 (2026-06-13)` Recover from temporary content policy errors without restarting the session
+- `1.0.61 (2026-06-09)` Plugin install enforces managed marketplace policy even when settings cannot be fetched due to network errors
+- `1.0.60 (2026-06-05)` Enforce bypass permissions policy for --allow-all-tools, --allow-all-paths, and --allow-all-urls flags
+- `1.0.57 (2026-06-01)` MCP servers configured with npx --registry are no longer incorrectly blocked by policy
+- `1.0.55 (2026-05-28)` Show a warning when remote controlled sessions are disabled by organization policy
+- `1.0.55 (2026-05-28)` Show a helpful message when remote controlled sessions are disabled by organization policy
+- `1.0.51 (2026-05-20)` /remote commands now respect organization remote control and view from cloud policy and show a clear error when disabled
+- `1.0.33 (2026-04-20)` Grep no longer times out on large repositories when content exclusion policies are enabled
+- `1.0.32 (2026-04-17)` copilot login --host now correctly authenticates with GitHub Enterprise Cloud (GHE) instances
+- `1.0.27 (2026-04-15)` Show a clear message when Copilot Pro trial is paused instead of a generic policy error
+- `1.0.26 (2026-04-14)` Enterprise login accepts hostnames without a URL scheme (e.g. 'github.example.com')
+- `1.0.22 (2026-04-09)` Show a clear message to contact your organization administrator when remote sessions are blocked by policy
+- `1.0.21 (2026-04-07)` Enterprise GitHub URL input in the login flow now accepts keyboard input and submits on Enter
+- `1.0.14 (2026-03-31)` MCP servers blocked by allowlist policy are now hidden from /mcp show
+- `1.0.13 (2026-03-30)` MCP servers blocked by allowlist policy are now hidden from /mcp show
+- `1.0.11 (2026-03-23)` Show a warning when MCP servers are blocked by policy (e.g. allowlist enforcement)
+- `1.0.11 (2026-03-23)` Organization policy for third-party MCP servers is now enforced for all users
+- `1.0.10 (2026-03-20)` Model picker reorganizes models into Available, Blocked/Disabled, and Upgrade tabs based on user plan and policy
+- `0.0.416 (2026-02-24)` Block third-party MCP servers when the Copilot MCP policy does not allow them
+- `0.0.411 (2026-02-17)` Improve error messaging and guidance when access denied by policy
+- `0.0.407 (2026-02-11)` Subagents fall back to session model when default model blocked by policy
+- `0.0.403 (2026-02-04)` Fix logic checking user organization membership
+- `0.0.396 (2026-01-27)` Reorder model picker list for better organization
+- `0.0.394 (2026-01-24)` Add support for GitHub Enterprise Cloud (\*.ghe.com) in /delegate command
+- `0.0.388 (2026-01-20)` `/share gist` shows helpful error on GitHub Enterprise Cloud with data residency
+- `0.0.353 (2025-10-28)` Added support for custom agents. Custom agent definitions are pulled from `~/.copilot/agents`, `.github/agents` in your repository, or your organization's `.github` repository. You can explicitly invoke an agent with the `/agent` slash command interactively or `--agent <agent>` noninteractively. Agents are also provided as tools that the model can call during completion of a task
+- `0.0.342 (2025-10-15)` Added debug logging when calls to `/model` result in Copilot API errors. This should help us diagnose some policy/model access edge cases like https://github.com/github/copilot-cli/issues/268 and https://github.com/github/copilot-cli/issues/116
+- `0.0.332 (2025-10-01)` Switched to using per-subscription Copilot API endpoints in accordance with [GitHub's docs](https://docs.github.com/copilot/how-tos/administer-copilot/manage-for-enterprise/manage-access/manage-network-access) (fixes https://github.com/github/copilot-cli/issues/76)
+- `0.0.328 (2025-09-26)` Improved error message received when Copilot CLI is blocked by organization policy (fixes https://github.com/github/copilot-cli/issues/18 )
+
+## Content exclusion
+
+12 entries.
+
+- `1.0.66 (2026-06-30)` Hide excluded built-in agents from agent selection
+- `1.0.64 (2026-06-23)` Content exclusion no longer blocks every file when the rules service is unreachable (offline or a transient network error). Access is allowed until rules can be fetched and retried in the background, matching the editor's behavior.
+- `1.0.64 (2026-06-23)` Content exclusion no longer blocks shell commands on command names or phantom paths
+- `1.0.64 (2026-06-23)` PowerShell script blocks and interpolated `$()` sub-expressions no longer trigger content-exclusion refusals
+- `1.0.64 (2026-06-23)` Filter long streamed results correctly when content exclusion is enabled
+- `1.0.62 (2026-06-13)` PowerShell redirect paths no longer trigger content-exclusion refusals
+- `1.0.60 (2026-06-05)` --available-tools, --excluded-tools, and --reasoning-effort flags apply correctly in ACP mode
+- `1.0.33 (2026-04-20)` Grep no longer times out on large repositories when content exclusion policies are enabled
+- `1.0.16 (2026-04-02)` SQL prompt tags no longer appear when sql tool is excluded via excludedTools or availableTools
+- `1.0.6 (2026-03-16)` Improve compatibility with the Open Plugins spec: support `.lsp.json`, PascalCase hook event names, `exclusive` path mode, and `:` namespace separator
+- `0.0.370 (2025-12-18)` Add --available-tools and --excluded-tools to filter which tools the model can use
+- `0.0.332 (2025-10-01)` Improved Markdown legibility by excluding `#` prefixes in headings
+
+## Worktrees and parallel sessions
+
+44 entries.
+
+- `1.0.103 (2026-10-22)` Reuse cached local MCP tool snapshots across registered Git worktrees in one repository
+- `1.0.87 (2026-09-21)` A `worktreePathTemplate` setting decides where `/worktree`, `/move`, `/new` and `--worktree` create worktrees. Set for example `~/src/worktrees/{repo}/{branch}`; `{repoPath}`, `{repo}`, `{branch}` and `{branchSlug}` are supported. Unset keeps the current layout, `<repo>.worktrees/` with slashes in the branch name flattened to dashes.
+- `1.0.85 (2026-09-16)` A relative `--additional-mcp-config @<file>` path now resolves against the session working directory under `--resume=<id>` and `--worktree` instead of the launch directory, and `~/` expands.
+- `1.0.85 (2026-09-16)` Use /worktree, /move, and --worktree without enabling experimental mode
+- `1.0.83 (2026-09-04)` A relative `--add-dir` or `--plugin-dir` path now resolves against the session's working directory under `--resume=<id>` and `--worktree`, instead of the directory the CLI was launched from. Relative values are also resolved after `-C` is applied, so `-C` no longer has to precede either option on the command line
+- `1.0.82 (2026-08-29)` A message typed while /worktree or /move is preparing the worktree no longer breaks the switch into it
+- `1.0.79 (2026-08-10)` Added a `worktreeBaseRef` setting that controls whether `/worktree`, `/worktree new`, and `--worktree` start from HEAD or the remote default branch. All three now default to HEAD; previously `--worktree` started from the remote default branch.
+- `1.0.79 (2026-08-10)` Use `/worktree new` to start a new session in a new worktree
+- `1.0.78 (2026-08-03)` Add the experimental /new-worktree command to create a new worktree and start a new conversation in it
+- `1.0.78 (2026-08-03)` Resuming a long session is dramatically faster and far lighter on memory, because its history is now read once at startup (in parallel, across CPU cores) instead of being re-read in full for every check the CLI runs before it can paint. In our benchmark a 230MB, 74k-event transcript came back in well under a second instead of about ten, at roughly a quarter of the peak memory; the exact gain depends on your machine's core count and disk
+- `1.0.76 (2026-07-29)` Improve subagent delegation for small tasks and parallel work
+- `1.0.76 (2026-07-29)` Session working directory no longer reverts to the original checkout shortly after `/worktree` switches into a new worktree
+- `1.0.72 (2026-07-20)` /worktree and /move no longer fail to create a worktree for an auto-generated branch name when many similarly-named branches or a leftover worktree directory already exist: the numeric-suffix search is no longer capped at 5 and now skips stale unregistered worktree directories (an explicitly supplied branch name still errors on a collision)
+- `1.0.72 (2026-07-20)` /worktree <task> no longer intermittently runs the kickoff task in the main repo instead of the new worktree
+- `1.0.72 (2026-07-20)` /worktree and /move now propagate folder trust to the new worktree before switching when the source is already trusted (avoiding a spurious folder-trust prompt in that case), /move addresses its git stash precisely so a concurrent stash can't misplace changes, and worktree creation skips a leftover directory instead of failing
+- `1.0.71 (2026-07-16)` Split /worktree and /move: /worktree now creates a new worktree and leaves your uncommitted changes behind, while the new /move carries them into the new worktree
+- `1.0.69 (2026-07-07)` Find PRs from worktree branches when the local branch name differs from the PR head ref
+- `1.0.68 (2026-07-01)` Stop hooks from erroring and denying every tool when a session's working directory or git worktree has been deleted
+- `1.0.68 (2026-07-01)` Update the Sessions sidebar branch after /cd and /worktree
+- `1.0.66 (2026-06-30)` Git commands work in sandboxed linked worktrees
+- `1.0.66 (2026-06-30)` Keep multi-line /worktree tasks intact when starting them
+- `1.0.66 (2026-06-30)` Perform tokenizer warmup in parallel on a background thread for better startup performance
+- `1.0.66 (2026-06-30)` Pass a task to /worktree (e.g. 'fix the login redirect') to name the branch for that task and run the sentence as the first prompt in the new worktree
+- `1.0.66 (2026-06-30)` /worktree keeps a valid branch name exactly as typed, e.g. feature/JIRA-123, instead of flattening it to a slug like feature-jira-123
+- `1.0.66 (2026-06-30)` With no argument, /worktree names the branch from your uncommitted changes and recent conversation using your active model instead of a fixed small one
+- `1.0.64 (2026-06-23)` Experimental: adds a `--worktree [name]` (`-w`) flag (enable with `/experimental`) that creates or reuses a git worktree under `<repo>.worktrees/` and starts the session inside it
+- `1.0.64 (2026-06-23)` Code search and worktree listing are faster
+- `1.0.62 (2026-06-13)` Press W to create a worktree from the expanded issue or pull request details view
+- `1.0.61 (2026-06-09)` Add /worktree command (aliased /move) to create a new git worktree and switch into it, moving any uncommitted changes along
+- `1.0.60 (2026-06-05)` Worktree directory uses a flat name when PR branch contains slashes (e.g. `cli/foo` → `.worktrees/cli-foo`)
+- `1.0.60 (2026-06-05)` IDE picker now hides entries whose editor connection has gone away, so selecting one no longer fails with a connection error, and appends a process id to entries that share the same editor and folder so git worktrees of the same repo can be told apart
+- `1.0.60 (2026-06-05)` Create a git worktree for a pull request directly from the pull requests screen
+- `1.0.60 (2026-06-05)` Folder trust persists across git worktrees without re-prompting
+- `1.0.14 (2026-03-31)` Reduce CLI startup time by running terminal detection, auth, and git operations in parallel
+- `1.0.13 (2026-03-30)` Reduce CLI startup time by running terminal detection, auth, and git operations in parallel
+- `0.0.418 (2026-02-25)` Remove --disable-parallel-tools-execution flag and parallel_tool_execution config option
+- `0.0.415 (2026-02-23)` Plan approval menu shows model-curated actions with a recommended option highlighted first, including autopilot+fleet for parallelizable work
+- `0.0.412 (2026-02-19)` /fleet orchestrator validates subagent work
+- `0.0.412 (2026-02-19)` /fleet mode dispatches more subagents in parallel for faster execution
+- `0.0.411 (2026-02-17)` SDK APIs for plan mode, autopilot, fleet, and workspace files
+- `0.0.411 (2026-02-17)` Autopilot mode and /fleet command now available to all users
+- `0.0.389 (2026-01-22)` Shell commands (!) can run in parallel while agent is working
+- `0.0.384 (2026-01-16)` Selecting 'approve for session' now auto-approves pending parallel permission requests of the same type
+- `0.0.349 (2025-10-22)` The model can now call multiple tools in parallel. Each tool must be confirmed in advance. This behavior can be disabled with the `--disable-parallel-tools-execution` flag
+
+## Undo, rewind, checkpoints
+
+29 entries.
+
+- `1.0.103 (2026-10-22)` Reuse cached local MCP tool snapshots across registered Git worktrees in one repository
+- `1.0.100 (2026-10-19)` Start git, shell commands, and MCP servers on Windows when process snapshot thread enumeration fails
+- `1.0.85 (2026-09-16)` Automatic compaction now saves a checkpoint that appears in /session checkpoints
+- `1.0.78 (2026-08-03)` /rewind no longer requires git and restores only the files Copilot changed, skipping any file whose contents no longer match what Copilot last wrote, with a conversation-only or conversation + files choice
+- `1.0.76 (2026-07-29)` MCP tools load faster from definition-scoped snapshots, with process-wide and per-server cache opt-outs.
+- `1.0.72 (2026-07-20)` Show the exit resume hint for a renamed session with no messages when its workspace is only available as a cached snapshot
+- `1.0.69 (2026-07-07)` Keep /help from listing rewind/undo twice
+- `1.0.66 (2026-06-30)` Show quota snapshots for WebSocket Responses requests
+- `1.0.66 (2026-06-30)` Snapshot creation retries transient HEAD lookup failures instead of crashing
+- `1.0.64 (2026-06-23)` Fix the /rewind file-restore confirmation dialog being clipped at the bottom when it opens above a scrolled timeline; it now shows at full height once the file list loads
+- `1.0.64 (2026-06-23)` Restore later file changes when rewinding to a turn without a snapshot
+- `1.0.63 (2026-06-15)` Experimental: /rewind no longer requires git and restores only the files Copilot changed (leaving your own edits intact), with a conversation-only or conversation + files choice
+- `1.0.60 (2026-06-05)` Rewind picker shows working-tree diff stats (+added −removed) at each checkpoint
+- `1.0.60 (2026-06-05)` Rewind no longer deletes ignored files when rolling back to a previous snapshot
+- `1.0.32 (2026-04-17)` Rewind works correctly after using /cd to change directories
+- `1.0.30 (2026-04-16)` /undo shows an explanatory message when rewind is unavailable (e.g., not in a git repository or no commits yet)
+- `1.0.28 (2026-04-16)` Rewind picker navigation simplified to arrow keys and Enter, removing the confusing 1-9 quick-select shortcut
+- `1.0.26 (2026-04-14)` Agent sessions no longer fail with unrecoverable errors when context compaction splits a tool call across a checkpoint boundary
+- `1.0.13 (2026-03-30)` /rewind and double-Esc now open a timeline picker that can roll back to any point in conversation history, not just the previous snapshot
+- `1.0.10 (2026-03-20)` Add /undo command to undo the last turn and revert file changes
+- `1.0.7 (2026-03-17)` Double-Esc clears input when text is present, or triggers undo when the prompt is empty, with a hint shown after the first Esc
+- `1.0.3 (2026-03-09)` /reset-allowed-tools now fully undoes /allow-all and re-triggers the autopilot permission dialog
+- `0.0.416 (2026-02-24)` Undo operations now always require confirmation
+- `0.0.399 (2026-01-29)` Compaction messages show clearer command hints to view checkpoint summaries
+- `0.0.399 (2026-01-29)` Undo/rewind to previous states with double-Esc
+- `0.0.396 (2026-01-27)` Undo/rewind shows accurate count of affected files
+- `0.0.395 (2026-01-26)` Rewind shows clear warning in non-git repos or repos without commits
+- `0.0.393 (2026-01-23)` Add Esc-Esc to undo file changes to any previous snapshot
+- `0.0.385 (2026-01-19)` Enable infinite sessions with automatic long-running context management through compaction checkpoints
+
+## Pull requests, review, diff
+
+50 entries.
+
+- `1.0.100 (2026-10-19)` Keep saved /diff review comments when reopening an unchanged diff in the same session, with an explicit discard action.
+- `1.0.89 (2026-09-28)` PR creation now follows repository pull request templates, preserving required sections and checklist structure.
+- `1.0.87 (2026-09-21)` Pull request badge and GitHub status tabs remain available after auth or branch refreshes
+- `1.0.76 (2026-07-29)` /diff scrolls and syntax-highlights large multi-file diffs faster
+- `1.0.71 (2026-07-16)` Plan mode now hard-blocks built-in tool calls that would modify the workspace, so the agent can no longer edit files or run mutating shell commands while planning (built-in mutators like opening a pull request are blocked; MCP and external tools are still allowed)
+- `1.0.70 (2026-07-09)` Keep /pr tables aligned in compact timeline view
+- `1.0.69 (2026-07-07)` Speed up /diff rendering and scrolling on large diffs
+- `1.0.69 (2026-07-07)` Include files inside new untracked directories in /diff local edits
+- `1.0.68 (2026-07-01)` Tab completion shows slash command aliases inline (e.g. /pr automerge|agentmerge)
+- `1.0.68 (2026-07-01)` Code review retries transient git failures when gathering changes
+- `1.0.66 (2026-06-30)` Show the current pull request link as a status-line item
+- `1.0.66 (2026-06-30)` Make /pr auto keep working through CI, review, and merge queue
+- `1.0.66 (2026-06-30)` Return to the last open GitHub issue, pull request, or gist view when switching tabs
+- `1.0.66 (2026-06-30)` /pr auto now starts a self-paced loop that fixes one thing per run and paces itself around CI to drive the PR to green; /pr automerge keeps going until the PR is merged. Manage or stop it from /loop or /every.
+- `1.0.66 (2026-06-30)` Show merge status for each pull request in the Pull requests tab, and refresh the cached statuses on demand by pressing r
+- `1.0.66 (2026-06-30)` Guide the agent to format cross-repository issue/PR references as owner/repo#number (reserving bare #number for the current repo) so they don't mislink to the current repository
+- `1.0.64 (2026-06-23)` Free-text search terms containing colons (e.g. `CLI:`) now return correct results in Issues and Pull requests search instead of being misread as invalid qualifiers by GitHub
+- `1.0.64 (2026-06-23)` /diff shows a session diff of Copilot's changes in non-git folders
+- `1.0.64 (2026-06-23)` Make /pr status and web confirmations link to the PR's repository
+- `1.0.64 (2026-06-23)` Click filenames in /diff tree to jump to that file's first change
+- `1.0.64 (2026-06-23)` Wrap long lines in /diff view so content no longer truncates
+- `1.0.64 (2026-06-23)` Improve /diff hotkey labels for branch, whitespace, and tree navigation
+- `1.0.63 (2026-06-15)` Show fork-based pull requests in /pr and the branch PR badge
+- `1.0.63 (2026-06-15)` Press w in /diff to hide whitespace-only changes
+- `1.0.62 (2026-06-13)` Press `/` on the Issues or Pull Requests tab to search GitHub with server-side filtering
+- `1.0.62 (2026-06-13)` Add file tree sidebar and inline comment editor to the /diff view
+- `1.0.62 (2026-06-13)` Press W to create a worktree from the expanded issue or pull request details view
+- `1.0.60 (2026-06-05)` Add vim-style navigation keys (g, G, Ctrl+D, Ctrl+U) to the /diff view
+- `1.0.60 (2026-06-05)` Create a git worktree for a pull request directly from the pull requests screen
+- `1.0.58 (2026-06-02)` Experimental new UI with easy access to issues, pull requests, and gists
+- `1.0.57 (2026-06-01)` /diff defaults to branch diff when there are no unstaged changes
+- `1.0.56 (2026-05-29)` Code review agent now uses the same model as the current session instead of a fixed default
+- `1.0.47 (2026-05-13)` Support j/k keys for up/down navigation in the /diff view
+- `1.0.26 (2026-04-14)` Remote tab correctly shows Copilot coding agent tasks and supports steering without requiring a pull request
+- `1.0.23 (2026-04-10)` /diff, /agent, /feedback, /ide, and /tuikit work while the agent is running
+- `1.0.12 (2026-03-26)` /diff view correctly renders all lines when intra-line highlighting is present
+- `1.0.5 (2026-03-13)` Introducing /pr to help create and view PRs, automatically fix CI failures, address review feedback, and resolve merge conflicts
+- `1.0.5 (2026-03-13)` Syntax highlighting in /diff with support for 17 programming languages
+- `1.0.4 (2026-03-11)` Replace /pr open with /pr view [local|web] to view PR status locally or open in browser
+- `0.0.422 (2026-03-05)` Add mouse scroll support to /diff in alt-screen mode
+- `0.0.420 (2026-02-27)` Type # to reference GitHub issues, pull requests and discussions
+- `0.0.409 (2026-02-12)` /diff uses full screen in alt-screen mode
+- `0.0.401 (2026-02-03)` /diff displays accurate line numbers with dual column layout
+- `0.0.400 (2026-01-30)` The Code Review tool handles large changesets by ignoring build artifacts and limiting to 100 files
+- `0.0.399 (2026-01-29)` Improve `/diff` command with better visual indicators and scroll acceleration
+- `0.0.399 (2026-01-29)` Add `/diff` command to review session changes
+- `0.0.396 (2026-01-27)` /diff shows changes from entire repository when run from subdirectory
+- `0.0.395 (2026-01-26)` Add commenting to /diff mode for line-specific feedback
+- `0.0.389 (2026-01-22)` Add `/diff` command to review changes made during the current session
+- `0.0.388 (2026-01-20)` Add `/review` command to analyze code changes
+
+## Delegation and cloud agent
+
+86 entries.
+
+- `1.0.103 (2026-10-22)` Improve remote launch options with clearer hosting/connection flags and retire legacy --remote/--no-remote startup flags
+- `1.0.97 (2026-10-13)` Remote plugin marketplace and plugin fetches retry once with your signed-in GitHub token after HTTPS auth fails.
+- `1.0.97 (2026-10-13)` Fix parsing of GitHub SCP remotes with absolute paths so repository owner and name resolve correctly
+- `1.0.93 (2026-10-07)` Run safe /user commands immediately during active turns, reject unsafe remote commands during active turns without opening dialogs, and queue commands advertised by relay hosts
+- `1.0.92 (2026-10-05)` Remote session resume now uses your configured GitHub auth for --resume and --connect
+- `1.0.92 (2026-10-05)` Sandboxed scripts that run Git now authenticate with masked credentials and SSH remote rewrites
+- `1.0.92 (2026-10-05)` Reconnect to remote MCP servers after idle Streamable HTTP sessions expire
+- `1.0.85 (2026-09-16)` The remote session timeline entry now advertises ctrl+o to show or hide the QR code, matching the key that actually toggles it
+- `1.0.85 (2026-09-16)` `ctrl+h` no longer deletes a whole word in tmux, screen, and remote sessions that carry a Windows Terminal `WT_SESSION` from elsewhere. As an accepted tradeoff, `ctrl+backspace` now deletes a single character in those sessions — including a genuinely local Windows tmux or screen pane — where `ctrl+w` still deletes a word
+- `1.0.81 (2026-08-27)` Windows: remote MCP servers protected by Microsoft Entra ID can now sign in through the OS authentication broker (WAM), usually with no prompt at all. Other platforms, `--device-code`, and machines without the broker library keep the existing browser flow.
+- `1.0.81 (2026-08-27)` forceRemoteSettingsRefresh now fails closed: when set, the cached managed-settings policy is never served or used as a fetch-failure fallback (skipping both the 1h fast path and the 24h stale fallback), so a failed startup fetch blocks on the unconfirmed policy instead of reverting to a possibly-stale cached one. Concretely, until a fresh policy is fetched the session applies the restrictive undetermined-policy posture: non-default MCP servers are blocked, bypass-permissions mode cannot be enabled, and policy-gated plugin install/update mutations are blocked
+- `1.0.79 (2026-08-10)` Sandboxed git now authenticates to Azure DevOps, GitHub Enterprise Server, GitLab, and other non-GitHub remotes you have stored HTTPS credentials for
+- `1.0.79 (2026-08-10)` Added a `worktreeBaseRef` setting that controls whether `/worktree`, `/worktree new`, and `--worktree` start from HEAD or the remote default branch. All three now default to HEAD; previously `--worktree` started from the remote default branch.
+- `1.0.78 (2026-08-03)` Copilot login now defaults to the browser flow for local desktop subprocesses without a TTY, including IDE integrations, while remote and headless environments continue using device code
+- `1.0.78 (2026-08-03)` Added a forceRemoteSettingsRefresh managed setting that requires a fresh managed-settings fetch on startup; when the setting is in effect and that refresh cannot be confirmed, plugin mutations and read-only marketplace operations alike (including `plugins marketplace` list, browse, and refresh) fail closed rather than proceeding without the server-managed policy
+- `1.0.77 (2026-07-30)` Add a browser-based (web) OAuth login flow, now the default for `copilot login` on local interactive terminals (device code remains the default on remote/headless terminals). Use `--web-flow`/`--device-code` to force a mode, or pick one in the interactive `/login` command
+- `1.0.74 (2026-07-23)` Remote session uploads stop retrying permanent Mission Control 400/404 responses
+- `1.0.72 (2026-07-20)` Toggling /sandbox restarts only local MCP servers and leaves remote servers connected
+- `1.0.72 (2026-07-20)` Require SSO for remote control when managed settings demand it
+- `1.0.70 (2026-07-09)` Hide the GitHub App install nudge in remote terminals
+- `1.0.70 (2026-07-09)` Keep terminal color scheme changes in sync over SSH and remote shells
+- `1.0.70 (2026-07-09)` Skip launching a browser in remote terminals
+- `1.0.69 (2026-07-07)` Confirm before resuming a remote session from a different repository
+- `1.0.69 (2026-07-07)` Delay read-only remote session creation until you send the first message
+- `1.0.69 (2026-07-07)` Create delegate PRs against the current branch by default, with /delegate --base to choose another PR target branch
+- `1.0.66 (2026-06-30)` Properly recover MCP host-delegated connections when OAuth tokens expire or need broader scopes
+- `1.0.66 (2026-06-30)` Enable /rename in remote-hosted (cloud and relay) sessions
+- `1.0.66 (2026-06-30)` MCP tools on OAuth-authenticated remote servers now recover automatically after a mid-session token expiry, matching the existing OIDC retry behaviour. A 401 during a tool call triggers a non-interactive reconnect, and servers needing interactive re-auth are retried at the start of the next turn.
+- `1.0.64 (2026-06-23)` Hide unsupported slash commands in remote-hosted sessions
+- `1.0.64 (2026-06-23)` Remote export keeps running after /clear and /session info keeps the task URL
+- `1.0.64 (2026-06-23)` Show --remote-export and --no-remote-export in --help output
+- `1.0.64 (2026-06-23)` Add SDK support for host-provided OAuth tokens for remote MCP servers
+- `1.0.64 (2026-06-23)` Wait for the remote sandbox to start before opening the cloud session
+- `1.0.63 (2026-06-15)` Resume remote sessions when the local and remote repository names differ only by case
+- `1.0.62 (2026-06-13)` Remote MCP OAuth servers start only once per matching config instead of restarting for each subagent
+- `1.0.61 (2026-06-09)` MCP OAuth re-authentication correctly uses the saved OAuth client ID for remote servers
+- `1.0.60 (2026-06-05)` Show session link in /session info table when remote exporting or steering
+- `1.0.58 (2026-06-02)` Remote JSON RPC is now enabled by default
+- `1.0.56 (2026-05-29)` Remote session URL correctly uses the repository owner/name instead of literal 'copilot'
+- `1.0.55 (2026-05-28)` Show a warning when remote controlled sessions are disabled by organization policy
+- `1.0.55 (2026-05-28)` Delete remote sessions directly from the session picker
+- `1.0.55 (2026-05-28)` Show a helpful message when remote controlled sessions are disabled by organization policy
+- `1.0.51 (2026-05-20)` /remote commands now respect organization remote control and view from cloud policy and show a clear error when disabled
+- `1.0.51 (2026-05-20)` /remote command can now be used while the agent is working
+- `1.0.51 (2026-05-20)` Only show remote session startup failure when remote mode is explicitly requested via --remote or enabled in user configuration
+- `1.0.47 (2026-05-13)` --resume supports Copilot cloud agent sessions where the agent hasn't pushed any changes to its branch
+- `1.0.42 (2026-05-06)` Remote session export now supports non-GitHub repositories and repo-less directories
+- `1.0.41 (2026-05-05)` Remote session connection errors show your logged-in account and tailored remediation steps
+- `1.0.40 (2026-05-01)` Remote session statusline shows the remote working directory and branch instead of local context
+- `1.0.40 (2026-05-01)` Remote control link shows the full URL in the timeline instead of 'Open in browser'
+- `1.0.39 (2026-04-28)` `/remote` status output now shows actionable hints for each connection state
+- `1.0.36 (2026-04-24)` /remote command shows current status and supports /remote on and /remote off to toggle remote control
+- `1.0.35 (2026-04-23)` Permission prompts appear correctly in remote sessions for the CLI TUI
+- `1.0.33 (2026-04-20)` Resuming a remote session with --resume or --continue automatically inherits the --remote flag without needing to re-specify it
+- `1.0.32 (2026-04-17)` Add --connect flag to directly connect to a remote session by ID
+- `1.0.29 (2026-04-16)` Remote MCP server config now allows omitting the type field, defaulting to http
+- `1.0.29 (2026-04-16)` Agent correctly identifies repository owner from git remote URL rather than local username
+- `1.0.28 (2026-04-16)` Connect to CLI remote control sessions from the —resume picker
+- `1.0.26 (2026-04-14)` Remote tab correctly shows Copilot coding agent tasks and supports steering without requiring a pull request
+- `1.0.26 (2026-04-14)` Rename "steering" to "remote control" in --remote flag and /remote command help text
+- `1.0.25 (2026-04-13)` You can now remote control your CLI sessions using --remote or /remote
+- `1.0.25 (2026-04-13)` MCP remote server connections automatically retry on transient network failures
+- `1.0.24 (2026-04-10)` The --remote flag is respected when the session sync prompt appears on first run in a GitHub repo
+- `1.0.23 (2026-04-10)` Remote tab correctly shows Copilot coding agent tasks and supports steering via the Tasks API
+- `1.0.22 (2026-04-09)` Show a clear message to contact your organization administrator when remote sessions are blocked by policy
+- `1.0.17 (2026-04-03)` Built-in skills are now included with the CLI, starting with a guide for customizing Copilot cloud agent's environment
+- `1.0.11 (2026-03-23)` GitHub MCP server user configuration is respected when connecting to remote hosts
+- `1.0.10 (2026-03-20)` /login device flow works correctly in Codespaces and remote terminal environments
+- `1.0.10 (2026-03-20)` Working directory is correctly detected when using --server mode with remote sessions
+- `1.0.10 (2026-03-20)` Remote session URL displays as a compact clickable 'Open in browser' link instead of a duplicated raw URL
+- `0.0.422 (2026-03-05)` Show a clear, actionable error message when git is not installed and a remote plugin or marketplace is used
+- `0.0.422 (2026-03-05)` /delegate prompts for a target remote in multi-remote repositories and clarifies confirmation text
+- `0.0.422 (2026-03-05)` GitHub MCP server stays enabled in repositories that have both Azure DevOps and GitHub remotes
+- `0.0.413 (2026-02-20)` Support remote plugin sources (GitHub repos and git URLs) in marketplace.json plugin entries
+- `0.0.404 (2026-02-05)` Simplify and clarify `/delegate` command messaging
+- `0.0.400 (2026-01-30)` Improve compatibility with remote MCP servers that use OAuth
+- `0.0.394 (2026-01-24)` Add support for GitHub Enterprise Cloud (\*.ghe.com) in /delegate command
+- `0.0.394 (2026-01-24)` `/delegate` command accepts optional prompt, uses conversation context
+- `0.0.393 (2026-01-23)` Add support for GHE Cloud (\*.ghe.com) remote custom agents
+- `0.0.384 (2026-01-16)` Add `&` prefix shortcut for delegating prompts to run in background (equivalent to `/delegate`)
+- `0.0.376 (2026-01-08)` Loading remote sessions using GraphQL ID or session picker
+- `0.0.372 (2025-12-19)` Add `--resume` flag to continue remote sessions locally
+- `0.0.359 (2025-11-17)` Fix an issue where sourcing custom agents from the remote repository's default branch led to confusions about whether the local copy of the agent was being used
+- `0.0.355 (2025-11-12)` Fixed a bug where remote MCP server configuration in custom agents was not fetched properly
+- `0.0.354 (2025-11-03)` `/delegate` command now works correctly when no local changes exist
+- `0.0.353 (2025-10-28)` Added a `/delegate` command to delegate a task asynchronously to Copilot coding agent. Any unstaged changes will be committed to a new branch, a PR will be opened in your GitHub repository, and Copilot will complete work in the background.
+
+## Dynamic workflows
+
+3 entries.
+
+- `1.0.102 (2026-10-21)` Subagents honor custom and MCP tool approvals, avoiding duplicate permission prompts and allowing inherited workflows to run
+- `1.0.101 (2026-10-20)` Add native structured output for dynamic workflow subagents on supported models
+- `1.0.70 (2026-07-09)` Create draft skills when Forge finds a clear workflow pattern
+
+## Secrets and credentials
+
+100 entries.
+
+- `1.0.101 (2026-10-20)` Headless and SDK sessions without an OAuth handler skip MCP connections when saved tokens require sign-in, while renewable grants still connect.
+- `1.0.101 (2026-10-20)` Explicit Entra MCP sign-in now recovers from rejected cached tokens by continuing to interactive sign-in.
+- `1.0.101 (2026-10-20)` Google models now avoid repeated request rewrites when screenshot-heavy sessions exceed image limits, reducing extra token usage.
+- `1.0.100 (2026-10-19)` Sandboxed shell commands now explain credential-proxy certificate trust failures and can offer an approved rerun outside the sandbox.
+- `1.0.100 (2026-10-19)` Reasoning-only max-token responses no longer loop indefinitely and now end with a clear error when no progress is made
+- `1.0.100 (2026-10-19)` Keep your selected Microsoft Entra account pinned during sign-in and token renewal
+- `1.0.100 (2026-10-19)` Sandboxed git on github.com can use your configured GITHUB_TOKEN from credentials.envVars
+- `1.0.97 (2026-10-13)` Remote plugin marketplace and plugin fetches retry once with your signed-in GitHub token after HTTPS auth fails.
+- `1.0.97 (2026-10-13)` Show billed AI Credits in /usage for token-billed sessions, including after resume
+- `1.0.97 (2026-10-13)` Redact secrets safely in --output-format json output while preserving valid variable references
+- `1.0.96 (2026-10-12)` Interactive sandbox settings suggest possible environment secrets and let you add masking hosts before saving.
+- `1.0.95 (2026-10-09)` copilot config supports sandbox credential injectHosts keys, with key completion in Bash, Zsh, and Fish.
+- `1.0.92 (2026-10-05)` Entra-protected MCP servers can silently renew access-token-only credentials.
+- `1.0.92 (2026-10-05)` Usage reporting preserves provider-reported reasoning token totals when available
+- `1.0.92 (2026-10-05)` Sandboxed shells now withhold ambient GITHUB_TOKEN unless explicitly configured.
+- `1.0.92 (2026-10-05)` Sandboxed scripts that run Git now authenticate with masked credentials and SSH remote rewrites
+- `1.0.92 (2026-10-05)` Sub-agents keep working after you replace your GitHub authentication credentials
+- `1.0.90 (2026-09-30)` MCP OAuth sign-in to servers such as Datadog reuses a still-valid cached token
+- `1.0.87 (2026-09-21)` Secrets exported in the launching shell are no longer written to debug logs when a session is created or resumed
+- `1.0.85 (2026-09-16)` Interactive mode starts and submits the initial prompt when using --auth-token-env
+- `1.0.85 (2026-09-16)` Initial prompts start immediately for Entra-authenticated sessions while token refresh runs in the background.
+- `1.0.85 (2026-09-16)` Large sessions resume without freezing the interface during context token counting
+- `1.0.85 (2026-09-16)` When you have more than one GitHub account in your credential store, a sandboxed gh command now acts as the account gh is logged in as instead of an arbitrary one.
+- `1.0.85 (2026-09-16)` On Windows, a sandboxed command that runs git without naming it — a hook, a build tool, or an npm install that clones over HTTPS — no longer dies inside the credential helper's MSYS2 shell.
+- `1.0.83 (2026-09-04)` Sandboxed file tools now read the same developer-tool paths as sandboxed shell commands, including token-bearing registry config such as ~/.npmrc; set sandbox.allowDevToolAccess to false to turn these grants off
+- `1.0.82 (2026-08-29)` Show the specific authentication failure (such as 401 Bad credentials) instead of only the /login prompt
+- `1.0.81 (2026-08-27)` Add --with-token to copilot login to read an auth token from stdin
+- `1.0.79 (2026-08-10)` Allow enterprise-managed sandbox policy to enforce a proxy URL while credentials remain user-controlled
+- `1.0.79 (2026-08-10)` Sandboxed git now authenticates to Azure DevOps, GitHub Enterprise Server, GitLab, and other non-GitHub remotes you have stored HTTPS credentials for
+- `1.0.79 (2026-08-10)` Compute /context attribution against the Auto-resolved model so token totals are accurate for Free/Student users
+- `1.0.78 (2026-08-03)` Expose token usage in ACP prompt results and live usage_update notifications
+- `1.0.78 (2026-08-03)` Ctrl+Q now enqueues the highlighted mid-text skill completion instead of the partial token
+- `1.0.74 (2026-07-23)` The `/mcp add` and `/mcp edit` wizard now preserves `=` characters in environment variable values (such as base64 padding), so secrets and tokens are stored correctly.
+- `1.0.72 (2026-07-20)` Mask secret values in /settings show output
+- `1.0.71 (2026-07-16)` Server mode reconnects OAuth MCP servers from cached tokens
+- `1.0.71 (2026-07-16)` Keep stored Git credential helpers available for marketplace plugin installs
+- `1.0.69 (2026-07-07)` Keep session resume working when token timing includes fractional milliseconds
+- `1.0.69 (2026-07-07)` Collect debug logs without truncating large files or dropping multiline secrets
+- `1.0.68 (2026-07-01)` Keep embedded /skill tokens in skill prompt context
+- `1.0.66 (2026-06-30)` Show accurate Anthropic reasoning token counts
+- `1.0.66 (2026-06-30)` Perform tokenizer warmup in parallel on a background thread for better startup performance
+- `1.0.66 (2026-06-30)` Properly recover MCP host-delegated connections when OAuth tokens expire or need broader scopes
+- `1.0.66 (2026-06-30)` Keep the CLI responsive during secret filtering
+- `1.0.66 (2026-06-30)` MCP tools on OAuth-authenticated remote servers now recover automatically after a mid-session token expiry, matching the existing OIDC retry behaviour. A 401 during a tool call triggers a non-interactive reconnect, and servers needing interactive re-auth are retried at the start of the next turn.
+- `1.0.66 (2026-06-30)` Added runtime telemetry for the MCP host token-injection OAuth flow, recording when an OAuth broadcast is emitted to the host and how the host responds (token or cancelled) with response latency
+- `1.0.64 (2026-06-23)` Support static OAuth client overrides, including client secrets, for MCP server authentication
+- `1.0.64 (2026-06-23)` OpenTelemetry GenAI spans now emit `gen_ai.usage.cache_read.input_tokens`, `gen_ai.usage.cache_creation.input_tokens`, and `gen_ai.usage.reasoning.output_tokens` per the GenAI semantic conventions spec (previously used incorrect underscore-separated names)
+- `1.0.64 (2026-06-23)` Show per-model token totals in /usage and speed up large history scans
+- `1.0.64 (2026-06-23)` Add SDK support for host-provided OAuth tokens for remote MCP servers
+- `1.0.64 (2026-06-23)` Azure CLI, PowerShell, and Developer CLI credentials work again for Azure auth
+- `1.0.62 (2026-06-13)` Honor max_output_tokens for BYOK Responses providers
+- `1.0.60 (2026-06-05)` Show cache write tokens alongside cache read tokens in /usage display
+- `1.0.60 (2026-06-05)` /context separates Custom Instructions from the system prompt and cross-references per-server MCP tool token costs with /mcp
+- `1.0.60 (2026-06-05)` Local MCP servers sharing a serialized token broker (e.g. M365) reliably start instead of intermittently failing
+- `1.0.57 (2026-06-01)` Surface the underlying reason (e.g. GitHub API rate limit) when SDK auth-token validation fails, instead of the misleading "Session was not created with authentication info or custom provider" message.
+- `1.0.56 (2026-05-29)` Fix /context small-token legend formatting and free-space grid rounding
+- `1.0.56 (2026-05-29)` When gh CLI is on PATH, GitHub MCP server now omits redundant gh-replaceable tools by default, reducing token usage
+- `1.0.55 (2026-05-28)` Free and Student plan users on token-based billing are restricted to Auto model selection, with an explanation shown in the model picker
+- `1.0.55 (2026-05-28)` Report Claude thinking (reasoning) tokens in session usage summaries
+- `1.0.55 (2026-05-28)` Show per-MCP-server token usage in /mcp and break out MCP tool tokens in /context
+- `1.0.55 (2026-05-28)` Reasoning token count now shown in session token summary for all users
+- `1.0.52 (2026-05-23)` Context window tier selection (default ~200K vs 1M tokens) is now enforced end-to-end, so picking a tier actually constrains compaction, truncation, and token display
+- `1.0.52 (2026-05-23)` Reasoning tokens display as a parenthetical on output token count in the token usage summary
+- `1.0.51 (2026-05-20)` Add /chronicle cost-tips subcommand for personalized token usage and cost reduction recommendations
+- `1.0.51 (2026-05-20)` Ensure input token usage includes cached, update token formatting to clarify
+- `1.0.51 (2026-05-20)` Login prompt more clearly warns when token storage falls back to insecure plain text config file
+- `1.0.51 (2026-05-20)` Secret scanning now covers commit messages and PR descriptions, redacting secrets before they are published
+- `1.0.49 (2026-05-18)` MCP servers using static OAuth clients correctly persist registration for token refreshes
+- `1.0.49 (2026-05-18)` MCP OAuth token lookups are correctly scoped to the active session
+- `1.0.48 (2026-05-14)` Model picker displays actual token prices instead of dot indicators for token-based billing users
+- `1.0.48 (2026-05-14)` /context shows correct token limits for all models instead of always showing 128k
+- `1.0.40 (2026-05-01)` Add support for `client_credentials` OAuth grant type for MCP servers, enabling fully headless authentication without a browser
+- `1.0.40 (2026-05-01)` MCP OAuth tokens cache correctly when multiple servers share the same URL but use different static OAuth client IDs
+- `1.0.35 (2026-04-23)` Session token expiry during a turn is handled automatically without requiring you to resend your message
+- `1.0.32 (2026-04-17)` Skills that exceed the token limit are still discoverable and invocable by name
+- `1.0.26 (2026-04-14)` Single-segment slash-prefixed tokens (e.g. /help, /start) no longer treated as file paths in bash commands
+- `1.0.26 (2026-04-14)` Avoid sending duplicate custom instruction files (e.g. copilot-instructions.md and CLAUDE.md with identical content) to reduce wasted tokens per turn
+- `1.0.23 (2026-04-10)` Display reasoning token usage in the per-model token breakdown when nonzero
+- `1.0.16 (2026-04-02)` BYOK Anthropic provider now respects the configured maxOutputTokens limit
+- `1.0.15 (2026-04-01)` Config settings askUser, autoUpdate, storeTokenPlaintext, logLevel, skillDirectories, and disabledSkills now use camelCase names (snake_case still accepted)
+- `1.0.5 (2026-03-13)` Block network (UNC) paths to prevent credential leakage via SMB authentication
+- `1.0.5 (2026-03-13)` Show a clear error when a classic Personal Access Token (ghp\_) is set in environment variables instead of silently exiting
+- `1.0.5 (2026-03-13)` Session reports an authentication error instead of hanging when the token is invalid or expired
+- `1.0.4 (2026-03-11)` Auto-update now retries without authentication token on SAML enforcement errors
+- `1.0.4 (2026-03-11)` Status line context window percentage no longer inflates across turns by using the last call's input and output tokens instead of cumulative totals
+- `1.0.4 (2026-03-11)` OAuth authentication now handles Microsoft Entra ID and other OIDC servers reliably with proper resource indicators and refresh token support
+- `0.0.422 (2026-03-05)` Session usage metrics (requests, tokens, code changes) are now persisted to events.jsonl after each session ends
+- `0.0.410 (2026-02-14)` Shell mode pastes raw text instead of paste tokens
+- `0.0.404 (2026-02-05)` GITHUB_TOKEN environment variable now accessible in agent shell sessions
+- `0.0.399 (2026-01-29)` /usage now includes token consumption from sub-agents (e.g., the general-purpose agent)
+- `0.0.389 (2026-01-22)` MCP servers can now authenticate using OAuth 2.0 with automatic token management and refresh
+- `0.0.374 (2026-01-02)` Add auto-compaction at 95% token limit and `/compact` command
+- `0.0.372 (2025-12-19)` Add `/context` command to visualize token usage
+- `0.0.359 (2025-11-17)` Fix a bug where cached tokens were displaying as zero at the end of the session
+- `0.0.354 (2025-11-03)` Support for `COPILOT_GITHUB_TOKEN` environment variable for authentication (takes precedence over `GH_TOKEN`)
+- `0.0.350 (2025-10-23)` Fixed a bug where input tokens were not tracked properly (Fixes https://github.com/github/copilot-cli/issues/337)
+- `0.0.348 (2025-10-21)` Copilot's output now streams in token-by-token! This can be disabled with `--stream off`
+- `0.0.336 (2025-10-07)` Significantly reduced token consumption, round trips per problem, and time to result. We'll share more specific data in our weekly changelog on Friday!
+- `0.0.334 (2025-10-03)` Improved the experience of pasting large content: when pasting more than 10 lines, it's displayed as a compact token like `[Paste #1 - 15 lines]` instead of flooding the terminal.
+- `0.0.333 (2025-10-02)` Added `/usage` slash command to provide stats about Premium request usage, session time, code changes, and per-model token use. This information is also printed at the conclusion of a session (Fixes https://github.com/github/copilot-cli/issues/27, https://github.com/github/copilot-cli/issues/121)

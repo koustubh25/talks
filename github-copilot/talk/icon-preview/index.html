@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Southbank Vault icon styles</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@vscode/codicons@0.0.36/dist/codicon.css">
+<style>
+  :root {
+    --bg: #f6f3ee; --ink: #2b2118; --muted: #7a6a5c; --card: #ffffff; --line: #e4dccf;
+    --term: #16141a; --term-ink: #e9e4dc; --term-dim: #8d8590;
+    --pass: #f5c542; --block: #3ecf8e; --leak: #ff5a5f; --accent: #b5652b;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #121014; --ink: #ece6dd; --muted: #a89c90; --card: #1c191f; --line: #2e2933; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 -apple-system, "Segoe UI", system-ui, sans-serif; }
+  header { padding: 32px 16px 8px; max-width: 1180px; margin: 0 auto; }
+  h1 { margin: 0 0 4px; font-size: 28px; }
+  header p { margin: 4px 0; color: var(--muted); max-width: 760px; }
+  nav { max-width: 1180px; margin: 12px auto 0; padding: 0 16px; display: flex; flex-wrap: wrap; gap: 8px; }
+  nav a { text-decoration: none; color: var(--ink); border: 1px solid var(--line); background: var(--card); padding: 4px 12px; border-radius: 999px; font-size: 13px; }
+  main { max-width: 1180px; margin: 0 auto; padding: 8px 16px 64px; }
+  section { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 20px; margin-top: 20px; }
+  .head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; }
+  .head h2 { margin: 0; font-size: 20px; }
+  .tag { font-size: 12px; padding: 2px 8px; border-radius: 999px; background: var(--accent); color: #fff; }
+  .meta { color: var(--muted); font-size: 13px; margin: 6px 0 14px; }
+  .meta b { color: var(--ink); font-weight: 600; }
+  .grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 18px; }
+  @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+  .cast { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 10px; align-content: start; }
+  .item { text-align: center; font-size: 12px; color: var(--muted); }
+  .item .ic { height: 64px; display: flex; align-items: center; justify-content: center; }
+  .item .ic img { width: 56px; height: 56px; }
+  .pixel img { image-rendering: pixelated; }
+  .cast.black { background: #000; border-radius: 12px; padding: 12px; }
+  .cast.black .item { color: #9a93a0; }
+  .black .term { background: #000; }
+  .mdi, .codicon, .codicon[class*='codicon-'] { font-size: 44px; line-height: 1; }
+  .row .s .codicon[class*='codicon-'] { font-size: 26px; }
+  .emoji { font-size: 44px; line-height: 1; }
+  pre.ascii { margin: 0; font: 11px/1.15 ui-monospace, "SF Mono", Menlo, monospace; color: var(--ink); text-align: left; }
+  .term { background: var(--term); color: var(--term-ink); border-radius: 12px; padding: 14px 16px; font: 13px/1.4 ui-monospace, "SF Mono", Menlo, monospace; overflow: hidden; }
+  .term .top { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; border-bottom: 1px dashed #3a3440; padding-bottom: 8px; margin-bottom: 8px; }
+  .term .title { color: #ffd79a; font-weight: 700; }
+  .term .score { color: var(--term-dim); }
+  .row { display: flex; align-items: center; gap: 8px; min-height: 44px; flex-wrap: nowrap; }
+  .row .s { width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; flex: none; }
+  .row .s img { width: 30px; height: 30px; }
+  .row .s .mdi, .row .s .codicon { font-size: 26px; }
+  .row .s .emoji { font-size: 24px; }
+  .row .s pre.ascii { font-size: 7px; line-height: 1; color: var(--term-ink); }
+  .arrow { color: var(--term-dim); white-space: nowrap; }
+  .lbl { font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pass { color: var(--pass); } .block { color: var(--block); } .leak { color: var(--leak); } .dim { color: var(--term-dim); }
+  .c-sign { color: #f5c542; } .c-rope { color: #b48cff; } .c-bouncer { color: #ff9f43; } .c-lasers { color: #ff4d6d; }
+  .c-hq { color: #4cc9f0; } .c-agent { color: #9ad1ff; } .c-recipe { color: #e0b084; } .c-ok { color: #3ecf8e; } .c-bad { color: #ff5a5f; }
+  .keys { border-top: 1px dashed #3a3440; margin-top: 8px; padding-top: 8px; color: var(--term-dim); font-size: 12px; }
+  footer { max-width: 1180px; margin: 0 auto; padding: 0 16px 40px; color: var(--muted); font-size: 12px; }
+  .ascii-scene pre { margin: 0; font: 12px/1.25 ui-monospace, "SF Mono", Menlo, monospace; }
+</style>
+</head>
+<body>
+<header>
+  <h1>☕ The Southbank Vault: icon styles</h1>
+  <p>The same cast in each style, plus a mock of the left pane ("Round 3 · The Bouncer") drawn in that style. Pick a style or mix two.</p>
+  <p>In the real demo, the left pane is your iTerm2 terminal. Pictures (Fluent, Kenney) can show there as inline images; icon fonts and ASCII are characters.</p>
+</header>
+<nav id="nav"></nav>
+<main id="main"></main>
+<footer>
+  Licences: Microsoft Fluent Emoji (MIT) · Kenney 1-Bit Pack (CC0) · Material Design Icons (Apache 2.0 / OFL) · VS Code Codicons (CC BY 4.0). Assets are stored locally in <code>assets/</code>.
+</footer>
+
+<script>
+const CAST = [
+  ["cup", "Cappuccino"], ["recipe", "Recipe card"], ["agent", "Agent (Copilot)"], ["disguise", "Disguise"],
+  ["sign", "Sign · AGENTS.md"], ["rope", "Velvet rope · deny-tool"], ["bouncer", "Bouncer · hook"],
+  ["lasers", "Laser grid · sandbox"], ["hq", "HQ · admin policy"], ["keys", "Two-key · CODEOWNERS"],
+  ["vault", "Vault"], ["door", "Escape door"], ["presenter", "Presenter"],
+  ["alarm", "Alarm · leak"], ["blocked", "Blocked"], ["trophy", "Vault wins"],
+];
+
+const F = "assets/fluent/";
+const fluent3d = {
+  cup: "hot_beverage", recipe: "scroll", agent: "robot", disguise: "disguised_face", sign: "placard", rope: "construction",
+  bouncer: "guard", lasers: "high_voltage", hq: "satellite", keys: "key", vault: "bank", door: "door",
+  presenter: "person_raising_hand", alarm: "police_car_light", blocked: "shield", trophy: "trophy",
+};
+const img = (src, cls = "") => `<img class="${cls}" src="${src}" alt="">`;
+
+const STYLES = [
+  {
+    id: "fluent3d", name: "Microsoft Fluent Emoji: 3D", tag: "my pick",
+    meta: "<b>Look:</b> glossy, playful, modern. <b>Pros:</b> polished, Microsoft's own art (MIT). <b>Cons:</b> generic emoji shapes; no true 'laser grid' (using ⚡). Needs inline images in iTerm2.",
+    icon: k => img(F + fluent3d[k] + "_3d.png"),
+  },
+  {
+    id: "fluentflat", name: "Microsoft Fluent Emoji: Flat", tag: "",
+    meta: "<b>Look:</b> clean, colourful, slide-friendly. <b>Pros:</b> crisp at small sizes, same family as 3D. <b>Cons:</b> a bit plainer than 3D.",
+    icon: k => img(F + fluent3d[k] + "_flat.svg"),
+  },
+  {
+    id: "kenney", name: "Kenney 1-Bit Pack: pixel art", tag: "",
+    meta: "<b>Look:</b> retro 16-bit game. <b>Pros:</b> really feels like a game; pixel art survives terminal rendering; CC0. <b>Cons:</b> fantasy and roguelike pack, so some props are approximations (e.g. the cup).",
+    wrap: "pixel",
+    icon: k => img("assets/kenney/" + (k === "keys" ? "key" : k) + ".png"),
+  },
+  {
+    id: "kenneyneon", name: "Kenney pixel art: neon on black", tag: "new",
+    meta: "<b>Look:</b> arcade neon. Every role gets its own bright colour (agent cyan, bouncer orange, lasers red, blocked green). <b>Pros:</b> pops on a black terminal; colour tells you the role at a glance. <b>Cons:</b> one colour per sprite (1-bit art).",
+    wrap: "pixel black",
+    icon: k => img("assets/kenney-neon/" + (k === "keys" ? "key" : k) + ".png"),
+  },
+  {
+    id: "kenneycafe", name: "Kenney pixel art: café pastels on black", tag: "new",
+    meta: "<b>Look:</b> softer, warmer brights: latte cream, mint, peach. <b>Pros:</b> still bright on black, more 'coffee shop' than 'arcade'. <b>Cons:</b> less punchy on a projector.",
+    wrap: "pixel black",
+    icon: k => img("assets/kenney-cafe/" + (k === "keys" ? "key" : k) + ".png"),
+  },
+  {
+    id: "mdi", name: "Nerd Font icons (Material Design + Codicons)", tag: "",
+    meta: "<b>Look:</b> sleek 'security ops dashboard'. <b>Pros:</b> pure terminal characters, sharp, perfectly aligned, any colour; includes the real Copilot codicon. <b>Cons:</b> less fun; needs a Nerd Font in iTerm2.",
+    icon: k => ({
+      cup: '<i class="mdi mdi-coffee c-recipe"></i>', recipe: '<i class="mdi mdi-script-text c-recipe"></i>',
+      agent: '<i class="codicon codicon-copilot c-agent"></i>', disguise: '<i class="mdi mdi-incognito c-agent"></i>',
+      sign: '<i class="mdi mdi-sign-caution c-sign"></i>', rope: '<i class="mdi mdi-boom-gate c-rope"></i>',
+      bouncer: '<i class="mdi mdi-sunglasses c-bouncer"></i>', lasers: '<i class="mdi mdi-wall-fire c-lasers"></i>',
+      hq: '<i class="mdi mdi-satellite-uplink c-hq"></i>', keys: '<i class="mdi mdi-key-chain c-hq"></i>',
+      vault: '<i class="mdi mdi-safe c-recipe"></i>', door: '<i class="mdi mdi-door-open c-sign"></i>',
+      presenter: '<i class="mdi mdi-account-tie c-agent"></i>', alarm: '<i class="mdi mdi-alarm-light c-bad"></i>',
+      blocked: '<i class="mdi mdi-shield-check c-ok"></i>', trophy: '<i class="mdi mdi-trophy c-sign"></i>',
+    })[k],
+  },
+  {
+    id: "ascii", name: "Custom ASCII art", tag: "",
+    meta: "<b>Look:</b> hand-made, nerdy, retro. <b>Pros:</b> works in any terminal, unique to your talk. <b>Cons:</b> most effort to make beautiful; small sizes get cramped (see the mock).",
+    icon: k => `<pre class="ascii">${ASCII[k]}</pre>`,
+  },
+  {
+    id: "emoji", name: "Baseline: standard emoji (current plan)", tag: "for comparison",
+    meta: "What the plan uses today. Shown so you can compare.",
+    icon: k => `<span class="emoji">${({cup:"☕",recipe:"📜",agent:"🤖",disguise:"🥸",sign:"🪧",rope:"🚧",bouncer:"🕶️",lasers:"🔴",hq:"🛰️",keys:"🔑",vault:"🏦",door:"🚪",presenter:"🙋",alarm:"🚨",blocked:"🛡️",trophy:"🏆"})[k]}</span>`,
+  },
+];
+
+const ASCII = {
+  cup:      "  ) ) )\n ( ( (\n.-----.\n|     |]\n`-----'",
+  recipe:   " ______\n|~~~~~~|\n| 1/3  |\n| 1/3  |\n|_1/3__|",
+  agent:    " [o_o]\n /|_|\\\n  / \\",
+  disguise: " [ò_ó]\n  =v=\n /|_|\\",
+  sign:     " _______\n| STAFF |\n| ONLY! |\n ‾‾‾|‾‾‾",
+  rope:     "\n o~~~~o\n |    |\n_|_  _|_",
+  bouncer:  " (■_■)\n /|█|\\\n  / \\",
+  lasers:   "╳╳╳╳╳╳\n╳╳╳╳╳╳\n╳╳╳╳╳╳",
+  hq:       "  _|_\n /___\\\n | HQ|\n |___|",
+  keys:     "\n o-┐ o-┐\n ║    ║",
+  vault:    " .----.\n | () |\n |  ☕|\n '----'",
+  door:     " .--.\n |  |\n | o|\n |__|",
+  presenter:"  \\o/\n   |\n  / \\",
+  alarm:    "  .-.\n ( ! )\n  '-'",
+  blocked:  " /\\\n|OK|\n \\/",
+  trophy:   " \\___/\n  \\_/\n  _|_",
+};
+
+function scene(s) {
+  const i = k => `<span class="s">${s.icon(k)}</span>`;
+  if (s.id === "ascii") {
+    return `<div class="term ascii-scene"><div class="top"><span class="title">ROUND 3 · THE BOUNCER</span><span class="score">Agent 2 : 1 Vault</span></div>
+<pre><span class="c-agent"> [o_o]</span>  ·····  <span class="c-sign">| STAFF |</span>  ───────▶  <span class="pass">passes through the sign</span>
+<span class="c-agent"> [o_o]</span>  ──☄──▶ <span class="c-rope">o~~~~o</span>   <span class="block">✋ blocked: rope</span>
+<span class="c-agent"> [ò_ó]</span>  ──☄──▶ <span class="c-bouncer">(■_■)</span>    <span class="block">✋ blocked: bouncer</span>   cat .env
+<span class="c-agent"> [ò_ó]</span>  ──☄─────────────▶ <span class="c-recipe">[ ☕ ]</span> <span class="leak">!! SPILLED THE BEANS !!</span>
+<span class="c-agent"> [o_o]</span>  ──☄──▶ <span class="c-lasers">╳╳╳╳</span>     <span class="block">✋ blocked: OS</span>   <span class="c-sign">[door] can I leave?</span> → <span class="leak">NO</span>
+</pre><div class="keys">Keys: sign → model · rope → you · bouncer → you/team · lasers → you/HQ</div></div>`;
+  }
+  return `<div class="term"><div class="top"><span class="title">ROUND 3 · THE BOUNCER</span><span class="score">Agent 2 : 1 Vault</span></div>
+    <div class="row">${i("agent")}<span class="arrow">· · · ▶</span>${i("sign")}<span class="arrow">· · ▶</span><span class="lbl pass">walked straight past the sign</span></div>
+    <div class="row">${i("agent")}<span class="arrow">──☄─▶</span>${i("rope")}${i("blocked")}<span class="lbl block">blocked by rope · view .env</span></div>
+    <div class="row">${i("disguise")}<span class="arrow">──☄─▶</span>${i("bouncer")}${i("blocked")}<span class="lbl block">blocked by bouncer · cat .env</span></div>
+    <div class="row">${i("disguise")}<span class="arrow">──☄───────▶</span>${i("vault")}${i("alarm")}<span class="lbl leak">SPILLED THE BEANS · python3 -c …</span></div>
+    <div class="row">${i("agent")}<span class="arrow">──☄─▶</span>${i("lasers")}${i("door")}<span class="lbl dim">“can I leave the sandbox?” → presenter: NO</span></div>
+    <div class="row">${i("presenter")}<span class="arrow">──☄─▶</span>${i("hq")}${i("blocked")}<span class="lbl block">/sandbox disable → managed by HQ</span></div>
+    <div class="row">${i("recipe")}${i("cup")}<span class="lbl dim">Secret Cappuccino Recipe · 1/3 espresso · 1/3 milk · 1/3 foam</span>${i("trophy")}</div>
+    <div class="keys">Keys: sign → model · rope → you · bouncer → you/team · lasers → you/HQ · two-key → reviewers</div></div>`;
+}
+
+const nav = document.getElementById("nav"), main = document.getElementById("main");
+STYLES.forEach((s, n) => {
+  const suffix = { fluentflat: " (flat)", fluent3d: " (3D)", kenneyneon: " neon", kenneycafe: " café" }[s.id] || "";
+  nav.insertAdjacentHTML("beforeend", `<a href="#${s.id}">${n + 1}. ${s.name.split(":")[0].replace("Microsoft ", "")}${suffix}</a>`);
+  const cast = CAST.map(([k, label]) => `<div class="item"><div class="ic">${s.icon(k)}</div>${label}</div>`).join("");
+  main.insertAdjacentHTML("beforeend", `
+    <section id="${s.id}">
+      <div class="head"><h2>${n + 1}. ${s.name}</h2>${s.tag ? `<span class="tag">${s.tag}</span>` : ""}</div>
+      <div class="meta">${s.meta}</div>
+      <div class="grid"><div class="cast ${s.wrap || ""}">${cast}</div><div class="${s.wrap || ""}">${scene(s)}</div></div>
+    </section>`);
+});
+
+// Cappuccino options for the café style
+const CUPS = [
+  ["custom.png", "A · Custom: latte-art heart", "drawn for this demo"],
+  ["custom-foam.png", "B · Custom: foam dome + cocoa", "drawn for this demo"],
+  ["takeaway.png", "C · Kenney: takeaway cup (jar)", "from the pack"],
+  ["teapot.png", "D · Kenney: teapot", "from the pack"],
+  ["pot.png", "E · Kenney: pot", "from the pack"],
+  ["current.png", "F · Kenney: current pick", "the one you didn't like"],
+];
+document.getElementById("kenneycafe").insertAdjacentHTML("afterbegin", `
+  <div style="margin-bottom:16px">
+    <div class="head"><h2>☕ Cappuccino options (café palette)</h2><span class="tag">pick one</span></div>
+    <div class="meta">The pack has no real coffee cup, so A and B are custom 16×16 pixel sprites in the same 1-bit style. The pixel maps are in <code>assets/custom/*.txt</code>, so they're easy to tweak.</div>
+    <div class="cast pixel black" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr))">
+      ${CUPS.map(([f, label, note]) => `<div class="item"><div class="ic" style="height:90px"><img src="assets/cup-options/${f}" style="width:80px;height:80px"></div>${label}<br><span style="opacity:.6">${note}</span></div>`).join("")}
+    </div>
+  </div>`);
+</script>
+</body>
+</html>

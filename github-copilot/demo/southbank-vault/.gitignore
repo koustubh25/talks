@@ -1,0 +1,3 @@
+# Python caches
+__pycache__/
+# (The live event log and the fake .env live in the stage, ~/southbank-roasters, not here.)

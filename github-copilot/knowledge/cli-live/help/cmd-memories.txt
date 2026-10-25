@@ -1,0 +1,9 @@
+Usage: copilot memories <COMMAND>
+
+Manage memories
+
+Commands:
+  import  Import semantic memories through the native memory service
+
+Options:
+  -h, --help  Print help

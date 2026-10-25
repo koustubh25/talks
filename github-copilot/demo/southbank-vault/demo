@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# The Southbank Vault demo. Run ./demo help for the commands.
+exec python3 "$(cd "$(dirname "$0")" && pwd)/vault/ctl.py" "$@"

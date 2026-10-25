@@ -1,0 +1,209 @@
+# GitHub Copilot CLI programmatic reference
+
+> Source: https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-programmatic-reference
+> Snapshot: github/docs @ 02c25d1 (2026-10-23)
+
+_Find options for running Copilot CLI programmatically._
+
+In addition to running Copilot CLI interactively, you can also pass a prompt directly to the CLI in a single command, without entering an interactive session. This allows you to use Copilot programmatically in scripts, CI/CD pipelines, and automation workflows. For more information, see [AUTOTITLE](../../how-tos/copilot-cli/automate-copilot-cli/run-cli-programmatically.md).
+
+This article describes command-line options and environment variables that are particularly relevant when running Copilot CLI programmatically.
+
+To see a complete list of the available options, see [AUTOTITLE](cli-command-reference.md#command-line-options) or enter the following command in your terminal:
+
+```shell copy
+copilot help
+```
+
+## Command line options
+
+There are a number of command-line options that are particularly useful when running Copilot CLI programmatically.
+
+| Option | Description |
+|--------|-------------|
+| `-p PROMPT`                   | Execute a prompt in non-interactive mode. The CLI runs the prompt and exits when done. |
+| `-s`                          | Suppress stats and decoration, outputting only the agent's response. Ideal for piping output in scripts. |
+| `--add-dir=DIRECTORY`         | Add a directory to the allowed-paths list. This can be used multiple times to add multiple directories. Useful when the agent needs to read/write outside the current working directory. |
+| `--agent=AGENT`               | Specify a custom agent to use. |
+| `--allow-all` (or `--yolo`)   | Allow the CLI all permissions. Equivalent to `--allow-all-tools --allow-all-paths --allow-all-urls`. |
+| `--allow-all-paths`           | Disable file-path verification entirely. Simpler alternative to `--add-dir` when path restrictions aren't needed. |
+| `--allow-all-tools`           | Allow every tool to run without explicit permission for each tool. |
+| `--allow-all-urls`            | Allow access to all URLs without explicit permission for each URL. |
+| `--allow-tool=TOOL ...`       | Selectively grant permission for a specific tool. For multiple tools, use a quoted, comma-separated list. |
+| `--allow-url=URL ...`         | Allow the agent to fetch a specific URL or domain. Useful when a workflow needs web access to known endpoints. For multiple URLs, use a quoted, comma-separated list. |
+| `--attachment=PATH ...`       | Attach a file (image or native document) to the initial prompt. Only valid in non-interactive mode. Can be used multiple times to attach multiple files. |
+| `--available-tools=TOOL ...`  | Restrict the model to only the tools you list; all other tools are unavailable. Useful for tightly scoping what the agent can do in an automated workflow. For multiple tools, use a quoted, comma-separated list. |
+| `--deny-tool=TOOL ...`        | Deny a specific tool. Useful for restricting what the agent can do in a locked-down workflow. For multiple tools, use a quoted, comma-separated list. |
+| `--deny-url=URL ...`          | Deny access to a specific URL or domain. Takes precedence over `--allow-url`. For multiple URLs, use a quoted, comma-separated list. |
+| `--excluded-tools=TOOL ...`   | Remove specific tools from those available to the model. For multiple tools, use a quoted, comma-separated list. |
+| `--fleet`                     | Run the prompt in fleet mode, so Copilot uses parallel subagents to work on separate parts of the task. Combine with `-p` for non-interactive automation, `-i` for an interactive session, or a piped prompt. Not supported in ACP server mode. See [AUTOTITLE](../../how-tos/copilot-cli/use-copilot-cli/speed-up-task-completion.md). |
+| `--model=MODEL`               | Choose the AI model (for example, `gpt-6-astra` or `claude-haiku-4.5`). Useful for pinning a model in reproducible workflows. See [Choosing a model](#choosing-a-model) below. |
+| `--no-ask-user`               | Prevent the agent from pausing to seek additional user input. |
+| `--output-format=FORMAT`      | Set the output format: `text` (the default) or `json`. With `json`, the CLI emits JSONL (one JSON object per line), which is convenient for parsing the agent's output in scripts. |
+| `--secret-env-vars=VAR ...`   | An environment variable whose value you want redacted in output. For multiple variables, use a quoted, comma-separated list. Essential for preventing secrets being exposed in logs. The values in the `GITHUB_TOKEN` and `COPILOT_GITHUB_TOKEN` environment variables are redacted by default. |
+| `--trust-folder`              | Trust the working directory's hooks, workspace MCP servers, and repository plugin settings for a single new non-interactive session (`-p` or piped standard input). The trust is not saved to `trustedFolders`, does not extend to parent or sibling directories, and does not grant tool, path, or URL permissions. Managed policy still applies. Cannot be combined with `--resume`, `--continue`, or `--session-id`. Only use this for configuration you have reviewed. |
+| `--share=PATH`                | Export the session transcript to a markdown file after non-interactive completion (defaults to `./copilot-session-<ID>.md`). Useful for auditing or archiving what the agent did. Note that session transcripts may contain sensitive information. |
+| `--share-gist`                | Publish the session transcript as a secret GitHub gist after completion. Convenient for sharing results from CI. Note that session transcripts may contain sensitive information. |
+
+## Running dynamic workflows
+
+Use `copilot workflow run WORKFLOW-NAME` to run a dynamic workflow from a script. To find out about dynamic workflows, see [AUTOTITLE](../../concepts/agent-capabilities/agent-powered-workflows-and-operations/dynamic-workflows.md).
+
+Use `--args` for inline JSON or an `@`-prefixed JSON file path. Arguments are not read from standard input.
+
+```shell copy
+copilot workflow run WORKFLOW-NAME \
+  --args @workflow-input.json \
+  --silent --output-format json
+```
+
+Configure authentication and grant the required tool permissions before running the command. Shared options such as `--model`, `--allow-tool`, `--allow-url`, and `--add-dir` apply. The command does not display permission approval prompts. Prompt and session-mode options such as `-p`, `-i`, `--agent`, `--fleet`, `--autopilot`, `--resume`, and `--continue` are not supported with `workflow run`.
+
+Project extensions are loaded only from trusted folders or with an explicit opt-in. In automation, `GITHUB_COPILOT_PROMPT_MODE_EXTENSIONS=true` permits loading project extensions for that invocation. Only enable this for repository code you trust. It does not grant tool permissions.
+
+For all workflow-specific options, see [AUTOTITLE](cli-command-reference.md#using-copilot-workflow-run).
+
+### Workflow output
+
+With `--output-format json`, standard output uses JSONL. When the run finishes or stops, the final record has the following fields. Add `--silent` to suppress progress and other event records.
+
+| Field | Description |
+| ----- | ----------- |
+| `type` | Always `workflow.result`. |
+| `data.name` | The workflow name. |
+| `data.run.runId` | The run's identifier. |
+| `data.run.status` | The final run status: `completed`, `halted`, `paused`, `cancelled`, or `error`. |
+| `data.run.result` | The returned value, if any. Omitted when `--result-file` is supplied. |
+| `data.run.pauseInfo`, `data.run.reason`, `data.run.error`, `data.run.failure` | Additional details about why a run paused or stopped, when available. |
+| `data.resultFile` | The requested result-file path, included only after the result file has been written successfully. |
+
+With `--result-file PATH`, the file contains only the returned value, as JSON. A paused, failed, or interrupted run does not replace an existing result file. A completed run that returns no value does not write a result file.
+
+Errors and diagnostics for runs that do not complete are written to standard error, including in silent mode. An error before the workflow starts, or an interruption, can end the command without a final JSON record.
+
+### Workflow exit codes
+
+| Exit code | Meaning |
+| --------- | ------- |
+| `0` | The workflow completed successfully and any requested result file was written successfully. A workflow that returns no value can also complete successfully without creating a result file. |
+| `1` | The run did not complete, including a pause, a limit that stopped the run, cancellation, or failure. Also used for general command errors, such as invalid command-line syntax or a failure to save the result. |
+| `2` | The workflow was not found, or its arguments could not be read, parsed as JSON, or validated against the workflow's accepted inputs. |
+| `130` | The command was interrupted by `SIGINT` or `SIGTERM`, for example by pressing <kbd>Ctrl</kbd>+<kbd>C</kbd>. |
+
+Check the exit code before consuming a result file. An earlier result file may still exist after an unsuccessful run. A final record with `data.run.status` set to `completed` does not guarantee the result file was saved successfully.
+
+## Tools for the `--allow-tool` option
+
+You can specify various kinds of tools with the `--allow-tool` option.
+
+| Kind of tool  | What it controls |
+|---------------|------------------|
+| shell  | Executing shell commands. |
+| write  | Creating or modifying files. |
+| read   | Reading files or directories. |
+| url    | Fetching content from a URL. |
+| memory | Storing new facts to the agent's persistent memory. This does not affect using existing memories. See [AUTOTITLE](https://docs.github.com/en/copilot/concepts/prompting-and-context/copilot-memory). |
+| MCP-SERVER | Invoking tools from a specific MCP server. Use the server's configured name as the identifier—for example, `github`. See [AUTOTITLE](../../how-tos/copilot-cli/customize-copilot/add-mcp-servers.md). |
+
+### Tool filters
+
+The `shell`, `write`, `url`, and MCP server tool kinds allow you to specify a filter, in parentheses, to control which specific tools are allowed.
+
+<!-- markdownlint-disable -->
+| Kind of tool | Example | Explanation of the example |
+|------|---------|---------|
+| **shell** | `shell(git:*)` | Allow all Git subcommands (`git push`, `git status`, etc.). |
+| | `shell(npm test)` | Allow the exact command `npm test`. |
+| **write** | `write(.github/copilot-instructions.md)` | Allow the CLI to write to this specific path. |
+| | `write(README.md)` | Allow the CLI to write to any file whose path ends with `/README.md`. |
+| **url** | `url(github.com)` | Allow the CLI to access HTTPS URLs on github.com. |
+| | `url(http://localhost:3000)` | Allow the CLI to access the local dev server with explicit protocol and port. |
+| | `url(https://*.github.com)` | Allow the CLI to access any GitHub subdomain (for example, `api.github.com`). |
+| | `url(https://docs.github.com/copilot/*)` | Allow access to Copilot documentation at this site. |
+| **MCP-SERVER** | `github(create_issue)` | Allow only the `create_issue` tool from the `github` MCP server. |
+<!-- markdownlint-enable -->
+
+> **note:**
+> Wildcards are only supported for `shell` to match all subcommands of a specified tool, and for `url` at the start of the host name to match any subdomain, or at the end of a path to match any path suffix—as shown in the preceding table.
+
+## Environment variables
+
+You can use environment variables to configure various aspects of the CLI's behavior when running programmatically. This is particularly useful for setting configuration in CI/CD workflows or other automated environments where you may not want to specify certain options directly in the command line.
+
+| Variable              | Description   |
+| --------------------- | ------------- |
+| `COPILOT_ALLOW_ALL`   | Set to `true` for full permissions |
+| `COPILOT_MODEL`       | Set the model (for example, `gpt-6-astra`, `claude-haiku-4.5`) |
+| `COPILOT_HOME`        | Set the directory for the CLI configuration file (`~/.copilot` by default) |
+| `COPILOT_AUTO_UPDATE` | Set to `false` to disable automatic updates. Useful in CI and other automated environments where you want to pin the CLI version. |
+| `COPILOT_GITHUB_TOKEN`| Authentication token (highest precedence) |
+| `GH_TOKEN`            | Authentication token (second precedence) |
+| `GITHUB_TOKEN`        | Authentication token (third precedence) |
+| `GITHUB_COPILOT_PROMPT_MODE_EXTENSIONS` | Set to `true` to allow project extensions to load for a prompt or direct workflow run. Only use this for repository code you trust. This does not grant tool permissions. |
+
+For full details of environment variables for Copilot CLI, use the command `copilot help environment` in your terminal.
+
+## Choosing a model
+
+When you send a prompt to Copilot CLI in non-interactive mode, the model that the CLI uses to generate a response is shown in the response output (if the `-s`, or `--silent`, option is not used).
+
+You can use the `--model` option to specify which AI model the CLI should use. This allows you to choose a model that is best suited to your prompt, balancing factors like speed, cost, and capability.
+
+For example, for straightforward tasks, such as explaining some code or generating a summary, you might choose a fast, lower cost model such as a Claude Haiku model:
+
+```bash copy
+copilot -p "What does this project do?" -s --model claude-haiku-4.5
+```
+
+For more complex tasks that require deeper reasoning—such as debugging or refactoring code—you might choose a more powerful model, such as a GPT Codex model:
+
+```bash copy
+copilot -p "Fix the race condition in the worker pool" \
+  --model gpt-5.3-codex \
+  --allow-tool='write, shell'
+```
+
+> **note:**
+> To see the model strings for all available models, run the `/model` command in an interactive Copilot CLI session. For the full list of models and the clients that support them, see [AUTOTITLE](https://docs.github.com/en/copilot/reference/ai-models/supported-models).
+
+Alternatively, you can set the `COPILOT_MODEL` environment variable to specify a model for the duration of the shell session.
+
+To persist a model selection across shell sessions, you can set the `model` key in the CLI configuration file. This file is located at `~/.copilot/settings.json` (or `$COPILOT_HOME/settings.json` if you have set the `COPILOT_HOME` environment variable). Some models also allow you to set a reasoning effort level, which controls how much time the model spends thinking before responding.
+
+```json copy
+{
+  "model": "gpt-5.3-codex",
+  "effortLevel": "low"
+}
+```
+
+> **tip:**
+> The easiest way to set a model persistently in the configuration file is with the `/model` slash command in an interactive session. The choice you make with this command is written to the configuration file.
+
+### Model precedence
+
+When determining which model to use for a given prompt, the CLI checks for model specifications in the following order of precedence (from highest to lowest):
+
+* Where a custom agent is used: the model specified in the custom agent definition (if any).
+* The `--model` command line option.
+* The `COPILOT_MODEL` environment variable.
+* The `model` key in the configuration file (`~/.copilot/settings.json` or `$COPILOT_HOME/settings.json`).
+* The CLI's default model.
+
+## Using custom agents
+
+You can delegate work to a specialized agent by using the `--agent` option. For more information, see [AUTOTITLE](../../how-tos/copilot-cli/customize-copilot/create-custom-agents-for-cli.md).
+
+In this example, the `code-review` agent is used. This requires that a custom agent has been created with this name.
+
+```bash
+copilot -p "Review the latest commit" \
+  --allow-tool='shell' \
+  --agent code-review
+```
+
+## Further reading
+
+* [AUTOTITLE](https://docs.github.com/en/copilot/how-tos/copilot-cli)
+* [AUTOTITLE](cli-command-reference.md)
+* [AUTOTITLE](cli-plugin-reference.md)

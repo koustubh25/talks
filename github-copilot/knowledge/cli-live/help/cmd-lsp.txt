@@ -1,0 +1,13 @@
+Usage: copilot lsp <COMMAND>
+
+Inspect the language servers configured for this CLI.
+
+Starting, stopping, and reloading language servers needs a running
+session; use the interactive `/lsp` command for those.
+
+Commands:
+  list  List configured language servers
+
+Options:
+  -h, --help
+          Print help (see a summary with '-h')
